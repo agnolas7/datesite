@@ -65,19 +65,19 @@ $name = htmlspecialchars($_SESSION['name']);
             </div>
 
             <button class="btn btn-yes scheduler-confirm-btn" onclick="saveSchedule()">
-                confirm 🌸
+                confirm 
             </button>
-            <p id="scheduleConfirm" class="hidden success-msg">yesss noted! see you soon 🎉</p>
+            <p id="scheduleConfirm" class="hidden success-msg">yesss noted! see you soon</p>
         </div>
 
         <!-- Optional separator -->
         <div class="result-divider">
-            <span>or if you're curious</span>
+            <span>alsoooo, if you're curious</span>
         </div>
 
         <!-- Optional compatibility -->
         <a href="compatibility.php" class="compat-optional-btn">
-            check our compatibility 💘
+            check our compatibility 
         </a>
 
     </div>
