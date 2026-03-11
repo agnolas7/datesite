@@ -156,7 +156,7 @@ h2 {
 
 .btn-yes {
   background: var(--pink);
-  color: #1a0a10;
+  color: #fff9fb !important;
 }
 .btn-maybe {
   background: transparent;
