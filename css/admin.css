@@ -1,0 +1,251 @@
+/* ── Theme Variables ── */
+:root {
+  --bg: #080808;
+  --bg2: #0f0f0f;
+  --card: #111;
+  --border: #1a1a1a;
+  --border2: #131313;
+  --text: #e8e0d8;
+  --text-muted: #d8d0c8;
+  --label: #444;
+  --section-lab: #3a3a3a;
+  --submitted: #3d3d3d;
+  --id-color: #3a3a3a;
+  --pink: #f4a7b9;
+  --green: #a8d8b9;
+  --hover-row: #161616;
+  --back-color: #555;
+  --logout-color: #555;
+  --th-bg: #111;
+  --empty: #2a2a2a;
+}
+
+[data-theme="light"] {
+  --bg: #f5f0eb;
+  --bg2: #ede8e2;
+  --card: #fff;
+  --border: #ddd;
+  --border2: #e5e0da;
+  --text: #1a1a1a;
+  --text-muted: #2e2e2e;
+  --label: #888;
+  --section-lab: #aaa;
+  --submitted: #aaa;
+  --id-color: #bbb;
+  --pink: #c45c78;
+  --green: #3a8c5c;
+  --hover-row: #f0ebe4;
+  --back-color: #999;
+  --logout-color: #999;
+  --th-bg: #f0ebe4;
+  --empty: #ccc;
+}
+
+/* ── Theme Toggle Button ── */
+.theme-toggle {
+  position: fixed;
+  top: 1.2rem;
+  right: 1.5rem;
+  z-index: 999;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--label);
+  border-radius: 50px;
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  font-family: "DM Sans", sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
+}
+.theme-toggle:hover {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+/* ── Admin Dashboard ── */
+body.admin-dashboard {
+  font-family: "DM Sans", sans-serif;
+  padding: 2rem;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: block;
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+
+.admin-dashboard h1 {
+  font-family: "Playfair Display", serif;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+.admin-dashboard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-dashboard th,
+.admin-dashboard td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.admin-dashboard th {
+  background: var(--th-bg);
+  color: var(--pink);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-dashboard tr:hover td {
+  background: var(--hover-row);
+  cursor: pointer;
+}
+
+.admin-dashboard .logout {
+  float: right;
+  color: var(--logout-color);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+.admin-dashboard .logout:hover {
+  color: var(--pink);
+}
+
+/* ── Individual Response View ── */
+body.admin-view {
+  font-family: "DM Sans", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: block;
+  padding: 0;
+  margin: 0;
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+
+.view-wrapper {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+}
+
+.view-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--back-color);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+  margin-bottom: 2.5rem;
+  transition: color 0.2s;
+}
+.view-back:hover {
+  color: var(--pink);
+}
+
+.view-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.view-name {
+  font-family: "Playfair Display", serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--pink);
+  line-height: 1.1;
+}
+
+.view-id {
+  font-size: 0.9rem;
+  color: var(--id-color);
+}
+
+.view-submitted {
+  color: var(--submitted);
+  font-size: 0.8rem;
+  margin-bottom: 3rem;
+  letter-spacing: 0.2px;
+}
+
+.view-section {
+  margin-bottom: 2.5rem;
+}
+
+.view-section-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--section-lab);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.field {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border2);
+  align-items: start;
+  transition:
+    background 0.15s,
+    padding 0.15s;
+}
+
+.field:hover {
+  background: var(--bg2);
+  margin: 0 -1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  border-bottom-color: transparent;
+}
+
+.field strong {
+  color: var(--label);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding-top: 0.1rem;
+}
+
+.field span {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.field span.empty {
+  color: var(--empty);
+  font-style: italic;
+}
+
+.field.score-field span {
+  font-family: "Playfair Display", serif;
+  font-size: 1.4rem;
+  color: var(--pink);
+}
+
+.field.date-field span {
+  color: var(--green);
+}

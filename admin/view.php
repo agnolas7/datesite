@@ -12,6 +12,36 @@ $stmt->execute([$id]);
 $r = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$r) die("Not found.");
+
+$sections = [
+    'about them' => [
+        'age'           => 'Age',
+        'city'          => 'City',
+        'communication' => 'Reach them via',
+        'best_time'     => 'Best time',
+        'food_drink'    => 'Food & drink',
+        'dealbreaker'   => 'Dealbreaker',
+    ],
+    'date preferences' => [
+        'date_type'        => 'Date type',
+        'spontaneity'      => 'Spontaneity',
+        'energy'           => 'Energy',
+        'mood'             => 'Mood',
+        'crowd'            => 'Crowd',
+        'convo_style'      => 'Convo style',
+        'walking'          => 'Walking',
+        'awkwardness'      => 'Awkwardness',
+        'convo_difficulty' => 'Difficulty',
+    ],
+    'vibes & extras' => [
+        'vibes'       => 'Vibes',
+        'custom_vibe' => 'Their idea',
+    ],
+    'results' => [
+        'compatibility_score' => 'Compatibility',
+        'scheduled_date'      => 'Scheduled date',
+    ],
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,35 +50,68 @@ if (!$r) die("Not found.");
     <title>response #<?= $id ?></title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        body { padding: 2rem; background: #0f0f0f; color: #eee; max-width: 700px; margin: 0 auto; }
-        h1 { font-family: 'Playfair Display', serif; color: #f4a7b9; }
-        .field { margin-bottom: 1rem; padding: 0.75rem; background: #1a1a1a; border-radius: 8px; }
-        .field strong { color: #f4a7b9; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; }
-        a { color: #f4a7b9; }
-    </style>
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body>
-    <a href="dashboard.php">← back</a>
-    <h1><?= htmlspecialchars($r['name']) ?> <span style="font-size:0.6em;color:#aaa;">#<?= $id ?></span></h1>
+<body class="admin-view">
 
-    <?php
-    $labels = [
-        'age' => 'Age', 'city' => 'City', 'communication' => 'Communication',
-        'best_time' => 'Best time', 'food_drink' => 'Food & Drink', 'dealbreaker' => 'Dealbreaker',
-        'date_type' => 'Date type', 'spontaneity' => 'Spontaneity', 'energy' => 'Energy',
-        'mood' => 'Mood', 'crowd' => 'Crowd', 'convo_style' => 'Convo style',
-        'vibes' => 'Vibes', 'custom_vibe' => 'Custom vibe', 'walking' => 'Walking',
-        'awkwardness' => 'Awkwardness', 'convo_difficulty' => 'Convo difficulty',
-        'compatibility_score' => 'Compatibility score', 'scheduled_date' => 'Scheduled date',
-        'submitted_at' => 'Submitted'
-    ];
+    <!-- Theme toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+        🌙 dark
+    </button>
 
-    foreach ($labels as $key => $label) {
-        $val = htmlspecialchars($r[$key] ?? '—');
-        if ($key === 'compatibility_score' && $val !== '—') $val .= '%';
-        echo "<div class='field'><strong>$label</strong>$val</div>";
-    }
-    ?>
+    <div class="view-wrapper">
+
+        <a href="dashboard.php" class="view-back">← back to dashboard</a>
+
+        <div class="view-header">
+            <div class="view-name"><?= htmlspecialchars($r['name']) ?></div>
+            <div class="view-id">#<?= $id ?></div>
+        </div>
+        <div class="view-submitted">submitted <?= htmlspecialchars($r['submitted_at']) ?></div>
+
+        <?php foreach ($sections as $sectionName => $fields): ?>
+        <div class="view-section">
+            <div class="view-section-label"><?= $sectionName ?></div>
+
+            <?php foreach ($fields as $key => $label):
+                $raw = $r[$key] ?? '';
+                $isEmpty = ($raw === '' || $raw === null);
+                $val = $isEmpty ? '—' : htmlspecialchars($raw);
+                if ($key === 'compatibility_score' && !$isEmpty) $val = $raw . '%';
+
+                $extraClass = '';
+                if ($key === 'compatibility_score') $extraClass = 'score-field';
+                if ($key === 'scheduled_date' && !$isEmpty) $extraClass = 'date-field';
+            ?>
+            <div class="field <?= $extraClass ?>">
+                <strong><?= $label ?></strong>
+                <span class="<?= $isEmpty ? 'empty' : '' ?>"><?= $val ?></span>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endforeach; ?>
+
+    </div>
+
+    <script>
+        const btn = document.getElementById('themeBtn');
+
+        // Load saved preference on page load
+        const saved = localStorage.getItem('adminTheme') || 'dark';
+        applyTheme(saved);
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            applyTheme(next);
+            localStorage.setItem('adminTheme', next);
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            btn.textContent = theme === 'light' ? '🌙 dark' : '☀️ light';
+        }
+    </script>
+
 </body>
 </html>

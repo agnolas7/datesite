@@ -14,20 +14,11 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>admin dashboard</title>
-    <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        body { padding: 2rem; background: #0f0f0f; color: #eee; }
-        h1 { font-family: 'Playfair Display', serif; margin-bottom: 1.5rem; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #333; }
-        th { background: #1a1a1a; color: #f4a7b9; }
-        tr:hover { background: #1e1e1e; cursor: pointer; }
-        .logout { float: right; color: #aaa; text-decoration: none; }
-        .logout:hover { color: #f4a7b9; }
-    </style>
+    <link rel="stylesheet" href="../css/admin.css">
+    <!-- admin-specific styles moved to css/admin.css for clarity -->
 </head>
-<body>
+<body class="admin-dashboard">
     <a href="logout.php" class="logout">logout</a>
     <h1>responses dashboard 📋</h1>
     <p><?= count($rows) ?> people answered</p>
