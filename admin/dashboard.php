@@ -21,6 +21,12 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="admin-dashboard">
     <a href="logout.php" class="logout">logout</a>
     <h1>responses dashboard 📋</h1>
+    <p style="margin-bottom:1.5rem;">
+    <?= count($rows) ?> people answered &nbsp;·&nbsp;
+    <a href="compatibility_answers.php" style="color:var(--pink); text-decoration:none;">
+        ✦ edit my compatibility answers
+    </a>
+</p>
     <p><?= count($rows) ?> people answered</p>
 
     <table>

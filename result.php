@@ -11,7 +11,6 @@ $id = $_SESSION['response_id'];
 $stmt = $pdo->prepare("SELECT * FROM responses WHERE id = ?");
 $stmt->execute([$id]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-$score = $row['compatibility_score'] ?? rand(69, 99);
 $name = htmlspecialchars($_SESSION['name']);
 ?>
 <!DOCTYPE html>
@@ -22,6 +21,12 @@ $name = htmlspecialchars($_SESSION['name']);
     <title>results are in 🎊</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            const t = localStorage.getItem('siteTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </head>
 <body class="result-page">
 
@@ -33,11 +38,8 @@ $name = htmlspecialchars($_SESSION['name']);
     <div class="center-card hidden" id="resultScreen">
         <p class="subtitle">✦ official result ✦</p>
         <h1>Based on your answers, a date with me has been <span class="approved">approved</span>. 🎊</h1>
-        <div class="score-box">
-            <span class="score-num"><?= $score ?>%</span>
-            <span class="score-label">compatibility</span>
-        </div>
 
+        <!-- Primary actions -->
         <div class="result-buttons">
             <button class="btn btn-yes" onclick="showScheduler()">
                 when are u free. sched a date 📅
@@ -45,21 +47,42 @@ $name = htmlspecialchars($_SESSION['name']);
             <a href="https://instagram.com/sa.loooong.a" target="_blank" class="btn btn-maybe">
                 send me a message instead 💌
             </a>
-            <a href="index.php" class="btn btn-maybe">
-                go back to home page 🏠
-            </a>
         </div>
 
+        <!-- Scheduler -->
         <div class="scheduler hidden" id="schedulerBox">
-            <h3>pick a date & time 🗓️</h3>
-            <input type="datetime-local" id="scheduledDate">
-            <button class="btn btn-yes" onclick="saveSchedule()">confirm 🌸</button>
+            <p class="scheduler-label">pick a date & time 🗓️</p>
+
+            <div class="datetime-row">
+                <div class="datetime-field">
+                    <label for="schedDate">📅 date</label>
+                    <input type="date" id="schedDate">
+                </div>
+                <div class="datetime-field">
+                    <label for="schedTime">🕐 time</label>
+                    <input type="time" id="schedTime">
+                </div>
+            </div>
+
+            <button class="btn btn-yes scheduler-confirm-btn" onclick="saveSchedule()">
+                confirm 🌸
+            </button>
             <p id="scheduleConfirm" class="hidden success-msg">yesss noted! see you soon 🎉</p>
         </div>
+
+        <!-- Optional separator -->
+        <div class="result-divider">
+            <span>or if you're curious</span>
+        </div>
+
+        <!-- Optional compatibility -->
+        <a href="compatibility.php" class="compat-optional-btn">
+            check our compatibility 💘
+        </a>
+
     </div>
 
     <script>
-    // Show loading first, then result after 3 seconds
     setTimeout(() => {
         document.getElementById('loadingScreen').classList.add('hidden');
         document.getElementById('resultScreen').classList.remove('hidden');
@@ -67,16 +90,24 @@ $name = htmlspecialchars($_SESSION['name']);
 
     function showScheduler() {
         document.getElementById('schedulerBox').classList.remove('hidden');
+        document.getElementById('schedulerBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function saveSchedule() {
-        const dt = document.getElementById('scheduledDate').value;
-        if (!dt) { alert('pick a date first!'); return; }
+        const date = document.getElementById('schedDate').value;
+        const time = document.getElementById('schedTime').value;
+
+        if (!date || !time) {
+            alert('pick both a date and time first!');
+            return;
+        }
+
+        const combined = date + ' ' + time;
 
         fetch('save_schedule.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: 'id=<?= $id ?>&date=' + encodeURIComponent(dt)
+            body: 'id=<?= $id ?>&date=' + encodeURIComponent(combined)
         }).then(() => {
             document.getElementById('scheduleConfirm').classList.remove('hidden');
         });

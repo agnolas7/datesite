@@ -437,3 +437,269 @@ body.form-page {
 .hidden {
   display: none !important;
 }
+
+/* ── Form Validation ── */
+.required-star {
+  color: var(--pink);
+  margin-left: 2px;
+}
+
+.field-error {
+  display: block;
+  color: #e07a8a;
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+
+.form-group.has-error input[type="text"],
+.form-group.has-error select {
+  border-color: #e07a8a;
+  background: rgba(224, 122, 138, 0.06);
+}
+
+.form-group.has-error .check-item,
+.form-group.has-error .radio-item {
+  border-color: rgba(224, 122, 138, 0.4);
+}
+
+.form-group.has-error > label {
+  color: #e07a8a;
+}
+
+.validation-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(224, 122, 138, 0.1);
+  border: 1px solid rgba(224, 122, 138, 0.4);
+  border-radius: 10px;
+  padding: 0.85rem 1.2rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: #e07a8a;
+  animation: fadeUp 0.3s ease;
+}
+
+.validation-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Compatibility Score Display ── */
+.compat-score-display {
+  text-align: center;
+  margin: 2rem 0 2.5rem;
+}
+
+.compat-score-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 5px solid var(--pink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.2rem;
+  background: var(--card);
+}
+
+.compat-score-num {
+  font-family: "Playfair Display", serif;
+  font-size: 2.8rem;
+  color: var(--pink);
+  line-height: 1;
+}
+
+.compat-score-msg {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+/* ── Compatibility Table ── */
+.compat-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.compat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.compat-table thead tr {
+  background: var(--card);
+}
+
+.compat-table th {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  color: var(--pink);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.compat-table td {
+  padding: 0.75rem 1rem;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.compat-table tr:last-child td {
+  border-bottom: none;
+}
+
+.row-match {
+  background: rgba(164, 220, 170, 0.04);
+}
+
+.row-nomatch {
+  background: transparent;
+}
+
+.compat-question-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+  min-width: 160px;
+  max-width: 200px;
+}
+
+.match-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.match-yes {
+  color: #6dc88a;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.match-no {
+  color: #c87a7a;
+  font-size: 1.1rem;
+}
+
+.match-highlight {
+  color: #6dc88a;
+  font-weight: 600;
+}
+
+.no-answer {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── Result page tweaks ── */
+.result-page {
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Scheduler ── */
+.scheduler {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: var(--scheduler-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: background 0.3s;
+  animation: fadeUp 0.3s ease;
+}
+
+.scheduler-label {
+  font-family: "Playfair Display", serif;
+  font-size: 1.1rem;
+  color: var(--text);
+  text-align: center;
+}
+
+.datetime-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.datetime-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.datetime-field label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--pink);
+  font-weight: 500;
+}
+
+.datetime-field input[type="date"],
+.datetime-field input[type="time"] {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  color: var(--text);
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+
+.datetime-field input[type="date"]:focus,
+.datetime-field input[type="time"]:focus {
+  border-color: var(--pink);
+}
+
+.scheduler-confirm-btn {
+  width: 100%;
+}
+
+/* ── Optional compatibility separator ── */
+.result-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 1.8rem 0 1.2rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.result-divider::before,
+.result-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Optional compatibility button ── */
+.compat-optional-btn {
+  display: block;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: color 0.2s;
+}
+
+.compat-optional-btn:hover {
+  color: var(--pink);
+}
