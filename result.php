@@ -475,8 +475,8 @@ if ($alreadyScheduled) {
             <div>
                 <div class="result-tag">✦ official result</div>
                 <h1>
-                    Based on your answers, a date with me has been
-                    <span class="approved">approved.</span> 🎊
+                     Seems like we should go on a 
+                    <span class="approved">date.</span> 
                 </h1>
             </div>
 
@@ -487,9 +487,9 @@ if ($alreadyScheduled) {
                         <strong>date already set 🌸</strong>
                         <?= $displayScheduled ?>
                     </div>
-                    <button class="btn btn-yes btn-sched active" onclick="openScheduler()">
-                        view details
-                    </button>
+                    <a href="view_response.php" class="btn btn-yes btn-sched active" style="text-align:center; display:block;">
+    view details
+</a>
                 <?php else: ?>
                     <button class="btn btn-yes btn-sched" id="schedBtn" onclick="openScheduler()">
                         when are u free. sched a date 📅
@@ -641,7 +641,7 @@ if ($alreadyScheduled) {
                 right.style.transition   = '';
             }, 50);
         }
-    }, 3000);
+    }, 1000);
 
     // ── Book open ──
     let isOpen = <?= $alreadyScheduled ? 'true' : 'false' ?>;
