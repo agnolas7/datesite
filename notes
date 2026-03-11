@@ -1,0 +1,52 @@
+```
+
+---
+
+# ✅ Step 21: Test It!
+
+1. Make sure **Apache** and **MySQL** are running in XAMPP
+2. Open your browser and go to: `http://localhost/datesite/`
+
+**You should see:** The landing page with "Would you be interested to go out on a date with me?" and three buttons.
+
+**Test the full flow:**
+- Click **No** → the button should run away from your cursor 🏃
+- Click **Maybe** → the WHYYY persuasion flow
+- Click **Yes** → the info form
+- Fill the form → greeting page → preferences → result with loading animation
+
+**Test admin:**
+- Go to `http://localhost/datesite/admin/login.php`
+- Username: `admin` | Password: `password`
+- You'll see all responses in a table, clickable for full details
+
+**Test Easter egg:**
+- Click the `✦` logo in the top-left **3 times** → secret message appears 🎉
+
+---
+
+# 🗂️ Quick File Checklist
+
+Here's every file you should have created:
+```
+datesite/
+├── index.php          ✅
+├── maybe.php          ✅
+├── form.php           ✅
+├── save_form.php      ✅
+├── greeting.php       ✅
+├── preferences.php    ✅
+├── save_preferences.php ✅
+├── result.php         ✅
+├── save_schedule.php  ✅
+├── includes/
+│   └── db.php         ✅
+├── admin/
+│   ├── login.php      ✅
+│   ├── dashboard.php  ✅
+│   ├── view.php       ✅
+│   └── logout.php     ✅
+├── css/
+│   └── style.css      ✅
+└── js/
+    └── main.js        ✅

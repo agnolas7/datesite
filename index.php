@@ -24,7 +24,7 @@
         <div class="button-group" id="buttonGroup">
             <a href="form.php" class="btn btn-yes">Yes 💌</a>
             <a href="maybe.php" class="btn btn-maybe">Maybe 🤔</a>
-            <button class="btn btn-no" id="noBtn" onmouseover="runAway(this)">No 🚪</button>
+            <button class="btn btn-no" id="noBtn">No 🚪</button>
         </div>
     </div>
 
