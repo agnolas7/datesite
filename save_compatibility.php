@@ -20,8 +20,15 @@ foreach ($compatibility_questions as $name => $q) {
     }
 }
 
-// ── Fetch admin answers ──
-$adminStmt = $pdo->query("SELECT * FROM admin_compatibility_answers ORDER BY id DESC LIMIT 1");
+// Find which owner this response belongs to
+$ownerStmt = $pdo->prepare("SELECT owner_username FROM responses WHERE id = ?");
+$ownerStmt->execute([$response_id]);
+$ownerRow       = $ownerStmt->fetch(PDO::FETCH_ASSOC);
+$owner_username = $ownerRow['owner_username'] ?? null;
+
+// Fetch that owner's compatibility answers
+$adminStmt = $pdo->prepare("SELECT * FROM admin_compatibility_answers WHERE owner_username = ? ORDER BY id DESC LIMIT 1");
+$adminStmt->execute([$owner_username]);
 $admin = $adminStmt->fetch(PDO::FETCH_ASSOC);
 
 // ── Score calculation ──

@@ -249,3 +249,260 @@ body.admin-view {
 .field.date-field span {
   color: var(--green);
 }
+
+/* ── Admin quick links ── */
+.admin-quick-links {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.8rem;
+}
+
+.quick-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.quick-link:hover {
+  color: var(--pink);
+  border-color: var(--pink);
+}
+
+.quick-link-highlight {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+.quick-link-highlight:hover {
+  background: rgba(244, 167, 185, 0.08);
+}
+
+.owner-count {
+  background: var(--pink);
+  color: #1a0a10;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 50px;
+}
+
+/* ── Owner Top Bar ── */
+.owner-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.owner-topbar-name {
+  font-size: 0.85rem;
+  color: var(--section-lab);
+  font-family: "DM Sans", sans-serif;
+  letter-spacing: 0.3px;
+}
+
+.owner-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.topbar-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 0.38rem 0.95rem;
+  font-size: 0.78rem;
+  font-family: "DM Sans", sans-serif;
+  color: var(--label);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  line-height: 1;
+}
+
+.topbar-btn:hover {
+  color: var(--pink);
+  border-color: var(--pink);
+}
+
+.topbar-logout {
+  border-color: rgba(200, 122, 122, 0.3);
+  color: #c87a7a;
+}
+
+.topbar-logout:hover {
+  border-color: #c87a7a;
+  color: #c87a7a;
+  background: rgba(200, 122, 122, 0.06);
+}
+
+.table-hint {
+  color: var(--section-lab);
+  font-size: 0.75rem;
+  margin-top: 0.8rem;
+  text-align: right;
+  font-style: italic;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  /* Dashboard layout */
+  body.admin-dashboard {
+    padding: 1.2rem;
+  }
+
+  .owner-topbar {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .owner-topbar-name {
+    font-size: 0.8rem;
+  }
+
+  .topbar-btn {
+    padding: 0.32rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  body.admin-dashboard h1 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Quick links wrap nicely */
+  .admin-quick-links {
+    gap: 0.5rem;
+  }
+
+  .quick-link {
+    font-size: 0.78rem;
+    padding: 0.45rem 0.85rem;
+  }
+
+  /* Nav links under h1 */
+  .owner-nav-links {
+    gap: 0.6rem;
+    font-size: 0.8rem !important;
+  }
+
+  /* Table — scroll horizontally on small screens */
+  .admin-dashboard table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    font-size: 0.82rem;
+  }
+
+  .admin-dashboard th,
+  .admin-dashboard td {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .table-hint {
+    font-size: 0.72rem;
+  }
+
+  /* View page */
+  body.admin-view {
+    padding: 0;
+  }
+
+  .view-wrapper {
+    padding: 1.5rem 1.2rem 4rem;
+  }
+
+  .view-name {
+    font-size: 1.8rem;
+  }
+
+  .field {
+    grid-template-columns: 120px 1fr;
+    gap: 0.6rem;
+    padding: 0.75rem 0;
+  }
+
+  .field:hover {
+    margin: 0 -0.5rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .field strong {
+    font-size: 0.72rem;
+  }
+
+  .field span {
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body.admin-dashboard {
+    padding: 1rem;
+  }
+
+  body.admin-dashboard h1 {
+    font-size: 1.2rem;
+  }
+
+  .owner-topbar-name {
+    font-size: 0.75rem;
+  }
+
+  .topbar-btn {
+    padding: 0.28rem 0.65rem;
+    font-size: 0.72rem;
+  }
+
+  /* Stack nav links vertically */
+  div[style*="display:flex"][style*="gap:1.2rem"] {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Hide the dot separators on mobile */
+  div[style*="display:flex"][style*="gap:1.2rem"] span {
+    display: none;
+  }
+
+  .field {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .field strong {
+    font-size: 0.7rem;
+  }
+
+  .view-name {
+    font-size: 1.5rem;
+  }
+
+  .view-submitted {
+    margin-bottom: 1.5rem;
+  }
+
+  .view-section {
+    margin-bottom: 1.5rem;
+  }
+}
