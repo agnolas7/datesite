@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="landing-page">
 <div class="center-card" style="max-width:420px;">
 
-    <h1 style="font-size:1.8rem;">your datesite 🌸</h1>
+    <h1 style="font-size:1.8rem;">goodluck g</h1>
     <p class="subtitle">log in to see your responses</p>
 
     <?php if ($error): ?>

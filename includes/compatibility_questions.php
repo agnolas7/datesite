@@ -1,25 +1,33 @@
 <?php
 $compatibility_questions = [
 
-    // ── Checkboxes ──
+    // ── Checkboxes → now ranking (min 2, max 3) ──
     'music_genres' => [
         'label'   => 'Music genres you actually listen to',
-        'type'    => 'checkbox',
+        'type'    => 'rank',
+        'max'     => 3,
+        'min'     => 2,
         'options' => ['OPM','Pop','Indie','R&B','Hip-hop / Rap','Rock','Alternative','Jazz','Classical','Electronic / EDM','Metal','Country','K-pop'],
     ],
     'movie_genres' => [
         'label'   => 'Movie / series genres',
-        'type'    => 'checkbox',
+        'type'    => 'rank',
+        'max'     => 3,
+        'min'     => 2,
         'options' => ['Romance','Comedy','Horror','Thriller','Action','Sci-fi','Fantasy','Documentary','Anime','K-drama','Crime / Mystery','Animation'],
     ],
     'weekend_activities' => [
-        'label'   => 'Ideal weekend activities',
-        'type'    => 'checkbox',
+        'label'   => 'Ideal weekend activities — pick your top 3',
+        'type'    => 'rank',
+        'max'     => 3,
+        'min'     => 2,
         'options' => ['Food trips','Coffee shop hopping','Night drives','Watching movies at home','Going to the mall','Nature / outdoors','Arcade / games','Art galleries','Concerts / events','Just staying in bed','Random drives','Bar / chill night out'],
     ],
     'humor_style' => [
-        'label'   => 'Your humor style',
-        'type'    => 'checkbox',
+        'label'   => 'Your humor style — pick your top 3',
+        'type'    => 'rank',
+        'max'     => 3,
+        'min'     => 2,
         'options' => ['Dry humor','Dark humor','Stupid jokes','Sarcasm','Wholesome','Self-deprecating','Witty / clever','Physical comedy','Memes only'],
     ],
 
@@ -63,6 +71,28 @@ $compatibility_questions = [
         'label'   => 'Night owl or morning person?',
         'type'    => 'radio',
         'options' => ['Night owl — 12am+','Somewhere in between','Morning person','I sleep at random hours'],
+    ],
+
+    // ── New questions ──
+    'phone_habits' => [
+        'label'   => 'During a hangout, phone usage should be...',
+        'type'    => 'radio',
+        'options' => ['Barely touched','Checked occasionally','Doesn\'t really matter','We\'ll probably both check it'],
+    ],
+    'social_battery' => [
+        'label'   => 'After a long day, your ideal hangout is...',
+        'type'    => 'radio',
+        'options' => ['Quiet place, just talking','Chill food trip','Watching something together','Going out somewhere lively'],
+    ],
+    'getting_to_know' => [
+        'label'   => 'When meeting someone new, I usually...',
+        'type'    => 'radio',
+        'options' => ['Open up quickly','Take some time to warm up','Mostly listen first','Depends on the vibe'],
+    ],
+    'first_date_priority' => [
+        'label'   => 'What matters most on a first date?',
+        'type'    => 'radio',
+        'options' => ['Good conversation','Good food','Good atmosphere','Just good company'],
     ],
 ];
 ?>
