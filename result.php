@@ -167,6 +167,87 @@ if ($alreadyScheduled) {
             margin-bottom: 0.2rem;
         }
 
+        .scheduled-date-display {
+            cursor: pointer;
+            transition: opacity 0.2s;
+            padding: 0.3rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        .scheduled-date-display:hover {
+            opacity: 0.7;
+            background: rgba(244, 167, 185, 0.1);
+        }
+
+        .scheduled-date-display::after {
+            content: ' ✏️';
+            font-size: 0.65rem;
+        }
+
+        .scheduled-edit-mode {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .scheduled-edit-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .scheduled-edit-inputs input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid rgba(244, 167, 185, 0.5);
+            border-radius: 8px;
+            padding: 0.5rem 0.6rem;
+            color: var(--text);
+            font-size: 0.75rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .scheduled-edit-inputs input:focus {
+            border-color: var(--pink);
+        }
+
+        .scheduled-edit-buttons {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .scheduled-edit-buttons button {
+            flex: 1;
+            padding: 0.4rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .scheduled-edit-save {
+            background: var(--pink);
+            color: #fff;
+        }
+
+        .scheduled-edit-save:hover {
+            opacity: 0.9;
+        }
+
+        .scheduled-edit-cancel {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .scheduled-edit-cancel:hover {
+            color: var(--pink);
+            border-color: var(--pink);
+        }
+
         .result-theme-btn {
             background: transparent;
             border: 1px solid var(--border);
@@ -485,7 +566,9 @@ if ($alreadyScheduled) {
                     <!-- Already scheduled — show note instead of button -->
                     <div class="already-scheduled-note">
                         <strong>date already set 🌸</strong>
-                        <?= $displayScheduled ?>
+                        <div class="scheduled-date-display" id="scheduledDateDisplay" onclick="startEditingScheduledDate()">
+                            <?= $displayScheduled ?>
+                        </div>
                     </div>
                     <a href="view_response.php" class="btn btn-yes btn-sched active" style="text-align:center; display:block;">
     view details
@@ -692,6 +775,85 @@ if ($alreadyScheduled) {
         "officially locked in. wag nang mag-back out 😭",
         "uy papunta ka talaga ha. 👁️👁️",
     ];
+
+    // ── Edit scheduled date ──
+    const origScheduledDate = '<?= $scheduledDate ?>';
+    
+    function startEditingScheduledDate() {
+        const display = document.getElementById('scheduledDateDisplay');
+        
+        if (!origScheduledDate) return;
+        
+        const dateObj = new Date(origScheduledDate + 'Z');
+        const yyyy = dateObj.getUTCFullYear();
+        const mm = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+        const dd = String(dateObj.getUTCDate()).padStart(2, '0');
+        const hh = String(dateObj.getUTCHours()).padStart(2, '0');
+        const min = String(dateObj.getUTCMinutes()).padStart(2, '0');
+        
+        display.innerHTML = `
+            <div class="scheduled-edit-mode">
+                <div class="scheduled-edit-inputs">
+                    <input type="date" id="editScheduledDate" value="${yyyy}-${mm}-${dd}">
+                    <input type="time" id="editScheduledTime" value="${hh}:${min}" step="900">
+                </div>
+                <div class="scheduled-edit-buttons">
+                    <button class="scheduled-edit-save" onclick="saveEditedScheduledDate()">save</button>
+                    <button class="scheduled-edit-cancel" onclick="cancelEditScheduledDate()">cancel</button>
+                </div>
+            </div>
+        `;
+        
+        const schedDateInput = document.getElementById('editScheduledDate');
+        const today = new Date();
+        const todayYyyy = today.getFullYear();
+        const todayMm = String(today.getMonth() + 1).padStart(2, '0');
+        const todayDd = String(today.getDate()).padStart(2, '0');
+        schedDateInput.min = `${todayYyyy}-${todayMm}-${todayDd}`;
+        
+        schedDateInput.focus();
+    }
+    
+    function cancelEditScheduledDate() {
+        const display = document.getElementById('scheduledDateDisplay');
+        display.textContent = '<?= $displayScheduled ?>';
+    }
+    
+    function saveEditedScheduledDate() {
+        const dateInput = document.getElementById('editScheduledDate');
+        const timeInput = document.getElementById('editScheduledTime');
+        const date = dateInput.value;
+        const time = timeInput.value;
+        
+        if (!date || !time) {
+            alert('please pick both a date and time');
+            return;
+        }
+        
+        const combined = date + ' ' + time;
+        const dateObj = new Date(date + 'T' + time);
+        const displayDate = dateObj.toLocaleDateString('en-PH', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+        const displayTime = dateObj.toLocaleTimeString('en-PH', {
+            hour: '2-digit', minute: '2-digit'
+        });
+        
+        fetch('save_schedule.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=<?= $id ?>&date=' + encodeURIComponent(combined)
+        }).then(() => {
+            const display = document.getElementById('scheduledDateDisplay');
+            display.innerHTML = `<span>${displayDate} · ${displayTime}</span>`;
+            
+            document.getElementById('confirmedDateDisplay').textContent = displayDate + ' · ' + displayTime;
+        }).catch(err => {
+            console.error('Error saving:', err);
+            alert('Failed to save the new date. Try again.');
+            cancelEditScheduledDate();
+        });
+    }
 
     // ── Save schedule ──
     function saveSchedule() {
