@@ -8,7 +8,7 @@ require '../includes/db.php';
 
 $username = $_SESSION['owner'];
 
-$stmt = $pdo->prepare("SELECT id, name, age, city, scheduled_date, submitted_at
+$stmt = $pdo->prepare("SELECT id, name, age, city, compatibility_score, scheduled_date, submitted_at
                         FROM responses WHERE owner_username = ? ORDER BY submitted_at DESC");
 $stmt->execute([$username]);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -64,6 +64,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Name</th>
                 <th>Age</th>
                 <th>City</th>
+                <th>Compatibility</th>
                 <th>Scheduled Date</th>
                 <th>Submitted</th>
             </tr>
@@ -74,6 +75,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($r['name']) ?></td>
                 <td><?= $r['age'] ?></td>
                 <td><?= htmlspecialchars($r['city']) ?></td>
+                <td><?= $r['compatibility_score'] ? $r['compatibility_score'] . '%' : '—' ?></td>
                 <td><?= $r['scheduled_date'] ?: '—' ?></td>
                 <td><?= $r['submitted_at'] ?></td>
             </tr>
