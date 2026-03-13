@@ -157,6 +157,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
             border-color: var(--pink);
         }
 
+        .vr-download-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.28rem 0.7rem;
+            font-size: 0.72rem;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--muted);
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .vr-download-btn:hover {
+            color: var(--pink);
+            border-color: var(--pink);
+        }
+
+        .vr-topbar-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .vr-header {
             margin-bottom: 2rem;
         }
@@ -483,7 +510,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
 
     <div class="vr-topbar">
         <a href="result.php" class="vr-back">← back to results</a>
-        <button class="vr-theme-btn" id="themeBtn" onclick="toggleTheme()">☀️ light</button>
+        <div class="vr-topbar-buttons">
+            <a href="download_view.php" class="vr-download-btn" download>📥 download</a>
+            <button class="vr-theme-btn" id="themeBtn" onclick="toggleTheme()">☀️ light</button>
+        </div>
     </div>
 
     <div class="vr-header">
