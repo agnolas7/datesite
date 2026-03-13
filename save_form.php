@@ -14,10 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $temperature   = $_POST['temperature'] ?? '';
     $dislikes      = isset($_POST['dislikes']) ? implode(', ', $_POST['dislikes']) : '';
     $dessert       = $_POST['dessert'] ?? '';
-
-    // Handle flower — could be a preset or custom text
-    $flower = trim($_POST['flower'] ?? '');
-
+    $flower        = trim($_POST['flower'] ?? '');
     $owner_username = $_SESSION['owner'] ?? null;
 
     if (empty($name)) {
@@ -34,8 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $flower, $craving, $temperature, $dislikes, $dessert, $owner_username
     ]);
 
-    $_SESSION['response_id'] = $pdo->lastInsertId();
+    $new_id = $pdo->lastInsertId();
+    $_SESSION['response_id'] = $new_id;
     $_SESSION['name']        = $name;
+
+    // If they came through the maybe flow, save their reason
+    if (!empty($_SESSION['maybe_reason'])) {
+        $pdo->prepare("UPDATE responses SET maybe_reason = ? WHERE id = ?")
+            ->execute([$_SESSION['maybe_reason'], $new_id]);
+        unset($_SESSION['maybe_reason']);
+    }
 
     header('Location: greeting.php');
     exit;

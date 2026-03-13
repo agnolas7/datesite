@@ -8,11 +8,21 @@ require '../includes/db.php';
 
 $username = $_SESSION['owner'];
 
-$stmt = $pdo->prepare("SELECT r.id, r.name, r.age, r.city, r.compatibility_score, r.scheduled_date, r.submitted_at, COUNT(m.id) as has_messages
-                        FROM responses r LEFT JOIN messages m ON r.id = m.response_id
-                        WHERE r.owner_username = ? GROUP BY r.id ORDER BY r.submitted_at DESC");
+$stmt = $pdo->prepare("SELECT id, name, age, city, scheduled_date, submitted_at
+                        FROM responses WHERE owner_username = ? ORDER BY submitted_at DESC");
 $stmt->execute([$username]);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch maybe reasons for this owner
+$maybeStmt = $pdo->prepare("
+    SELECT mr.reason, mr.submitted_at, r.name
+    FROM maybe_reasons mr
+    LEFT JOIN responses r ON mr.response_id = r.id
+    WHERE mr.owner_username = ?
+    ORDER BY mr.submitted_at DESC
+");
+$maybeStmt->execute([$username]);
+$maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,6 +60,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <a href="edit_profile.php" style="color:var(--pink); text-decoration:none;">✏️ edit my profile</a>
     </div>
 
+    <!-- ── Responses table ── -->
     <p style="color:var(--muted); margin-bottom:1rem; font-size:0.9rem;">
         <?= count($rows) ?> response<?= count($rows) !== 1 ? 's' : '' ?> so far
     </p>
@@ -65,9 +76,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Name</th>
                 <th>Age</th>
                 <th>City</th>
-                <th>Compatibility</th>
                 <th>Scheduled Date</th>
-                <th>Messages</th>
                 <th>Submitted</th>
             </tr>
         </thead>
@@ -77,15 +86,51 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($r['name']) ?></td>
                 <td><?= $r['age'] ?></td>
                 <td><?= htmlspecialchars($r['city']) ?></td>
-                <td><?= $r['compatibility_score'] ? $r['compatibility_score'] . '%' : '—' ?></td>
                 <td><?= $r['scheduled_date'] ?: '—' ?></td>
-                <td><?= $r['has_messages'] > 0 ? '💌 ' . $r['has_messages'] : '—' ?></td>
                 <td><?= $r['submitted_at'] ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
     <p class="table-hint">tap a row to view full response</p>
+    <?php endif; ?>
+
+    <!-- ── Maybe reasons ── -->
+    <?php if (!empty($maybeRows)): ?>
+    <div style="margin-top:3rem;">
+        <h2 style="font-family:'Playfair Display',serif; font-size:1.1rem;
+                   margin-bottom:0.4rem; color:var(--text);">
+            why she said maybe 🤔
+        </h2>
+        <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1.2rem;">
+            from people who went through the maybe flow —
+            <?= count($maybeRows) ?> reason<?= count($maybeRows) !== 1 ? 's' : '' ?> recorded
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Reason</th>
+                    <th>Name</th>
+                    <th>When</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($maybeRows as $mr): ?>
+                <tr>
+                    <td><?= htmlspecialchars($mr['reason']) ?></td>
+                    <td>
+                        <?php if ($mr['name']): ?>
+                            <?= htmlspecialchars($mr['name']) ?>
+                        <?php else: ?>
+                            <span style="color:var(--muted); font-style:italic;">never filled form</span>
+                        <?php endif; ?>
+                    </td>
+                    <td style="font-size:0.8rem; color:var(--muted);"><?= $mr['submitted_at'] ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
     <?php endif; ?>
 
     <script>

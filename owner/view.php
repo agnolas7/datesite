@@ -80,6 +80,7 @@ $sections = [
         'dislikes'      => 'Dislikes going out',
         'dessert'       => 'Dessert',
         'dealbreaker'   => 'Dealbreaker',
+        'maybe_reason' => 'Why she said maybe',
     ],
     'date preferences' => [
         'date_type'        => 'Date type',

@@ -10,12 +10,11 @@ $username = $_SESSION['owner'];
 $success  = false;
 $error    = '';
 
-// Fetch current owner data
 $stmt  = $pdo->prepare("SELECT * FROM site_owners WHERE username = ?");
 $stmt->execute([$username]);
 $owner = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Default profile items if none saved yet
+// Defaults
 $defaultItems = [
     '😊 genuinely kind and thoughtful',
     '🎵 good music taste (subjective but trust me)',
@@ -26,30 +25,66 @@ $defaultItems = [
     '🚗 may wheels (important)',
 ];
 
-$savedItems = $owner['profile_items']
-    ? json_decode($owner['profile_items'], true)
-    : $defaultItems;
+$defaultExpectations = [
+    'i pay attention to the small things you mention. if you say you\'ve been craving something, i\'ll remember it.',
+    'i don\'t just buy gifts — i make them. cards, playlists, little things that took actual thought and time.',
+    'if something needs fixing, i fix it. if you need help carrying something, i\'m already carrying it.',
+    'i check in. not in an overwhelming way — just a "how was your day" kind of way that actually means it.',
+    'i\'ll plan the date so you don\'t have to think about it. just show up.',
+    'i\'m the kind of person who stays until the end — of the movie, the conversation, the night.',
+    'i\'ll make sure you get home safe. always.',
+];
+
+$defaultSkills = [
+    '✦ active listener',
+    '✦ gift maker (not just buyer)',
+    '✦ remembers what you said',
+    '✦ drives',
+    '✦ pays for food',
+    '✦ actually funny',
+    '✦ good playlist curator',
+    '✦ will not ghost',
+    '✦ opens doors',
+    '✦ no weird expectations',
+    '✦ night drive certified 🚗',
+    '✦ makes the effort',
+];
+
+$savedItems        = $owner['profile_items']         ? json_decode($owner['profile_items'], true)         : $defaultItems;
+$savedExpectations = $owner['resume_expectations']   ? json_decode($owner['resume_expectations'], true)   : $defaultExpectations;
+$savedSkills       = $owner['resume_skills']         ? json_decode($owner['resume_skills'], true)         : $defaultSkills;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Clean up items — remove empty ones
-    $items = $_POST['items'] ?? [];
-    $items = array_values(array_filter(array_map('trim', $items)));
+    $items        = array_values(array_filter(array_map('trim', $_POST['items'] ?? [])));
+    $expectations = array_values(array_filter(array_map('trim', $_POST['expectations'] ?? [])));
+    $skills       = array_values(array_filter(array_map('trim', $_POST['skills'] ?? [])));
 
     if (empty($items)) {
-        $error = 'add at least one item!';
+        $error = 'add at least one item in core qualifications!';
     } else {
         $promise = trim($_POST['promise_text'] ?? '');
         $whyyy   = trim($_POST['whyyy_text'] ?? '');
 
-        $pdo->prepare("UPDATE site_owners SET profile_items = ?, promise_text = ?, whyyy_text = ? WHERE username = ?")
-            ->execute([json_encode($items), $promise, $whyyy, $username]);
+        $pdo->prepare("UPDATE site_owners SET
+            profile_items = ?, promise_text = ?, whyyy_text = ?,
+            resume_expectations = ?, resume_skills = ?
+            WHERE username = ?")
+            ->execute([
+                json_encode($items),
+                $promise,
+                $whyyy,
+                json_encode($expectations),
+                json_encode($skills),
+                $username
+            ]);
 
-        // Reload
         $stmt  = $pdo->prepare("SELECT * FROM site_owners WHERE username = ?");
         $stmt->execute([$username]);
-        $owner      = $stmt->fetch(PDO::FETCH_ASSOC);
-        $savedItems = json_decode($owner['profile_items'], true);
-        $success    = true;
+        $owner             = $stmt->fetch(PDO::FETCH_ASSOC);
+        $savedItems        = json_decode($owner['profile_items'], true);
+        $savedExpectations = json_decode($owner['resume_expectations'], true);
+        $savedSkills       = json_decode($owner['resume_skills'], true);
+        $success           = true;
     }
 }
 ?>
@@ -72,17 +107,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .profile-editor {
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
+            gap: 0.5rem;
             margin-bottom: 0.5rem;
         }
 
         .profile-editor-row {
             display: flex;
             gap: 0.5rem;
-            align-items: center;
+            align-items: flex-start;
         }
 
-        .profile-editor-row input {
+        .profile-editor-row input,
+        .profile-editor-row textarea {
             flex: 1;
             background: var(--input-bg);
             border: 1px solid var(--border);
@@ -90,12 +126,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 0.65rem 1rem;
             color: var(--text);
             font-family: 'DM Sans', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             outline: none;
             transition: border-color 0.2s;
+            resize: none;
+            line-height: 1.5;
         }
 
-        .profile-editor-row input:focus {
+        .profile-editor-row input:focus,
+        .profile-editor-row textarea:focus {
             border-color: var(--pink);
         }
 
@@ -106,14 +145,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #c87a7a;
             padding: 0.5rem 0.7rem;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             transition: border-color 0.2s;
             flex-shrink: 0;
+            margin-top: 0.1rem;
         }
 
-        .remove-btn:hover {
-            border-color: #c87a7a;
-        }
+        .remove-btn:hover { border-color: #c87a7a; }
 
         .add-item-btn {
             background: transparent;
@@ -122,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: var(--muted);
             padding: 0.6rem 1rem;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-family: 'DM Sans', sans-serif;
             width: 100%;
             transition: border-color 0.2s, color 0.2s;
@@ -135,58 +173,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .section-label {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--pink);
             font-weight: 500;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             display: block;
         }
 
-        .preview-box {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .preview-box h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
+        .section-desc {
             color: var(--muted);
-            margin-bottom: 1rem;
-            font-weight: 400;
+            font-size: 0.78rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
         }
 
-        .preview-item {
-            padding: 0.5rem 0.8rem;
-            background: var(--card);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 0.4rem;
+        .resume-section-divider {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin: 2rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
         }
 
-        .preview-promise {
-            margin-top: 1rem;
-            font-style: italic;
-            color: var(--pink);
-            font-size: 0.9rem;
+        .resume-section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
         }
     </style>
 </head>
 <body class="form-page">
-<div class="form-container" style="max-width:620px;">
+<div class="form-container" style="max-width:640px;">
 
-    <!-- Top bar -->
     <div class="owner-topbar">
         <a href="dashboard.php" style="color:var(--muted); text-decoration:none; font-size:0.85rem;">← back</a>
         <a href="logout.php" class="topbar-btn topbar-logout">logout</a>
     </div>
 
     <h1 style="margin-top:1rem;">edit my profile 🌸</h1>
-    <p class="subtitle">this shows up on the "maybe" page when your crush is deciding</p>
+    <p class="subtitle">this is your "resume" shown on the maybe page when your crush is deciding</p>
 
     <?php if ($success): ?>
     <div style="background:rgba(100,200,140,0.1); border:1px solid rgba(100,200,140,0.4);
@@ -204,8 +235,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" id="profileForm">
 
-        <!-- WHYYY subtext -->
-        <div class="form-group" style="margin-top:1.5rem;">
+        <!-- ── WHYYY text ── -->
+        <div class="resume-section-divider">header text</div>
+
+        <div class="form-group">
             <span class="section-label">text under "WHYYY 😭"</span>
             <input type="text" name="whyyy_text"
                 value="<?= htmlspecialchars($owner['whyyy_text'] ?? 'okay okay let me make my case first...') ?>"
@@ -215,30 +248,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                        font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none;">
         </div>
 
-        <!-- Profile bullet points -->
+        <!-- ── Core qualifications ── -->
+        <div class="resume-section-divider">core qualifications</div>
+
         <div class="form-group">
             <span class="section-label">your selling points 😄</span>
-            <p style="color:var(--muted); font-size:0.8rem; margin-bottom:0.8rem;">
-                these show up as bullet points on the profile section. you can add emoji at the start!
+            <p class="section-desc">
+                these show as bullet points under "core qualifications". add emoji at the start!
             </p>
-
             <div class="profile-editor" id="itemsList">
-                <?php foreach ($savedItems as $i => $item): ?>
+                <?php foreach ($savedItems as $item): ?>
                 <div class="profile-editor-row">
                     <input type="text" name="items[]"
                         value="<?= htmlspecialchars($item) ?>"
                         placeholder="add something about yourself...">
-                    <button type="button" class="remove-btn" onclick="removeItem(this)">✕</button>
+                    <button type="button" class="remove-btn" onclick="removeItem(this, 'itemsList')">✕</button>
                 </div>
                 <?php endforeach; ?>
             </div>
-
-            <button type="button" class="add-item-btn" onclick="addItem()">
+            <button type="button" class="add-item-btn" onclick="addItem('itemsList', 'items[]', 'add something about yourself...')">
                 + add another point
             </button>
         </div>
 
-        <!-- Promise text -->
+        <!-- ── What you can expect ── -->
+        <div class="resume-section-divider">what they can actually expect</div>
+
+        <div class="form-group">
+            <span class="section-label">specific things you'd actually do 🌸</span>
+            <p class="section-desc">
+                this is the convincing part — be specific and genuine. "i remember the small things you mention", "i make gifts instead of just buying them", etc.
+            </p>
+            <div class="profile-editor" id="expectationsList">
+                <?php foreach ($savedExpectations as $exp): ?>
+                <div class="profile-editor-row">
+                    <textarea name="expectations[]" rows="2"
+                        placeholder="something specific you'd do..."><?= htmlspecialchars($exp) ?></textarea>
+                    <button type="button" class="remove-btn" onclick="removeItem(this, 'expectationsList')">✕</button>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" class="add-item-btn" onclick="addTextarea('expectationsList')">
+                + add another thing
+            </button>
+        </div>
+
+        <!-- ── Skills ── -->
+        <div class="resume-section-divider">skills & competencies</div>
+
+        <div class="form-group">
+            <span class="section-label">your tags / skills 🏷️</span>
+            <p class="section-desc">
+                these show as small pill tags. keep them short — 2 to 5 words each. tip: start with ✦ for the highlighted ones.
+            </p>
+            <div class="profile-editor" id="skillsList">
+                <?php foreach ($savedSkills as $skill): ?>
+                <div class="profile-editor-row">
+                    <input type="text" name="skills[]"
+                        value="<?= htmlspecialchars($skill) ?>"
+                        placeholder="e.g. ✦ will not ghost">
+                    <button type="button" class="remove-btn" onclick="removeItem(this, 'skillsList')">✕</button>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" class="add-item-btn" onclick="addItem('skillsList', 'skills[]', 'e.g. ✦ will not ghost')">
+                + add skill
+            </button>
+        </div>
+
+        <!-- ── Promise text ── -->
+        <div class="resume-section-divider">closing line</div>
+
         <div class="form-group">
             <span class="section-label">your promise / closing line</span>
             <input type="text" name="promise_text"
@@ -247,70 +327,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 style="width:100%; background:var(--input-bg); border:1px solid var(--border);
                        border-radius:10px; padding:0.75rem 1rem; color:var(--text);
                        font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none;">
-            <p style="color:var(--muted); font-size:0.78rem; margin-top:0.4rem;">
-                this shows in italics below your bullet points
+            <p style="color:var(--muted); font-size:0.75rem; margin-top:0.4rem;">
+                shows in the handwritten-style box at the bottom of your resume
             </p>
         </div>
 
-        <!-- Live preview -->
-        <div class="preview-box" id="previewBox">
-            <h3>preview 👀</h3>
-            <div id="previewItems"></div>
-            <p class="preview-promise" id="previewPromise"></p>
-        </div>
-
-        <button type="submit" class="btn btn-yes" style="width:100%; margin-top:1.5rem;">
+        <button type="submit" class="btn btn-yes" style="width:100%; margin-top:1.5rem; color:#fff;">
             save profile 🌸
         </button>
     </form>
 </div>
 
 <script>
-// ── Add / remove items ──
-function addItem() {
-    const list = document.getElementById('itemsList');
+function addItem(listId, fieldName, placeholder) {
+    const list = document.getElementById(listId);
     const row  = document.createElement('div');
     row.className = 'profile-editor-row';
     row.innerHTML = `
-        <input type="text" name="items[]" placeholder="add something about yourself...">
-        <button type="button" class="remove-btn" onclick="removeItem(this)">✕</button>
+        <input type="text" name="${fieldName}" placeholder="${placeholder}">
+        <button type="button" class="remove-btn" onclick="removeItem(this, '${listId}')">✕</button>
     `;
     list.appendChild(row);
     row.querySelector('input').focus();
-    updatePreview();
 }
 
-function removeItem(btn) {
-    const rows = document.querySelectorAll('.profile-editor-row');
-    if (rows.length <= 1) return; // keep at least one
+function addTextarea(listId) {
+    const list = document.getElementById(listId);
+    const row  = document.createElement('div');
+    row.className = 'profile-editor-row';
+    row.innerHTML = `
+        <textarea name="expectations[]" rows="2"
+            placeholder="something specific you'd do..."></textarea>
+        <button type="button" class="remove-btn" onclick="removeItem(this, '${listId}')">✕</button>
+    `;
+    list.appendChild(row);
+    row.querySelector('textarea').focus();
+}
+
+function removeItem(btn, listId) {
+    const list = document.getElementById(listId);
+    const rows = list.querySelectorAll('.profile-editor-row');
+    if (rows.length <= 1) return;
     btn.closest('.profile-editor-row').remove();
-    updatePreview();
 }
-
-// ── Live preview ──
-function updatePreview() {
-    const inputs  = document.querySelectorAll('input[name="items[]"]');
-    const promise = document.querySelector('input[name="promise_text"]').value;
-    const preview = document.getElementById('previewItems');
-
-    preview.innerHTML = '';
-    inputs.forEach(input => {
-        if (input.value.trim()) {
-            const div = document.createElement('div');
-            div.className = 'preview-item';
-            div.textContent = input.value;
-            preview.appendChild(div);
-        }
-    });
-
-    document.getElementById('previewPromise').textContent = promise
-        ? `"${promise}" 🙏`
-        : '';
-}
-
-// Listen for typing
-document.addEventListener('input', updatePreview);
-updatePreview(); // run on load
 </script>
 </body>
 </html>
