@@ -537,6 +537,77 @@ if ($alreadyScheduled) {
         @media (max-width: 400px) {
             .result-left { padding: 1.5rem 1.2rem; }
         }
+
+        .message-section {
+            margin-top: 1.8rem;
+            padding-top: 1.8rem;
+            border-top: 1px solid rgba(244, 167, 185, 0.2);
+        }
+
+        .message-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 0.8rem;
+        }
+
+        .message-textarea {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.8rem;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 80px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 0.8rem;
+        }
+
+        .message-textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .message-textarea:focus {
+            border-color: var(--pink);
+        }
+
+        .message-button {
+            width: 100%;
+            background: var(--pink);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 0.7rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .message-button:hover {
+            opacity: 0.9;
+        }
+
+        .message-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .message-sent {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            padding: 0.8rem;
+            text-align: center;
+            color: #4caf50;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body class="result-page">
@@ -672,6 +743,14 @@ if ($alreadyScheduled) {
                 <div class="result-compat-section">
                     <p class="result-divider-label">also, if you're curious —</p>
                     <a href="compatibility.php" class="compat-optional-btn">check our compatibility 💘</a>
+                </div>
+
+                <!-- Message section -->
+                <div class="message-section" id="messageSection">
+                    <label class="message-label">💌 leave a message</label>
+                    <textarea class="message-textarea" id="messageText" placeholder="hey! anything you want to tell me before we meet?"></textarea>
+                    <button class="message-button" id="messageSendBtn" onclick="sendMessage()">send message 💌</button>
+                    <div class="message-sent hidden" id="messageSentConfirm">✓ message sent! i'll see it soon 🌸</div>
                 </div>
             </div>
 
@@ -852,6 +931,47 @@ if ($alreadyScheduled) {
             console.error('Error saving:', err);
             alert('Failed to save the new date. Try again.');
             cancelEditScheduledDate();
+        });
+    }
+
+    // ── Send message ──
+    function sendMessage() {
+        const message = document.getElementById('messageText').value.trim();
+        const btn = document.getElementById('messageSendBtn');
+        const confirm = document.getElementById('messageSentConfirm');
+        
+        if (!message) {
+            alert('write something before sending! 💌');
+            return;
+        }
+        
+        btn.disabled = true;
+        btn.textContent = 'sending...';
+        
+        fetch('save_message.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=<?= $id ?>&message=' + encodeURIComponent(message)
+        }).then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('messageText').value = '';
+                confirm.classList.remove('hidden');
+                btn.textContent = 'message sent! 💌';
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'send another message 💌';
+                }, 2000);
+            } else {
+                alert('failed to send message. try again.');
+                btn.disabled = false;
+                btn.textContent = 'send message 💌';
+            }
+        }).catch(err => {
+            console.error('Error:', err);
+            alert('error sending message.');
+            btn.disabled = false;
+            btn.textContent = 'send message 💌';
         });
     }
 

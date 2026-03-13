@@ -6,7 +6,7 @@ if (empty($_SESSION['admin'])) {
 }
 require '../includes/db.php';
 
-$stmt = $pdo->query("SELECT id, name, age, city, compatibility_score, scheduled_date, submitted_at FROM responses ORDER BY submitted_at DESC");
+$stmt = $pdo->query("SELECT r.id, r.name, r.age, r.city, r.compatibility_score, r.scheduled_date, r.submitted_at, COUNT(m.id) as has_messages FROM responses r LEFT JOIN messages m ON r.id = m.response_id GROUP BY r.id ORDER BY r.submitted_at DESC");
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $ownerCount = $pdo->query("SELECT COUNT(*) FROM site_owners")->fetchColumn();
@@ -48,6 +48,7 @@ $ownerCount = $pdo->query("SELECT COUNT(*) FROM site_owners")->fetchColumn();
                 <th>City</th>
                 <th>Compatibility</th>
                 <th>Scheduled Date</th>
+                <th>Messages</th>
                 <th>Submitted</th>
             </tr>
         </thead>
@@ -60,6 +61,7 @@ $ownerCount = $pdo->query("SELECT COUNT(*) FROM site_owners")->fetchColumn();
                 <td><?= htmlspecialchars($r['city']) ?></td>
                 <td><?= $r['compatibility_score'] ? $r['compatibility_score'] . '%' : '—' ?></td>
                 <td><?= $r['scheduled_date'] ?: '—' ?></td>
+                <td><?= $r['has_messages'] > 0 ? '💌 ' . $r['has_messages'] : '—' ?></td>
                 <td><?= $r['submitted_at'] ?></td>
             </tr>
             <?php endforeach; ?>

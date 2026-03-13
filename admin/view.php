@@ -13,6 +13,11 @@ $r = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$r) die("Not found.");
 
+// Fetch messages
+$msgStmt = $pdo->prepare("SELECT message_text, sent_at FROM messages WHERE response_id = ? ORDER BY sent_at ASC");
+$msgStmt->execute([$id]);
+$messages = $msgStmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Fetch detailed compatibility results
 $compatStmt = $pdo->prepare("SELECT * FROM responder_compatibility_answers WHERE response_id = ? ORDER BY id DESC LIMIT 1");
 $compatStmt->execute([$id]);
@@ -241,6 +246,37 @@ $sections = [
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+        .messages-section {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-top: 1.5rem;
+        }
+        .messages-section-label {
+            font-weight: bold;
+            color: var(--pink);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .message-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-top: 0.4rem;
+        }
     </style>
 </head>
 <body class="admin-view">
@@ -284,6 +320,18 @@ $sections = [
             <?php endif; ?>
         </div>
         <?php endforeach; ?>
+
+        <?php if (!empty($messages)): ?>
+        <div class="messages-section">
+            <span class="messages-section-label">💌 messages (<?= count($messages) ?>)</span>
+            <?php foreach ($messages as $msg): ?>
+            <div class="message-item">
+                <?= htmlspecialchars($msg['message_text']) ?>
+                <div class="message-time"><?= $msg['sent_at'] ?></div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
 
     </div>
 
