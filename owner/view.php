@@ -22,6 +22,11 @@ $sections = [
         'communication' => 'Reach them via',
         'best_time'     => 'Best time',
         'food_drink'    => 'Food & drink',
+        'flower'        => 'Flower',
+        'craving'       => 'Craving lately',
+        'temperature'   => 'Temperature pref',
+        'dislikes'      => 'Dislikes going out',
+        'dessert'       => 'Dessert',
         'dealbreaker'   => 'Dealbreaker',
     ],
     'date preferences' => [
@@ -60,30 +65,43 @@ $sections = [
     </script>
 </head>
 <body class="admin-view">
-<div class="view-wrapper">
-    <a href="dashboard.php" class="view-back">← back to dashboard</a>
-    <div class="view-header">
-        <div class="view-name"><?= htmlspecialchars($r['name']) ?></div>
-        <div class="view-id">#<?= $id ?></div>
-    </div>
-    <div class="view-submitted">submitted <?= htmlspecialchars($r['submitted_at']) ?></div>
 
-    <?php foreach ($sections as $sectionName => $fields): ?>
-    <div class="view-section">
-        <div class="view-section-label"><?= $sectionName ?></div>
-        <?php foreach ($fields as $key => $label):
-            $raw     = $r[$key] ?? '';
-            $isEmpty = ($raw === '' || $raw === null);
-            $val     = $isEmpty ? '—' : htmlspecialchars($raw);
-            $extraClass = ($key === 'scheduled_date' && !$isEmpty) ? 'date-field' : '';
-        ?>
-        <div class="field <?= $extraClass ?>">
-            <strong><?= $label ?></strong>
-            <span class="<?= $isEmpty ? 'empty' : '' ?>"><?= $val ?></span>
+    <div class="view-wrapper">
+
+        <a href="dashboard.php" class="view-back">← back to dashboard</a>
+
+        <div class="view-header">
+            <div class="view-name"><?= htmlspecialchars($r['name']) ?></div>
+            <div class="view-id">#<?= $id ?></div>
+        </div>
+        <div class="view-submitted">submitted <?= htmlspecialchars($r['submitted_at']) ?></div>
+
+        <?php foreach ($sections as $sectionName => $fields): ?>
+        <div class="view-section">
+            <div class="view-section-label"><?= $sectionName ?></div>
+
+            <?php foreach ($fields as $key => $label):
+                $raw     = $r[$key] ?? '';
+                $isEmpty = ($raw === '' || $raw === null);
+                $val     = $isEmpty ? '—' : htmlspecialchars($raw);
+                if ($key === 'scheduled_date' && !$isEmpty) $extraClass = 'date-field';
+                else $extraClass = '';
+            ?>
+            <div class="field <?= $extraClass ?>">
+                <strong><?= $label ?></strong>
+                <span class="<?= $isEmpty ? 'empty' : '' ?>"><?= $val ?></span>
+            </div>
+            <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
+
     </div>
-    <?php endforeach; ?>
-</div>
+
+    <script>
+        (function() {
+            const t = localStorage.getItem('ownerTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </body>
 </html>

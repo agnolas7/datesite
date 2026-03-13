@@ -20,6 +20,11 @@ $sections = [
         'communication' => 'Reach them via',
         'best_time'     => 'Best time',
         'food_drink'    => 'Food & drink',
+        'flower'        => 'Flower',
+        'craving'       => 'Craving lately',
+        'temperature'   => 'Temperature pref',
+        'dislikes'      => 'Dislikes going out',
+        'dessert'       => 'Dessert',
         'dealbreaker'   => 'Dealbreaker',
     ],
     'date preferences' => [
@@ -51,13 +56,16 @@ $sections = [
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin.css">
+    <script>
+        (function() {
+            const t = localStorage.getItem('adminTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </head>
 <body class="admin-view">
 
-    <!-- Theme toggle -->
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
-        🌙 dark
-    </button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀️ light</button>
 
     <div class="view-wrapper">
 
@@ -74,9 +82,9 @@ $sections = [
             <div class="view-section-label"><?= $sectionName ?></div>
 
             <?php foreach ($fields as $key => $label):
-                $raw = $r[$key] ?? '';
+                $raw     = $r[$key] ?? '';
                 $isEmpty = ($raw === '' || $raw === null);
-                $val = $isEmpty ? '—' : htmlspecialchars($raw);
+                $val     = $isEmpty ? '—' : htmlspecialchars($raw);
                 if ($key === 'compatibility_score' && !$isEmpty) $val = $raw . '%';
 
                 $extraClass = '';
@@ -95,8 +103,6 @@ $sections = [
 
     <script>
         const btn = document.getElementById('themeBtn');
-
-        // Load saved preference on page load
         const saved = localStorage.getItem('adminTheme') || 'dark';
         applyTheme(saved);
 
@@ -112,6 +118,5 @@ $sections = [
             btn.textContent = theme === 'light' ? '🌙 dark' : '☀️ light';
         }
     </script>
-
 </body>
 </html>

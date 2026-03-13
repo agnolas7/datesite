@@ -62,10 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 0.3rem;
         }
 
-        .rank-option {
-            position: relative;
-            cursor: pointer;
-        }
+        .rank-option { cursor: pointer; }
 
         .rank-label {
             display: inline-flex;
@@ -106,11 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .rank-option.selected .rank-badge { display: inline-flex; }
 
-        .rank-option.maxed:not(.selected) .rank-label {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
         .rank-hint {
             font-size: 0.72rem;
             color: var(--muted);
@@ -139,16 +131,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $savedVal = $saved[$name] ?? '';
             $savedArr = array_filter(array_map('trim', explode(', ', $savedVal)));
         ?>
-        <div class="form-group" data-name="<?= $name ?>" data-type="<?= $q['type'] ?>"
-             <?php if ($q['type'] === 'rank'): ?>
-             data-max="<?= $q['max'] ?>" data-min="<?= $q['min'] ?>"
-             <?php endif; ?>>
+        <div class="form-group"
+             data-name="<?= $name ?>"
+             data-type="<?= $q['type'] ?>"
+             data-min="<?= $q['min'] ?? 1 ?>">
+
             <label><?= htmlspecialchars($q['label']) ?></label>
 
             <?php if ($q['type'] === 'rank'): ?>
-                <p class="rank-hint">
-                    pick at least <span><?= $q['min'] ?></span>,
-                    up to <span><?= $q['max'] ?></span> — tap in order of preference
+                <p class="rank-hint" id="hint-<?= $name ?>">
+                    rank as many as you like — tap in order of preference.
+                    skip the ones you don't vibe with.
+                    minimum <span><?= $q['min'] ?></span>.
                 </p>
                 <div class="rank-group" id="rank-<?= $name ?>">
                     <?php foreach ($q['options'] as $opt):
@@ -194,6 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
+
         </div>
         <?php endforeach; ?>
 
@@ -205,14 +200,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script src="../js/main.js"></script>
 <script>
-// ── Ranking logic ──
 document.querySelectorAll('.form-group[data-type="rank"]').forEach(group => {
     const name    = group.dataset.name;
-    const max     = parseInt(group.dataset.max);
     const min     = parseInt(group.dataset.min);
     const options = group.querySelectorAll('.rank-option');
 
-    // restore saved order from hidden inputs
     let selected = Array.from(
         document.querySelectorAll(`#hidden-${name} input`)
     ).map(i => i.value).filter(Boolean);
@@ -228,12 +220,10 @@ document.querySelectorAll('.form-group[data-type="rank"]').forEach(group => {
 
             if (idx >= 0) {
                 opt.classList.add('selected');
-                opt.classList.remove('maxed');
                 badge.textContent = idx + 1;
             } else {
                 opt.classList.remove('selected');
                 badge.textContent = '';
-                opt.classList.toggle('maxed', selected.length >= max);
             }
         });
 
@@ -245,12 +235,12 @@ document.querySelectorAll('.form-group[data-type="rank"]').forEach(group => {
             hiddenContainer.appendChild(inp);
         });
 
-        const hint = group.querySelector('.rank-hint');
+        const hint = document.getElementById('hint-' + name);
         if (hint) {
             if (selected.length === 0) {
-                hint.innerHTML = `pick at least <span>${min}</span>, up to <span>${max}</span> — tap in order of preference`;
+                hint.innerHTML = `rank as many as you like — tap in order of preference. skip what you don't vibe with. minimum <span>${min}</span>.`;
             } else {
-                hint.innerHTML = `<span>${selected.length}</span> selected${selected.length < max ? ` — you can pick ${max - selected.length} more` : ' — max reached'}`;
+                hint.innerHTML = `<span>${selected.length}</span> ranked — tap again to deselect`;
             }
         }
     }
@@ -261,8 +251,8 @@ document.querySelectorAll('.form-group[data-type="rank"]').forEach(group => {
             const idx = selected.indexOf(val);
             if (idx >= 0) {
                 selected.splice(idx, 1);
-            } else if (selected.length < max) {
-                selected.push(val);
+            } else {
+                selected.push(val); // no max — just keep adding
             }
             updateUI();
         });

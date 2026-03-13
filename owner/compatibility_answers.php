@@ -65,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .rank-option {
-            position: relative;
             cursor: pointer;
         }
 
@@ -106,11 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: var(--pink);
         }
 
-        .rank-option.selected .rank-badge { display: inline-flex; }
-
-        .rank-option.maxed:not(.selected) .rank-label {
-            opacity: 0.4;
-            cursor: not-allowed;
+        .rank-option.selected .rank-badge {
+            display: inline-flex;
         }
 
         .rank-hint {
@@ -120,7 +116,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-style: italic;
         }
 
-        .rank-hint span { color: var(--pink); font-weight: 500; }
+        .rank-hint span {
+            color: var(--pink);
+            font-weight: 500;
+        }
     </style>
 </head>
 <body class="form-page">
@@ -142,17 +141,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $savedVal = $saved[$name] ?? '';
             $savedArr = array_filter(array_map('trim', explode(', ', $savedVal)));
         ?>
-        <div class="form-group" data-name="<?= $name ?>" data-type="<?= $q['type'] ?>"
-             <?php if ($q['type'] === 'rank'): ?>
-             data-max="<?= $q['max'] ?>" data-min="<?= $q['min'] ?>"
-             <?php endif; ?>>
+        <div class="form-group"
+             data-name="<?= $name ?>"
+             data-type="<?= $q['type'] ?>"
+             data-min="<?= $q['min'] ?? 1 ?>">
+
             <label><?= htmlspecialchars($q['label']) ?></label>
 
             <?php if ($q['type'] === 'rank'): ?>
-                <p class="rank-hint">
-                    pick at least <span><?= $q['min'] ?></span>,
-                    up to <span><?= $q['max'] ?></span> — tap in order of preference
+
+                <p class="rank-hint" id="hint-<?= $name ?>">
+                    rank as many as you like — tap in order of preference.
+                    skip the ones you don't vibe with.
+                    minimum <span><?= $q['min'] ?></span>.
                 </p>
+
                 <div class="rank-group" id="rank-<?= $name ?>">
                     <?php foreach ($q['options'] as $opt):
                         $safe    = htmlspecialchars($opt);
@@ -167,6 +170,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </label>
                     <?php endforeach; ?>
                 </div>
+
+                <!-- Holds the ordered hidden inputs for submission -->
                 <div id="hidden-<?= $name ?>">
                     <?php foreach ($savedArr as $val): ?>
                     <input type="hidden" name="<?= $name ?>[]" value="<?= htmlspecialchars($val) ?>">
@@ -180,7 +185,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $checked = in_array($opt, $savedArr) ? 'checked' : '';
                     ?>
                     <label class="check-item">
-                        <input type="checkbox" name="<?= $name ?>[]" value="<?= $safe ?>" <?= $checked ?>> <?= $safe ?>
+                        <input type="checkbox" name="<?= $name ?>[]" value="<?= $safe ?>" <?= $checked ?>>
+                        <?= $safe ?>
                     </label>
                     <?php endforeach; ?>
                 </div>
@@ -192,11 +198,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $checked = in_array($opt, $savedArr) ? 'checked' : '';
                     ?>
                     <label class="radio-item">
-                        <input type="radio" name="<?= $name ?>" value="<?= $safe ?>" <?= $checked ?>> <?= $safe ?>
+                        <input type="radio" name="<?= $name ?>" value="<?= $safe ?>" <?= $checked ?>>
+                        <?= $safe ?>
                     </label>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
+
         </div>
         <?php endforeach; ?>
 
@@ -207,14 +215,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
-// ── Ranking logic ──
 document.querySelectorAll('.form-group[data-type="rank"]').forEach(group => {
     const name    = group.dataset.name;
-    const max     = parseInt(group.dataset.max);
     const min     = parseInt(group.dataset.min);
     const options = group.querySelectorAll('.rank-option');
 
-    // restore saved order from hidden inputs
+    // Restore saved order from hidden inputs on page load
     let selected = Array.from(
         document.querySelectorAll(`#hidden-${name} input`)
     ).map(i => i.value).filter(Boolean);
@@ -230,46 +236,52 @@ document.querySelectorAll('.form-group[data-type="rank"]').forEach(group => {
 
             if (idx >= 0) {
                 opt.classList.add('selected');
-                opt.classList.remove('maxed');
                 badge.textContent = idx + 1;
             } else {
                 opt.classList.remove('selected');
                 badge.textContent = '';
-                opt.classList.toggle('maxed', selected.length >= max);
             }
         });
 
+        // Write hidden inputs in ranked order for form submission
         selected.forEach(val => {
-            const inp = document.createElement('input');
-            inp.type  = 'hidden';
-            inp.name  = name + '[]';
-            inp.value = val;
+            const inp  = document.createElement('input');
+            inp.type   = 'hidden';
+            inp.name   = name + '[]';
+            inp.value  = val;
             hiddenContainer.appendChild(inp);
         });
 
-        const hint = group.querySelector('.rank-hint');
+        // Update hint text
+        const hint = document.getElementById('hint-' + name);
         if (hint) {
             if (selected.length === 0) {
-                hint.innerHTML = `pick at least <span>${min}</span>, up to <span>${max}</span> — tap in order of preference`;
+                hint.innerHTML = `rank as many as you like — tap in order of preference. skip what you don't vibe with. minimum <span>${min}</span>.`;
             } else {
-                hint.innerHTML = `<span>${selected.length}</span> selected${selected.length < max ? ` — you can pick ${max - selected.length} more` : ' — max reached'}`;
+                hint.innerHTML = `<span>${selected.length}</span> ranked — tap again to deselect`;
             }
         }
     }
 
+    // Click handler — no maximum, just toggle
     options.forEach(opt => {
         opt.addEventListener('click', () => {
             const val = opt.dataset.value;
             const idx = selected.indexOf(val);
+
             if (idx >= 0) {
+                // Already selected — remove it and shift ranks
                 selected.splice(idx, 1);
-            } else if (selected.length < max) {
+            } else {
+                // Not selected — add to end of ranking
                 selected.push(val);
             }
+
             updateUI();
         });
     });
 
+    // Run on load to restore saved state correctly
     updateUI();
 });
 </script>

@@ -28,7 +28,6 @@
             min-height: 100vh;
         }
 
-        /* ── Left panel ── */
         .form-side-panel {
             background: var(--card);
             border-right: 1px solid var(--border);
@@ -46,7 +45,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 0;
         }
 
         .side-nav-logo {
@@ -84,9 +82,7 @@
             border-color: var(--pink);
         }
 
-        .side-heading {
-            flex: 0;
-        }
+        .side-heading { flex: 0; }
 
         .side-heading h1 {
             font-family: 'Playfair Display', serif;
@@ -108,7 +104,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 1.5rem 0;
+            padding: 1rem 0;
+            overflow-y: auto;
         }
 
         .side-steps {
@@ -121,21 +118,21 @@
         .side-step-row {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 0.7rem 0;
+            gap: 0.8rem;
+            padding: 0.5rem 0;
             position: relative;
         }
 
         .side-step-icon {
-            width: 36px;
-            height: 36px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background: var(--input-bg);
             border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             flex-shrink: 0;
             transition: background 0.3s, border-color 0.3s;
             position: relative;
@@ -148,7 +145,7 @@
         }
 
         .side-step-label {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             color: var(--muted);
             transition: color 0.3s;
         }
@@ -160,35 +157,35 @@
         .side-step-row:not(:last-child)::after {
             content: '';
             position: absolute;
-            left: 17px;
-            top: calc(50% + 18px);
+            left: 14px;
+            top: calc(50% + 15px);
             width: 1px;
-            height: calc(100% - 18px);
+            height: calc(100% - 14px);
             background: var(--border);
             z-index: 0;
         }
 
         .side-bottom {
-            padding-top: 1.5rem;
+            padding-top: 1rem;
             border-top: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
         .side-bottom-quote {
             font-family: 'Playfair Display', serif;
             font-style: italic;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             color: var(--pink);
-            line-height: 1.7;
+            line-height: 1.6;
             opacity: 0.8;
         }
 
         .side-bottom-author {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: var(--muted);
             margin-top: 0.3rem;
         }
 
-        /* ── Right panel ── */
         .form-main-panel {
             padding: 3rem 3.5rem 5rem;
             overflow-y: auto;
@@ -251,7 +248,6 @@
             background: var(--border);
         }
 
-        /* ── Custom dealbreaker input ── */
         .custom-field-input {
             display: none;
             margin-top: 0.8rem;
@@ -264,7 +260,7 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 0.95rem;
             outline: none;
-            transition: border-color 0.2s, opacity 0.2s;
+            transition: border-color 0.2s;
         }
 
         .custom-field-input.visible {
@@ -272,52 +268,29 @@
             animation: fadeUp 0.2s ease;
         }
 
-        .custom-field-input:focus {
-            border-color: var(--pink);
+        .custom-field-input:focus { border-color: var(--pink); }
+
+        .optional-label {
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 400;
         }
 
-        /* ── Mobile ── */
         @media (max-width: 768px) {
-            .form-layout {
-                grid-template-columns: 1fr;
-                min-height: unset;
-            }
-
+            .form-layout { grid-template-columns: 1fr; min-height: unset; }
             .form-side-panel {
-                position: relative;
-                height: auto;
+                position: relative; height: auto;
                 padding: 1.5rem 1.5rem 1.2rem;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
+                border-right: none; border-bottom: 1px solid var(--border);
             }
-
-            .side-visual,
-            .side-bottom {
-                display: none;
-            }
-
-            .side-heading h1 {
-                font-size: 1.4rem;
-                margin-bottom: 0.3rem;
-            }
-
-            .side-nav {
-                margin-bottom: 0.8rem;
-            }
-
-            .form-main-panel {
-                padding: 2rem 1.5rem 4rem;
-            }
+            .side-visual, .side-bottom { display: none; }
+            .side-heading h1 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+            .form-main-panel { padding: 2rem 1.5rem 4rem; }
         }
 
         @media (max-width: 480px) {
-            .form-side-panel {
-                padding: 1.2rem 1.2rem 1rem;
-            }
-
-            .form-main-panel {
-                padding: 1.5rem 1.2rem 4rem;
-            }
+            .form-side-panel { padding: 1.2rem 1.2rem 1rem; }
+            .form-main-panel { padding: 1.5rem 1.2rem 4rem; }
         }
     </style>
 </head>
@@ -325,9 +298,8 @@
 
 <div class="form-layout">
 
-    <!-- ── Left sticky panel ── -->
+    <!-- ── Left panel ── -->
     <div class="form-side-panel">
-
         <div class="side-nav">
             <span class="side-nav-logo">✦</span>
             <div class="side-nav-right">
@@ -338,7 +310,7 @@
 
         <div class="side-heading">
             <h1>let's get to know you 💌</h1>
-            <p>fill this out honestly <br>i actually read these :D</p>
+            <p>fill this out honestly<br>i actually read these :D</p>
         </div>
 
         <div class="side-visual">
@@ -357,15 +329,27 @@
                 </div>
                 <div class="side-step-row" id="step-row-3">
                     <div class="side-step-icon" id="step-icon-3">🕐</div>
-                    <span class="side-step-label">best time for a date</span>
+                    <span class="side-step-label">best time</span>
                 </div>
                 <div class="side-step-row" id="step-row-4">
                     <div class="side-step-icon" id="step-icon-4">🍜</div>
                     <span class="side-step-label">food & drinks</span>
                 </div>
                 <div class="side-step-row" id="step-row-5">
-                    <div class="side-step-icon" id="step-icon-5">🚩</div>
-                    <span class="side-step-label">dealbreakers</span>
+                    <div class="side-step-icon" id="step-icon-5">🌸</div>
+                    <span class="side-step-label">flower</span>
+                </div>
+                <div class="side-step-row" id="step-row-6">
+                    <div class="side-step-icon" id="step-icon-6">🌡️</div>
+                    <span class="side-step-label">temperature</span>
+                </div>
+                <div class="side-step-row" id="step-row-7">
+                    <div class="side-step-icon" id="step-icon-7">🍰</div>
+                    <span class="side-step-label">dessert</span>
+                </div>
+                <div class="side-step-row" id="step-row-8">
+                    <div class="side-step-icon" id="step-icon-8">🚩</div>
+                    <span class="side-step-label">dealbreaker</span>
                 </div>
             </div>
         </div>
@@ -374,10 +358,9 @@
             <p class="side-bottom-quote">"every answer helps me plan a better date for us."</p>
             <p class="side-bottom-author">— the person who made this site</p>
         </div>
-
     </div>
 
-    <!-- ── Right form panel ── -->
+    <!-- ── Right panel ── -->
     <div class="form-main-panel">
         <div class="form-container">
 
@@ -395,7 +378,8 @@
 
             <form id="mainForm" action="save_form.php" method="POST" novalidate>
 
-                <div class="form-section-divider">the basics</div>
+                <!-- ── THE BASICS ── -->
+                <div class="form-section-divider">who are you 👤</div>
 
                 <div class="form-group" id="group-name">
                     <label>Name / Nickname <span class="required-star">*</span></label>
@@ -422,7 +406,8 @@
                     <span class="field-error hidden">kahit kung san lang magmemeet g</span>
                 </div>
 
-                <div class="form-section-divider">how do we meet</div>
+                <!-- ── HOW DO WE MEET ── -->
+                <div class="form-section-divider">how do we meet 📲</div>
 
                 <div class="form-group" id="group-communication">
                     <label>Preferred communication <span class="required-star">*</span></label>
@@ -450,12 +435,74 @@
                     <span class="field-error hidden">pick a time that works for you pls</span>
                 </div>
 
-                <div class="form-section-divider">before we meet</div>
+                <!-- ── BEFORE WE MEET ── -->
+                <div class="form-section-divider">before we eat 🍜</div>
 
                 <div class="form-group" id="group-food_drink">
                     <label>Favorite food and drink 🍜 <span class="required-star">*</span></label>
                     <input type="text" name="food_drink" id="field-food_drink" placeholder="tell me what you like...">
                     <span class="field-error hidden">food is important!! tell me</span>
+                </div>
+
+                <div class="form-group" id="group-flower">
+                    <label>If someone randomly handed you a flower, which one would make you smile the most? 🌸 <span class="required-star">*</span></label>
+                    <div class="radio-group">
+                        <?php
+                        $flowers = ['Sunflower 🌻','Tulip 🌷','Rose 🌹','Daisy 🌼','Lily 🤍'];
+                        foreach($flowers as $f) {
+                            echo "<label class='radio-item'><input type='radio' name='flower' value='$f'> $f</label>";
+                        }
+                        ?>
+                        <label class="radio-item">
+                            <input type="radio" name="flower" value="__custom_flower__" id="flower-custom-radio">
+                            something else...
+                        </label>
+                    </div>
+                    <input type="text" id="flower-custom-input" class="custom-field-input" placeholder="what flower? 🌿">
+                    <span class="field-error hidden">pick one pls 🌸</span>
+                </div>
+
+                <div class="form-group" id="group-craving">
+                    <label>Anything you're craving lately? 🍰 <span class="optional-label">(optional)</span></label>
+                    <input type="text" name="craving" id="field-craving" placeholder="food, dessert, drink, anything...">
+                </div>
+
+                <div class="form-group" id="group-temperature">
+                    <label>Temperature preference 🌡️ <span class="required-star">*</span></label>
+                    <div class="radio-group">
+                        <?php
+                        $temps = ['I get cold easily 🥶','I\'m usually fine','I like cold places ❄️','I get hot easily 🥵','Doesn\'t matter'];
+                        foreach($temps as $t) {
+                            echo "<label class='radio-item'><input type='radio' name='temperature' value='$t'> $t</label>";
+                        }
+                        ?>
+                    </div>
+                    <span class="field-error hidden">this helps me plan where to take you 🌡️</span>
+                </div>
+
+                <div class="form-group" id="group-dislikes">
+                    <label>Anything you don't enjoy when going out? <span class="optional-label">(optional)</span></label>
+                    <div class="checkbox-group">
+                        <?php
+                        $dislikes = ['Loud places','Very crowded spots','Long waiting lines','Walking too much','None really'];
+                        foreach($dislikes as $d) {
+                            echo "<label class='check-item'><input type='checkbox' name='dislikes[]' value='$d'> $d</label>";
+                        }
+                        ?>
+                    </div>
+                </div>
+
+                <div class="form-group" id="group-dessert">
+                    <label>Dessert situation 🍨 <span class="required-star">*</span></label>
+                    <div class="radio-group">
+                        <?php
+                        $desserts = ['Ice cream 🍦','Cake 🎂','Pastries 🥐','Chocolate 🍫','Not really a dessert person'];
+                        foreach($desserts as $d) {
+                            echo "<label class='radio-item'><input type='radio' name='dessert' value='$d'> $d</label>";
+                        }
+                        ?>
+                    </div>
+                    <span class="field-error hidden">kahit isang sagot lang 😄</span>
                 </div>
 
                 <div class="form-group" id="group-dealbreaker">
@@ -464,24 +511,20 @@
                         <?php
                         $deals = ['Bad music taste','Pineapple on pizza','Slow walkers','None I\'m chill'];
                         foreach($deals as $d) {
-                            echo "<label class='check-item'><input type='radio' name='dealbreaker' value='$d'> $d</label>";
+                            echo "<label class='radio-item'><input type='radio' name='dealbreaker' value='$d'> $d</label>";
                         }
                         ?>
-                        <label class="check-item">
+                        <label class="radio-item">
                             <input type="radio" name="dealbreaker" value="__custom__" id="dealbreaker-custom-radio">
                             something else...
                         </label>
                     </div>
-                    <input
-                        type="text"
-                        id="dealbreaker-custom-input"
-                        class="custom-field-input"
-                        placeholder="tell me your dealbreaker...">
+                    <input type="text" id="dealbreaker-custom-input" class="custom-field-input" placeholder="tell me your dealbreaker...">
                     <span class="field-error hidden">be honest nyahaha</span>
                 </div>
 
                 <button type="submit" class="btn btn-yes" style="width:100%; margin-top:2rem; color:#fff;">
-                    submit 
+                    submit 🌸
                 </button>
 
             </form>
@@ -492,7 +535,6 @@
 
 <script src="js/main.js"></script>
 <script>
-
 // ── Theme toggle ──
 const themeBtn = document.getElementById('themeBtn');
 const savedTheme = localStorage.getItem('siteTheme') || 'dark';
@@ -506,96 +548,85 @@ function toggleTheme() {
     themeBtn.textContent = next === 'light' ? '🌙 dark' : '☀️ light';
 }
 
-// ── Dealbreaker custom input ──
-const customRadio = document.getElementById('dealbreaker-custom-radio');
-const customInput = document.getElementById('dealbreaker-custom-input');
+// ── Custom text inputs ──
+const dealbreakerInput = document.getElementById('dealbreaker-custom-input');
+const flowerInput      = document.getElementById('flower-custom-input');
 
-document.querySelectorAll('input[name="dealbreaker"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-        if (this.value === '__custom__') {
-            customInput.classList.add('visible');
-            customInput.focus();
-        } else {
-            customInput.classList.remove('visible');
-            customInput.value = '';
-        }
-        updateProgress();
-    });
-});
-
-// ── Progress & step tracker ──
-const fieldStepMap = [
-    { fields: ['field-name', 'field-age'],  stepIndex: 0 },
-    { fields: ['field-city'],               stepIndex: 1 },
-    { fields: ['communication[]'],          stepIndex: 2, type: 'checkbox' },
-    { fields: ['best_time'],                stepIndex: 3, type: 'radio' },
-    { fields: ['field-food_drink'],         stepIndex: 4 },
-    { fields: ['dealbreaker'],              stepIndex: 5, type: 'radio' },
-];
-
-const totalFields = 7;
-const stepEmojis  = ['👤','📍','💬','🕐','🍜','🚩'];
-
-function getFieldValue(item) {
-    if (item.type === 'checkbox') {
-        return document.querySelectorAll(`input[name="${item.fields[0]}"]:checked`).length > 0;
-    }
-    if (item.type === 'radio') {
-        const checked = document.querySelector(`input[name="${item.fields[0]}"]:checked`);
-        if (!checked) return false;
-        // if custom selected, require text too
-        if (checked.value === '__custom__') return customInput.value.trim().length > 0;
-        return true;
-    }
-    return item.fields.every(id => {
-        const el = document.getElementById(id);
-        return el && el.value.trim();
+function bindCustomRadio(radioName, triggerValue, textInput) {
+    document.querySelectorAll(`input[name="${radioName}"]`).forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === triggerValue) {
+                textInput.classList.add('visible');
+                textInput.focus();
+            } else {
+                textInput.classList.remove('visible');
+                textInput.value = '';
+            }
+            updateProgress();
+        });
     });
 }
 
+bindCustomRadio('dealbreaker', '__custom__',        dealbreakerInput);
+bindCustomRadio('flower',      '__custom_flower__', flowerInput);
+
+// ── Step tracker config ──
+// stepIndex matches the side-step-row IDs in the HTML
+const fieldStepMap = [
+    { stepIndex: 0, test: () => !!document.getElementById('field-name')?.value.trim() && !!document.getElementById('field-age')?.value },
+    { stepIndex: 1, test: () => !!document.getElementById('field-city')?.value.trim() },
+    { stepIndex: 2, test: () => document.querySelectorAll('input[name="communication[]"]:checked').length > 0 },
+    { stepIndex: 3, test: () => !!document.querySelector('input[name="best_time"]:checked') },
+    { stepIndex: 4, test: () => !!document.getElementById('field-food_drink')?.value.trim() },
+    { stepIndex: 5, test: () => {
+        const c = document.querySelector('input[name="flower"]:checked');
+        if (!c) return false;
+        if (c.value === '__custom_flower__') return flowerInput.value.trim().length > 0;
+        return true;
+    }},
+    { stepIndex: 6, test: () => !!document.querySelector('input[name="temperature"]:checked') },
+    { stepIndex: 7, test: () => !!document.querySelector('input[name="dessert"]:checked') },
+    { stepIndex: 8, test: () => {
+        const c = document.querySelector('input[name="dealbreaker"]:checked');
+        if (!c) return false;
+        if (c.value === '__custom__') return dealbreakerInput.value.trim().length > 0;
+        return true;
+    }},
+];
+
+const stepEmojis   = ['👤','📍','💬','🕐','🍜','🌸','🌡️','🍰','🚩'];
+const totalRequired = 9; // number of required fields
+
 function updateProgress() {
-    const filled = [
-        !!document.getElementById('field-name')?.value.trim(),
-        !!document.getElementById('field-age')?.value,
-        !!document.getElementById('field-city')?.value.trim(),
-        document.querySelectorAll('input[name="communication[]"]:checked').length > 0,
-        !!document.querySelector('input[name="best_time"]:checked'),
-        !!document.getElementById('field-food_drink')?.value.trim(),
-        (() => {
-            const checked = document.querySelector('input[name="dealbreaker"]:checked');
-            if (!checked) return false;
-            if (checked.value === '__custom__') return customInput.value.trim().length > 0;
-            return true;
-        })(),
-    ];
-
-    const count = filled.filter(Boolean).length;
-    document.getElementById('progressBar').style.width = Math.round((count / totalFields) * 100) + '%';
-
-    fieldStepMap.forEach((item) => {
-        const isDone = getFieldValue(item);
-        const icon   = document.getElementById('step-icon-' + item.stepIndex);
-        const row    = document.getElementById('step-row-' + item.stepIndex);
-        if (!icon || !row) return;
-
-        if (isDone) {
-            icon.classList.add('done');
-            icon.textContent = '✓';
-            row.classList.add('done');
-        } else {
-            icon.classList.remove('done');
-            row.classList.remove('done');
-            icon.textContent = stepEmojis[item.stepIndex];
+    let filled = 0;
+    fieldStepMap.forEach(item => {
+        const done = item.test();
+        const icon = document.getElementById('step-icon-' + item.stepIndex);
+        const row  = document.getElementById('step-row-' + item.stepIndex);
+        if (icon && row) {
+            if (done) {
+                icon.classList.add('done');
+                icon.textContent = '✓';
+                row.classList.add('done');
+            } else {
+                icon.classList.remove('done');
+                row.classList.remove('done');
+                icon.textContent = stepEmojis[item.stepIndex];
+            }
         }
+        if (done) filled++;
     });
+    document.getElementById('progressBar').style.width =
+        Math.round((filled / totalRequired) * 100) + '%';
 }
 
 document.querySelectorAll('input, select').forEach(el => el.addEventListener('change', updateProgress));
 document.querySelectorAll('input[type="text"]').forEach(el => el.addEventListener('input', updateProgress));
-customInput.addEventListener('input', updateProgress);
+dealbreakerInput.addEventListener('input', updateProgress);
+flowerInput.addEventListener('input', updateProgress);
 updateProgress();
 
-// ── Validation ──
+// ── Validation on submit ──
 document.getElementById('mainForm').addEventListener('submit', function(e) {
     e.preventDefault();
     let hasError = false;
@@ -612,16 +643,33 @@ document.getElementById('mainForm').addEventListener('submit', function(e) {
         { id: 'group-best_time',     test: () => document.querySelector('input[name="best_time"]:checked') },
         { id: 'group-food_drink',    test: () => document.getElementById('field-food_drink').value.trim() },
         {
+            id: 'group-flower',
+            test: () => {
+                const checked = document.querySelector('input[name="flower"]:checked');
+                if (!checked) return false;
+                if (checked.value === '__custom_flower__') {
+                    const val = flowerInput.value.trim();
+                    if (!val) return false;
+                    // swap so the text gets submitted instead of "__custom_flower__"
+                    flowerInput.setAttribute('name', 'flower');
+                    flowerInput.setAttribute('type', 'hidden');
+                    checked.removeAttribute('name');
+                }
+                return true;
+            }
+        },
+        { id: 'group-temperature', test: () => document.querySelector('input[name="temperature"]:checked') },
+        { id: 'group-dessert',     test: () => document.querySelector('input[name="dessert"]:checked') },
+        {
             id: 'group-dealbreaker',
             test: () => {
                 const checked = document.querySelector('input[name="dealbreaker"]:checked');
                 if (!checked) return false;
                 if (checked.value === '__custom__') {
-                    const val = customInput.value.trim();
+                    const val = dealbreakerInput.value.trim();
                     if (!val) return false;
-                    // inject as hidden so the custom text is what gets submitted
-                    customInput.setAttribute('name', 'dealbreaker');
-                    customInput.setAttribute('type', 'hidden');
+                    dealbreakerInput.setAttribute('name', 'dealbreaker');
+                    dealbreakerInput.setAttribute('type', 'hidden');
                     checked.removeAttribute('name');
                 }
                 return true;
@@ -639,13 +687,15 @@ document.getElementById('mainForm').addEventListener('submit', function(e) {
 
     if (hasError) {
         document.getElementById('validationBanner').classList.remove('hidden');
-        document.querySelector('.form-group.has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.querySelector('.form-group.has-error')
+            ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
     this.submit();
 });
 
+// ── Live error clearing ──
 document.querySelectorAll('input, select').forEach(input => {
     input.addEventListener('change', function() {
         const group = this.closest('.form-group');

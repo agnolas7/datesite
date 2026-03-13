@@ -31,12 +31,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
     $section = $_POST['edit_section'];
 
     if ($section === 'about') {
-        $pdo->prepare("UPDATE responses SET name=?, age=?, city=?, food_drink=?, dealbreaker=? WHERE id=?")
+        $flower      = trim($_POST['flower'] ?? '');
+        $craving     = trim($_POST['craving'] ?? '');
+        $temperature = $_POST['temperature'] ?? '';
+        $dont_enjoy  = isset($_POST['dont_enjoy']) ? implode(', ', $_POST['dont_enjoy']) : '';
+        $dessert     = $_POST['dessert'] ?? '';
+
+        $pdo->prepare("UPDATE responses SET name=?, age=?, city=?, food_drink=?, flower=?, craving=?, temperature=?, dont_enjoy=?, dessert=?, dealbreaker=? WHERE id=?")
             ->execute([
                 trim($_POST['name'] ?? ''),
                 $_POST['age'] ?? '',
                 trim($_POST['city'] ?? ''),
                 trim($_POST['food_drink'] ?? ''),
+                $flower,
+                $craving,
+                $temperature,
+                $dont_enjoy,
+                $dessert,
                 trim($_POST['dealbreaker'] ?? ''),
                 $id
             ]);

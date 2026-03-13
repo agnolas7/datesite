@@ -695,41 +695,60 @@ if ($alreadyScheduled) {
 
     // ── Save schedule ──
     function saveSchedule() {
-        const date  = document.getElementById('schedDate').value;
-        const time  = document.getElementById('schedTime').value;
-        const error = document.getElementById('dateError');
+    const date  = document.getElementById('schedDate').value;
+    const time  = document.getElementById('schedTime').value;
+    const error = document.getElementById('dateError');
 
-        if (!date || !time) {
-            error.style.display = 'block';
-            return;
-        }
-
-        error.style.display = 'none';
-
-        const combined = date + ' ' + time;
-        const dateObj  = new Date(date + 'T' + time);
-
-        const displayDate = dateObj.toLocaleDateString('en-PH', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
-        const displayTime = dateObj.toLocaleTimeString('en-PH', {
-            hour: '2-digit', minute: '2-digit'
-        });
-
-        fetch('save_schedule.php', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body:    'id=<?= $id ?>&date=' + encodeURIComponent(combined)
-        }).then(() => {
-            const funny = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
-            document.getElementById('schedulerBox').style.display  = 'none';
-            document.getElementById('notSureBox').classList.remove('show');
-            document.getElementById('confirmedBox').classList.add('show');
-            document.getElementById('confirmedDateDisplay').textContent = displayDate + ' · ' + displayTime;
-            document.getElementById('confirmedFunny').textContent       = funny;
-            document.getElementById('rightLabel').textContent           = "it's a date! 🎉";
-        });
+    if (!date || !time) {
+        error.style.display = 'block';
+        return;
     }
+
+    error.style.display = 'none';
+
+    const combined = date + ' ' + time;
+    const dateObj  = new Date(date + 'T' + time);
+
+    const displayDate = dateObj.toLocaleDateString('en-PH', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+    const displayTime = dateObj.toLocaleTimeString('en-PH', {
+        hour: '2-digit', minute: '2-digit'
+    });
+
+    fetch('save_schedule.php', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    'id=<?= $id ?>&date=' + encodeURIComponent(combined)
+    }).then(() => {
+        const funny = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
+
+        // ── Update right side ──
+        document.getElementById('schedulerBox').style.display   = 'none';
+        document.getElementById('notSureBox').classList.remove('show');
+        document.getElementById('confirmedBox').classList.add('show');
+        document.getElementById('confirmedDateDisplay').textContent = displayDate + ' · ' + displayTime;
+        document.getElementById('confirmedFunny').textContent       = funny;
+        document.getElementById('rightLabel').textContent           = "it's a date! 🎉";
+
+        // ── Update left side button instantly (no reload needed) ──
+        const leftBottom = document.querySelector('.result-left-bottom');
+        leftBottom.innerHTML = `
+            <div class="already-scheduled-note">
+                <strong>date already set 🌸</strong>
+                ${displayDate} · ${displayTime}
+            </div>
+            <a href="view_response.php" class="btn btn-yes btn-sched active"
+               style="text-align:center; display:block; color:#fff; text-decoration:none;">
+                view details
+            </a>
+            <a href="https://instagram.com/sa.loooong.a" target="_blank" class="btn btn-maybe"
+               style="text-align:center; display:block;">
+                send me a message instead 💌
+            </a>
+        `;
+    });
+}
     </script>
     <script src="js/main.js"></script>
 </body>

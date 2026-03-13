@@ -21,7 +21,6 @@ require 'includes/compatibility_questions.php';
         })();
     </script>
     <style>
-        /* ── Rank picker ── */
         .rank-group {
             display: flex;
             flex-wrap: wrap;
@@ -29,17 +28,7 @@ require 'includes/compatibility_questions.php';
             margin-top: 0.3rem;
         }
 
-        .rank-option {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .rank-option input {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .rank-option { cursor: pointer; }
 
         .rank-label {
             display: inline-flex;
@@ -56,9 +45,7 @@ require 'includes/compatibility_questions.php';
             user-select: none;
         }
 
-        .rank-label:hover {
-            border-color: var(--pink);
-        }
+        .rank-label:hover { border-color: var(--pink); }
 
         .rank-badge {
             display: none;
@@ -80,14 +67,7 @@ require 'includes/compatibility_questions.php';
             color: var(--pink);
         }
 
-        .rank-option.selected .rank-badge {
-            display: inline-flex;
-        }
-
-        .rank-option.maxed:not(.selected) .rank-label {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
+        .rank-option.selected .rank-badge { display: inline-flex; }
 
         .rank-hint {
             font-size: 0.72rem;
@@ -96,10 +76,7 @@ require 'includes/compatibility_questions.php';
             font-style: italic;
         }
 
-        .rank-hint span {
-            color: var(--pink);
-            font-weight: 500;
-        }
+        .rank-hint span { color: var(--pink); font-weight: 500; }
     </style>
 </head>
 <body class="form-page">
@@ -115,13 +92,11 @@ require 'includes/compatibility_questions.php';
     <form id="compatForm" action="save_compatibility.php" method="POST" novalidate>
 
         <?php foreach ($compatibility_questions as $name => $q): ?>
-        <div class="form-group compat-group" id="group-<?= $name ?>"
+        <div class="form-group compat-group"
+             id="group-<?= $name ?>"
              data-name="<?= $name ?>"
              data-type="<?= $q['type'] ?>"
-             <?php if ($q['type'] === 'rank'): ?>
-             data-max="<?= $q['max'] ?>"
-             data-min="<?= $q['min'] ?>"
-             <?php endif; ?>>
+             data-min="<?= $q['min'] ?? 1 ?>">
 
             <label>
                 <?= htmlspecialchars($q['label']) ?>
@@ -129,23 +104,22 @@ require 'includes/compatibility_questions.php';
             </label>
 
             <?php if ($q['type'] === 'rank'): ?>
-                <p class="rank-hint">
-                    pick at least <span><?= $q['min'] ?></span>, up to <span><?= $q['max'] ?></span> —
-                    tap in order of preference
+                <p class="rank-hint" id="hint-<?= $name ?>">
+                    rank as many as you like — tap in order of preference.
+                    skip the ones you don't vibe with.
+                    minimum <span><?= $q['min'] ?></span>.
                 </p>
                 <div class="rank-group" id="rank-<?= $name ?>">
                     <?php foreach ($q['options'] as $opt):
                         $safe = htmlspecialchars($opt); ?>
                     <label class="rank-option" data-value="<?= $safe ?>">
-                        <input type="hidden" name="<?= $name ?>_rank[]" value="" disabled>
                         <span class="rank-label">
-                            <span class="rank-badge">1</span>
+                            <span class="rank-badge"></span>
                             <?= $safe ?>
                         </span>
                     </label>
                     <?php endforeach; ?>
                 </div>
-                <!-- hidden inputs to hold ordered values for submission -->
                 <div id="hidden-<?= $name ?>"></div>
 
             <?php elseif ($q['type'] === 'checkbox'): ?>
@@ -181,12 +155,12 @@ require 'includes/compatibility_questions.php';
 
 <script src="js/main.js"></script>
 <script>
-// ── Ranking logic ──
+// ── Ranking logic — no maximum ──
 document.querySelectorAll('.compat-group[data-type="rank"]').forEach(group => {
     const name    = group.dataset.name;
-    const max     = parseInt(group.dataset.max);
+    const min     = parseInt(group.dataset.min || '2');
     const options = group.querySelectorAll('.rank-option');
-    let   selected = []; // ordered array of values
+    let   selected = [];
 
     function updateUI() {
         const hiddenContainer = document.getElementById('hidden-' + name);
@@ -199,21 +173,14 @@ document.querySelectorAll('.compat-group[data-type="rank"]').forEach(group => {
 
             if (idx >= 0) {
                 opt.classList.add('selected');
-                opt.classList.remove('maxed');
                 badge.textContent = idx + 1;
             } else {
                 opt.classList.remove('selected');
                 badge.textContent = '';
-                if (selected.length >= max) {
-                    opt.classList.add('maxed');
-                } else {
-                    opt.classList.remove('maxed');
-                }
             }
         });
 
-        // inject hidden inputs with ranked values
-        selected.forEach((val, i) => {
+        selected.forEach(val => {
             const inp = document.createElement('input');
             inp.type  = 'hidden';
             inp.name  = name + '[]';
@@ -221,15 +188,12 @@ document.querySelectorAll('.compat-group[data-type="rank"]').forEach(group => {
             hiddenContainer.appendChild(inp);
         });
 
-        // update hint
-        const hint = group.querySelector('.rank-hint span:last-child');
+        const hint = document.getElementById('hint-' + name);
         if (hint) {
             if (selected.length === 0) {
-                group.querySelector('.rank-hint').innerHTML =
-                    `pick at least <span>${group.dataset.min}</span>, up to <span>${max}</span> — tap in order of preference`;
+                hint.innerHTML = `rank as many as you like — tap in order of preference. skip what you don't vibe with. minimum <span>${min}</span>.`;
             } else {
-                group.querySelector('.rank-hint').innerHTML =
-                    `<span>${selected.length}</span> selected — ${selected.length < max ? `you can pick ${max - selected.length} more` : 'max reached'}`;
+                hint.innerHTML = `<span>${selected.length}</span> ranked — tap again to deselect`;
             }
         }
     }
@@ -240,13 +204,9 @@ document.querySelectorAll('.compat-group[data-type="rank"]').forEach(group => {
             const idx = selected.indexOf(val);
 
             if (idx >= 0) {
-                // deselect — remove and shift ranks
-                selected.splice(idx, 1);
+                selected.splice(idx, 1); // deselect
             } else {
-                if (selected.length < max) {
-                    selected.push(val);
-                }
-                // if maxed, do nothing
+                selected.push(val); // no max — add freely
             }
 
             updateUI();
@@ -268,7 +228,6 @@ document.querySelectorAll('.compat-group[data-type="rank"]').forEach(group => {
 // ── Validation ──
 document.getElementById('compatForm').addEventListener('submit', function(e) {
     e.preventDefault();
-
     let hasError = false;
 
     document.querySelectorAll('.compat-group').forEach(g => {
@@ -284,8 +243,7 @@ document.getElementById('compatForm').addEventListener('submit', function(e) {
         let valid  = false;
 
         if (type === 'rank') {
-            const filled = document.querySelectorAll(`#hidden-${name} input`).length;
-            valid = filled >= min;
+            valid = document.querySelectorAll(`#hidden-${name} input`).length >= min;
         } else if (type === 'checkbox') {
             valid = group.querySelectorAll('input[type="checkbox"]:checked').length > 0;
         } else {
@@ -309,7 +267,7 @@ document.getElementById('compatForm').addEventListener('submit', function(e) {
     this.submit();
 });
 
-// Live clear on radio/checkbox
+// Live clear errors
 document.querySelectorAll('.compat-group input').forEach(input => {
     input.addEventListener('change', function() {
         const group = this.closest('.compat-group');
