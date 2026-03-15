@@ -304,6 +304,14 @@ $name = htmlspecialchars($_SESSION['name']);
             </div>
 
             <div class="preview-pill">
+                <span class="preview-pill-icon">📍</span>
+                <div class="preview-pill-text">
+                    <span class="preview-pill-title">logistics</span>
+                    <span class="preview-pill-val">curfew, parents, distance you're cool with</span>
+                </div>
+            </div>
+
+            <div class="preview-pill">
                 <span class="preview-pill-icon">✨</span>
                 <div class="preview-pill-text">
                     <span class="preview-pill-title">activities</span>
