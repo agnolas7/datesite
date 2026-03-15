@@ -619,7 +619,7 @@ if ($ownerUsername) {
             <div class="result-left-bottom" id="leftButtons">
                 <?php if ($alreadyScheduled): ?>
                     <div class="already-scheduled-note">
-                        <strong>date already set 🌸</strong>
+                        <strong>date already set</strong>
                         <div class="scheduled-date-display" id="scheduledDateDisplay"
                              onclick="startEditingScheduledDate()">
                             <?= $displayScheduled ?>
@@ -680,7 +680,7 @@ if ($ownerUsername) {
                 </p>
 
                 <button class="btn btn-yes" style="width:100%; color:#fff;" onclick="saveSchedule()">
-                    confirm 🌸
+                    confirm 
                 </button>
 
                 <button class="not-sure-btn" onclick="showNotSure()">
@@ -730,7 +730,7 @@ if ($ownerUsername) {
                 <p class="confirmed-title">i got this 🙌</p>
                 <p class="confirmed-funny">
                     i'll plan everything — just message me so we can check
-                    if the time works for both of us. 🌸
+                    if the time works for both of us. 
                 </p>
                 <a href="<?= $instagramLink ?>" target="_blank"
                    class="btn btn-yes" style="color:#fff; width:100%; text-align:center;">

@@ -14,8 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $temperature   = $_POST['temperature'] ?? '';
     $dislikes      = isset($_POST['dislikes']) ? implode(', ', $_POST['dislikes']) : '';
     $dessert       = $_POST['dessert'] ?? '';
-    $flower        = trim($_POST['flower'] ?? '');
     $owner_username = $_SESSION['owner'] ?? null;
+
+    // flower is now an array — join into a string
+    $flower = '';
+    if (!empty($_POST['flower'])) {
+        $flowerArr = is_array($_POST['flower']) ? $_POST['flower'] : [$_POST['flower']];
+        // filter out the placeholder value just in case
+        $flowerArr = array_filter($flowerArr, fn($f) => $f !== '__custom_flower__');
+        $flower = implode(', ', array_map('trim', $flowerArr));
+    }
 
     if (empty($name)) {
         die("Please go back and enter your name!");

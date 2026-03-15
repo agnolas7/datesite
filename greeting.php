@@ -258,9 +258,9 @@ $name = htmlspecialchars($_SESSION['name']);
 
         <div class="greeting-left-bottom">
             <p>
-                glad you made it here.<br>
-                just a few more questions and we're good to go —
-                i promise it's quick.
+                glad you made it here :D<br>
+                just a few more questions and we're good to go.
+                 mabilis lang tooo
             </p>
             <a href="preferences.php" class="btn btn-yes" style="color:#fff; display:block; text-align:center;">
                 okay let's go baby
