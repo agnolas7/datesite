@@ -516,8 +516,16 @@ if (empty($_SESSION['response_id'])) {
                     <span class="pref-cat-sub" id="cat-sub-convo">3 questions</span>
                 </div>
             </div>
+            <!-- NEW category -->
+            <div class="pref-category" data-section="logistics" id="cat-logistics">
+                <div class="pref-cat-icon" id="cat-icon-logistics">5</div>
+                <div class="pref-cat-info">
+                    <span class="pref-category-text">before we plan</span>
+                    <span class="pref-cat-sub" id="cat-sub-logistics">3 questions</span>
+                </div>
+            </div>
             <div class="pref-category" data-section="vibes" id="cat-vibes">
-                <div class="pref-cat-icon" id="cat-icon-vibes">5</div>
+                <div class="pref-cat-icon" id="cat-icon-vibes">6</div>
                 <div class="pref-cat-info">
                     <span class="pref-category-text">vibe and activities</span>
                     <span class="pref-cat-sub" id="cat-sub-vibes">pick what sounds good</span>
@@ -528,7 +536,7 @@ if (empty($_SESSION['response_id'])) {
         <div class="pref-side-bottom">
             <div class="pref-progress-label">
                 <span>answered</span>
-                <span class="pref-progress-count" id="progressCount">0 / 9</span>
+                <span class="pref-progress-count" id="progressCount">0 / 12</span>
             </div>
             <div class="pref-progress-track">
                 <div class="pref-progress-fill" id="progressFill"></div>
@@ -751,6 +759,69 @@ if (empty($_SESSION['response_id'])) {
                         placeholder="tell me what helps...">
                 </div>
 
+                <!-- BEFORE WE PLAN (new logistics section) -->
+                <div class="pref-section-divider" data-section="logistics">before we plan</div>
+
+                <div class="pref-question-card" data-field="curfew" data-section="logistics">
+                    <label class="pref-q-label">do you have a curfew?</label>
+                    <p class="pref-q-sub">no judgment at all — just need to know so i can plan properly</p>
+                    <div class="radio-group">
+                        <?php foreach ([
+                            'yes, i have a strict curfew',
+                            'yes but it\'s flexible depending on the situation',
+                            'kind of, i just need to let them know',
+                            'no curfew, i\'m free',
+                        ] as $opt): ?>
+                        <label class="radio-item">
+                            <input type="radio" name="curfew" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('curfew', this.value); markSelected(this)">
+                            <?= htmlspecialchars($opt) ?>
+                        </label>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="pref-preview" id="preview-curfew"></div>
+                </div>
+
+                <div class="pref-question-card" data-field="parents" data-section="logistics">
+                    <label class="pref-q-label">how are your parents about going out?</label>
+                    <div class="radio-group">
+                        <?php foreach ([
+                            'very strict — they need to know everything',
+                            'strict but okay if i tell them in advance',
+                            'chill, just need to update them',
+                            'they don\'t really mind',
+                            'i\'m independent, not an issue',
+                        ] as $opt): ?>
+                        <label class="radio-item">
+                            <input type="radio" name="parents" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('parents', this.value); markSelected(this)">
+                            <?= htmlspecialchars($opt) ?>
+                        </label>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="pref-preview" id="preview-parents"></div>
+                </div>
+
+                <div class="pref-question-card" data-field="distance" data-section="logistics">
+                    <label class="pref-q-label">how far from home are you okay going?</label>
+                    <p class="pref-q-sub">just so i know what's realistic to plan</p>
+                    <div class="radio-group">
+                        <?php foreach ([
+                            'close by only, around our area',
+                            'nearby cities are fine',
+                            'doesn\'t matter, i\'m down wherever',
+                            'depends on the day and situation',
+                        ] as $opt): ?>
+                        <label class="radio-item">
+                            <input type="radio" name="distance" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('distance', this.value); markSelected(this)">
+                            <?= htmlspecialchars($opt) ?>
+                        </label>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="pref-preview" id="preview-distance"></div>
+                </div>
+
                 <!-- VIBE AND ACTIVITIES -->
                 <div class="pref-section-divider" data-section="vibes">vibe and activities</div>
 
@@ -806,7 +877,7 @@ function toggleTheme() {
     themeBtn.textContent = next === 'light' ? 'dark' : 'light';
 }
 
-// ── Preview messages — matched exactly to your options ──
+// ── Preview messages ──
 const previews = {
     date_type: {
         'something lowkey, stay-in type':               'nice, comfortable energy. i can work with that.',
@@ -836,11 +907,11 @@ const previews = {
         'whatever happens, happens':                        "i like that attitude. no overthinking.",
     },
     crowd: {
-        'ideally just us, somewhere quiet':     "noted. somewhere we can actually hear each other.",
-        'a few people around is fine':          "cool, a little background noise never hurt.",
-        'busy place is okay, i don\'t mind noise': "okay we have a lot of options then.",
-        'doesn\'t matter at all':               'easy to work with, good.',
-        'i\'ll leave it to you':                "on me then. i'll pick somewhere good.",
+        'ideally just us, somewhere quiet':         "noted. somewhere we can actually hear each other.",
+        'a few people around is fine':              "cool, a little background noise never hurt.",
+        'busy place is okay, i don\'t mind noise':  "okay we have a lot of options then.",
+        'doesn\'t matter at all':                   'easy to work with, good.',
+        'i\'ll leave it to you':                    "on me then. i'll pick somewhere good.",
     },
     walking: {
         'minimal, i\'m not here to exercise':           "we'll find somewhere to sit. noted.",
@@ -856,11 +927,31 @@ const previews = {
         'i\'ll talk when i feel like it, no pressure':  "no pressure at all, i'll carry it when you're quiet.",
     },
     awkwardness: {
-        'talker — i will carry the conversation, don\'t worry':     "okay perfect, i'll match your energy.",
-        'listener — i\'m better at responding than starting':       "that works, i'll ask the questions. don't worry.",
-        'both — depends on who i\'m with':                          "same honestly. we'll just see how it goes.",
-        'neither — i communicate through eye contact'       :    "ay angas",
-        'dancer — hawak ko ang beat':                                  "ge lods sayaw",
+        'talker — i will carry the conversation, don\'t worry':  "okay perfect, i'll match your energy.",
+        'listener — i\'m better at responding than starting':    "that works, i'll ask the questions. don't worry.",
+        'both — depends on who i\'m with':                       "same honestly. we'll just see how it goes.",
+        'neither — i communicate through eye contact':           "ay angas",
+        'dancer — hawak ko ang beat':                            "ge lods sayaw",
+    },
+    // new logistics previews
+    curfew: {
+        'yes, i have a strict curfew':                          "okay noted, we'll make sure you're home on time. no stress.",
+        'yes but it\'s flexible depending on the situation':    "got it, i'll keep that in mind and plan accordingly.",
+        'kind of, i just need to let them know':                "that works, just update them and we're good.",
+        'no curfew, i\'m free':                                 "okay we have time then. more options.",
+    },
+    parents: {
+        'very strict — they need to know everything':   "noted, we'll make sure everything is above board.",
+        'strict but okay if i tell them in advance':    "okay, i'll give you enough notice to sort it out.",
+        'chill, just need to update them':              "easy, just drop them a message and we're set.",
+        'they don\'t really mind':                      "nice, that makes planning a lot easier.",
+        'i\'m independent, not an issue':               "okay we're good then, no worries.",
+    },
+    distance: {
+        'close by only, around our area':               "okay i'll keep it local. there's plenty to do nearby.",
+        'nearby cities are fine':                       "nice, that opens up a lot more options.",
+        'doesn\'t matter, i\'m down wherever':          "okay anywhere is on the table then.",
+        'depends on the day and situation':             "fair, i'll just check with you when we're planning.",
     },
 };
 
@@ -900,19 +991,21 @@ function handleComfortCustom() {
 
 // ── Category checklist config ──
 const catFields = {
-    date:   ['date_type', 'spontaneity'],
-    energy: ['energy', 'mood'],
-    crowd:  ['crowd', 'walking'],
-    convo:  ['convo_style', 'awkwardness'],
-    vibes:  [],
+    date:      ['date_type', 'spontaneity'],
+    energy:    ['energy', 'mood'],
+    crowd:     ['crowd', 'walking'],
+    convo:     ['convo_style', 'awkwardness'],
+    logistics: ['curfew', 'parents', 'distance'],
+    vibes:     [],
 };
 
 const catDoneText = {
-    date:   'both answered',
-    energy: 'both answered',
-    crowd:  'both answered',
-    convo:  'all answered',
-    vibes:  'picked',
+    date:      'both answered',
+    energy:    'both answered',
+    crowd:     'both answered',
+    convo:     'all answered',
+    logistics: 'all answered',
+    vibes:     'picked',
 };
 
 function updateCategoryStatus() {
@@ -943,16 +1036,19 @@ function updateCategoryStatus() {
     });
 }
 
-// ── Progress ──
-const radioFields   = ['date_type','spontaneity','energy','mood','crowd','walking','convo_style','awkwardness'];
-const totalRequired = 9;
+// ── Progress — now 12 required (added curfew, parents, distance) ──
+const radioFields   = [
+    'date_type','spontaneity','energy','mood',
+    'crowd','walking','convo_style','awkwardness',
+    'curfew','parents','distance'
+];
+const totalRequired = 12;
 
 function updateProgress() {
     let answered = 0;
     radioFields.forEach(name => {
         if (document.querySelector(`input[name="${name}"]:checked`)) answered++;
     });
-    // comfort tips count as 1 if at least one checked
     if (document.querySelectorAll('input[name="convo_difficulty[]"]:checked').length > 0) answered++;
 
     const pct = Math.round((answered / totalRequired) * 100);

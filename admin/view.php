@@ -91,6 +91,11 @@ $sections = [
         'awkwardness'      => 'Awkwardness',
         'convo_difficulty' => 'Difficulty',
     ],
+    'before we plan' => [
+        'curfew'   => 'Curfew',
+        'parents'  => 'Parents\'s rules',
+        'distance' => 'Distance willing to travel',
+    ],
     'vibes & extras' => [
         'vibes'       => 'Vibes',
         'custom_vibe' => 'Their idea',
