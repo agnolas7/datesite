@@ -15,18 +15,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['response_id'])) {
     $convo_difficulty = $_POST['convo_difficulty'] ?? '';
     $vibes = isset($_POST['vibes']) ? implode(', ', $_POST['vibes']) : '';
     $custom_vibe = trim($_POST['custom_vibe'] ?? '');
+    $curfew = $_POST['curfew'] ?? '';
+    $parents = $_POST['parents'] ?? '';
+    $distance = $_POST['distance'] ?? '';
+    $place_in_mind = $_POST['place_in_mind'] ?? '';
+    $place_name = trim($_POST['place_name'] ?? '');
+    $place_timing = $_POST['place_timing'] ?? '';
     $compatibility_score = rand(69, 99); // always high lol
 
     $stmt = $pdo->prepare("UPDATE responses SET 
         date_type=?, spontaneity=?, energy=?, mood=?, crowd=?, convo_style=?,
         walking=?, awkwardness=?, convo_difficulty=?, vibes=?, custom_vibe=?,
-        compatibility_score=?
+        curfew=?, parents=?, distance=?, place_in_mind=?, place_name=?,
+        place_timing=?, compatibility_score=?
         WHERE id=?");
 
     $stmt->execute([
         $date_type, $spontaneity, $energy, $mood, $crowd, $convo_style,
         $walking, $awkwardness, $convo_difficulty, $vibes, $custom_vibe,
-        $compatibility_score, $id
+        $curfew, $parents, $distance, $place_in_mind, $place_name,
+        $place_timing, $compatibility_score, $id
     ]);
 
     header('Location: result.php');

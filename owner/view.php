@@ -99,8 +99,11 @@ $sections = [
         'distance' => 'Distance willing to travel',
     ],
     'vibes & extras' => [
-        'vibes'       => 'Vibes',
-        'custom_vibe' => 'Their idea',
+        'vibes'        => 'Vibes',
+        'custom_vibe'  => 'Their idea',
+        'place_in_mind' => 'Place in mind?',
+        'place_name'   => 'Place name',
+        'place_timing' => 'When to go?',
     ],
     'results' => [
 

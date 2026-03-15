@@ -312,6 +312,24 @@ if (empty($_SESSION['response_id'])) {
             animation: fadeUp 0.2s ease;
         }
 
+        #preview-place_in_mind {
+            border-left: 3px solid var(--pink);
+            background: rgba(244, 167, 185, 0.08);
+            color: var(--text);
+            font-style: normal;
+            padding-left: 0.9rem;
+            font-weight: 500;
+        }
+
+        #preview-place_timing {
+            border-left: 3px solid var(--pink);
+            background: rgba(244, 167, 185, 0.08);
+            color: var(--text);
+            font-style: normal;
+            padding-left: 0.9rem;
+            font-weight: 500;
+        }
+
         .pref-preview.show { display: block; }
 
         /* ── Radio items inside card ── */
@@ -690,7 +708,7 @@ if (empty($_SESSION['response_id'])) {
                     <label class="pref-q-label">what do you actually want to talk about?</label>
                     <div class="radio-group">
                         <?php foreach ([
-                            'real stuff — get to know each other properly',
+                            'get to know each other properly',
                             'keep it light and funny, nothing heavy',
                             'random topics, wherever it goes',
                             'i\'ll talk when i feel like it, no pressure',
@@ -711,7 +729,7 @@ if (empty($_SESSION['response_id'])) {
                         <?php foreach ([
                             'talker — i will carry the conversation, don\'t worry',
                             'listener — i\'m better at responding than starting',
-                            'both — depends on who i\'m with',
+                            'both — depends',
                             'neither — i communicate through eye contact',
                             'dancer — hawak ko ang beat',
                         ] as $opt): ?>
@@ -844,11 +862,56 @@ if (empty($_SESSION['response_id'])) {
                         </label>
                         <?php endforeach; ?>
                     </div>
+
+                    <label class="pref-q-label" style="margin-top: 1.2rem; margin-bottom: 0.6rem;">something i didn't list?</label>
+                    <input type="text" name="custom_vibe" placeholder="tell me your idea..." style="width: 100%;">
                 </div>
 
-                <div class="pref-question-card" data-field="custom_vibe" data-section="vibes">
-                    <label class="pref-q-label">something i didn't list?</label>
-                    <input type="text" name="custom_vibe" placeholder="tell me your idea...">
+                <!-- PLACE SHE WANTS TO GO -->
+                <div class="pref-question-card" data-field="place_in_mind" data-section="vibes">
+                    <label class="pref-q-label">is there somewhere you want to go that i should know about?</label>
+                    <p class="pref-q-sub">not trying to pass planning on you but if you have a spot you want to go to, i'll take you there</p>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="place_in_mind" value="yes" id="place-yes-radio"
+                                onchange="handlePlaceInMind('yes'); markSelected(this)">
+                            i do have somewhere in mind
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="place_in_mind" value="no" id="place-no-radio"
+                                onchange="handlePlaceInMind('no'); markSelected(this)">
+                            not really, i'm down anywhere
+                        </label>
+                    </div>
+                    <div class="pref-preview" id="preview-place_in_mind"></div>
+                </div>
+
+                <!-- Place details (hidden until option selected) -->
+                <div id="place-details-section" style="display:none;">
+                    <div class="pref-question-card">
+                        <label class="pref-q-label">what place?</label>
+                        <input type="text" name="place_name" id="place_name_input" placeholder="where do you want to go..." style="margin-bottom: 1.5rem;">
+
+                        <label class="pref-q-label">when do you want to go?</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="place_timing" value="planned_date"
+                                    onchange="showPreview('place_timing', this.value); markSelected(this)">
+                                on our planned date
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="place_timing" value="another_day"
+                                    onchange="showPreview('place_timing', this.value); markSelected(this)">
+                                another day is cool too
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="place_timing" value="not_sure"
+                                    onchange="showPreview('place_timing', this.value); markSelected(this)">
+                                not sure yet
+                            </label>
+                        </div>
+                        <div class="pref-preview" id="preview-place_timing"></div>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-yes"
@@ -881,67 +944,67 @@ function toggleTheme() {
 const previews = {
     date_type: {
         'something lowkey, stay-in type':               'nice, comfortable energy. i can work with that.',
-        'food trip, just drive and eat':                "okay that's genuinely the best kind of date.",
+        'food trip, just drive and eat':                "aight that's genuinely a nice kind of date.",
         'go somewhere with a nice view':                "noted. i'll find a good spot.",
         'do something, not just sit around':            'i like that, keeps things interesting.',
         'totally spontaneous, figure it out as we go':  "okay we're winging it then. i'm in.",
-        'surprise me, i trust you':                     "that's the best answer honestly. pressure's on me now.",
+        'surprise me, i trust you':                     "that's the best answer honestly. pressure's on me now. i got this",
     },
     spontaneity: {
-        'i like knowing what we\'re doing beforehand':  "got it, i'll send you a heads up. no surprises.",
-        'loose plan is fine, just a general idea':      "perfect, that's how i usually do it too.",
-        'figure it out as we go honestly':              'chaos mode it is.',
+        'i like knowing what we\'re doing beforehand':  "got it, i'll send you a heads up",
+        'As long as we have a direction.':              "perfect, i like it that way too.",
+        'figure it out as we go honestly':              'sponty it is.',
         'the more chaotic the better':                  "okay we're going to have a lot of fun.",
     },
     energy: {
-        'lowkey and relaxed':                       "perfect, no need to perform. just show up.",
-        'chill but not boring':                     "that's the sweet spot honestly.",
-        'high energy and fun':                      "okay let's go. i'm ready.",
-        'depends on my mood that day honestly':     "fair enough, i'll just match whatever you bring.",
-        'go with the flow':                         "easy, i can work with that.",
+        'lowkey and relaxed':                       "perfect, no need to perform. just show up type shi.",
+        'chill but not boring':                     "okay we\'re js chill like that",
+        'high energy and fun':                      "okay we gon turn it upppp",
+        'depends on my mood that day honestly':     "fair enough, we'll see",
+        'go with the flow':                         "type shi",
     },
     mood: {
-        'chill and no pressure':                            "that's the goal every time honestly.",
+        'chill and no pressure':                            "that's the goal every time honestly",
         'fun and a little chaotic':                         "perfect, i was hoping you'd say that.",
-        'we\'re both gonna be awkward and that\'s okay':    "honestly refreshing. we'll survive.",
-        'whatever happens, happens':                        "i like that attitude. no overthinking.",
+        'we\'re both gonna be awkward and that\'s okay':    "we'll survive.",
+        'whatever happens, happens':                        "type shiii",
     },
     crowd: {
         'ideally just us, somewhere quiet':         "noted. somewhere we can actually hear each other.",
         'a few people around is fine':              "cool, a little background noise never hurt.",
         'busy place is okay, i don\'t mind noise':  "okay we have a lot of options then.",
-        'doesn\'t matter at all':                   'easy to work with, good.',
+        'doesn\'t matter at all':                   'easy to work with, nice.',
         'i\'ll leave it to you':                    "on me then. i'll pick somewhere good.",
     },
     walking: {
         'minimal, i\'m not here to exercise':           "we'll find somewhere to sit. noted.",
-        'a little is fine':                             "a short walk here and there, that's the plan.",
+        'a little is fine':                             "a short walk here and there, tokay okay",
         'walk me around':                               "okay we might end up somewhere unexpected then.",
         'depends on the place and how i feel that day': "fair, i'll check in with you.",
-        'no walking pls':                               "okay we're staying put. got it.",
+        'no walking pls':                               "how about running",
     },
     convo_style: {
-        'real stuff — get to know each other properly': "i like that. i'll ask you things people usually don't.",
-        'keep it light and funny, nothing heavy':       "no deep dives, just good energy. okay.",
-        'random topics, wherever it goes':              'favorite kind of conversation honestly.',
-        'i\'ll talk when i feel like it, no pressure':  "no pressure at all, i'll carry it when you're quiet.",
+        'get to know each other properly'   : "i like that. Let's actually talk.",
+        'keep it light and funny, nothing heavy':       "alright we'll keep it easy and chill dw",
+        'random topics, wherever it goes':              'I like that',
+        'i\'ll talk when i feel like it, no pressure':  "no pressure at all, we'll keep it comfortable",
     },
     awkwardness: {
-        'talker — i will carry the conversation, don\'t worry':  "okay perfect, i'll match your energy.",
+        'talker — i will carry the conversation, don\'t worry':  "wow perfect",
         'listener — i\'m better at responding than starting':    "that works, i'll ask the questions. don't worry.",
-        'both — depends on who i\'m with':                       "same honestly. we'll just see how it goes.",
+        'both — depends':                       "same honestly",
         'neither — i communicate through eye contact':           "ay angas",
         'dancer — hawak ko ang beat':                            "ge lods sayaw",
     },
     // new logistics previews
     curfew: {
-        'yes, i have a strict curfew':                          "okay noted, we'll make sure you're home on time. no stress.",
+        'yes, i have a strict curfew':                          "okay noted, we'll make sure you're home on time",
         'yes but it\'s flexible depending on the situation':    "got it, i'll keep that in mind and plan accordingly.",
-        'kind of, i just need to let them know':                "that works, just update them and we're good.",
-        'no curfew, i\'m free':                                 "okay we have time then. more options.",
+        'kind of, i just need to let them know':                "that works, just update them and we're good",
+        'no curfew, i\'m free':                                 "wowz okay we have time then",
     },
     parents: {
-        'very strict — they need to know everything':   "noted, we'll make sure everything is above board.",
+        'very strict, they need to know everything':   "noted, we'll make sure everything is above board.",
         'strict but okay if i tell them in advance':    "okay, i'll give you enough notice to sort it out.",
         'chill, just need to update them':              "easy, just drop them a message and we're set.",
         'they don\'t really mind':                      "nice, that makes planning a lot easier.",
@@ -952,6 +1015,15 @@ const previews = {
         'nearby cities are fine':                       "nice, that opens up a lot more options.",
         'doesn\'t matter, i\'m down wherever':          "okay anywhere is on the table then.",
         'depends on the day and situation':             "fair, i'll just check with you when we're planning.",
+    },
+    place_in_mind: {
+        'yes':  "i'll take you there, just say the word",
+        'no':   "alright it's good",
+    },
+    place_timing: {
+        'planned_date':  "perfect, we'll go there on our date",
+        'another_day':   "second date secured ",
+        'not_sure':      "that's cool, we can figure it out as we go",
     },
 };
 
@@ -985,6 +1057,28 @@ function handleComfortCustom() {
     } else {
         input.classList.remove('visible');
         input.value = '';
+    }
+    updateProgress();
+}
+
+// ── Handle place in mind ──
+function handlePlaceInMind(val) {
+    const detailsSection = document.getElementById('place-details-section');
+    const placeNameInput = document.getElementById('place_name_input');
+    const previewEl = document.getElementById('preview-place_in_mind');
+    
+    if (val === 'yes') {
+        detailsSection.style.display = 'block';
+        placeNameInput.focus();
+        previewEl.textContent = "i'll take you there, just say the word";
+        previewEl.classList.add('show');
+    } else {
+        detailsSection.style.display = 'none';
+        placeNameInput.value = '';
+        document.querySelectorAll('input[name="place_timing"]').forEach(r => r.checked = false);
+        document.getElementById('preview-place_timing').classList.remove('show');
+        previewEl.textContent = "aight it's good, i'll take care of it";
+        previewEl.classList.add('show');
     }
     updateProgress();
 }
