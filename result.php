@@ -27,6 +27,15 @@ if ($alreadyScheduled) {
         $displayScheduled = $scheduledDate;
     }
 }
+
+// Load owner instagram for message links
+$ownerUsername = $row['owner_username'] ?? null;
+$instagramLink = 'https://instagram.com/sa.loooong.a'; // default
+if ($ownerUsername) {
+    $ownerStmt = $pdo->prepare("SELECT * FROM site_owners WHERE username = ?");
+    $ownerStmt->execute([$ownerUsername]);
+    $ownerData = $ownerStmt->fetch(PDO::FETCH_ASSOC);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,9 +55,10 @@ if ($alreadyScheduled) {
         body.result-page {
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             padding: 2rem;
+            padding-top: 4rem;
         }
 
         .loading-card {
@@ -63,7 +73,6 @@ if ($alreadyScheduled) {
         }
 
         .result-book {
-            perspective: 1800px;
             max-width: 860px;
             width: 100%;
         }
@@ -120,7 +129,6 @@ if ($alreadyScheduled) {
             font-size: clamp(1.6rem, 3vw, 2.2rem);
             line-height: 1.3;
             color: var(--text);
-            flex: 1;
         }
 
         .result-left h1 .approved {
@@ -140,15 +148,9 @@ if ($alreadyScheduled) {
             width: 100%;
         }
 
-        .btn-sched {
-            color: #fff;
-        }
+        .btn-sched { color: #fff; }
+        .btn-sched.active { background: var(--dark-pink); }
 
-        .btn-sched.active {
-            background: var(--dark-pink);
-        }
-
-        /* already scheduled state on left */
         .already-scheduled-note {
             background: rgba(244, 167, 185, 0.08);
             border: 1px solid rgba(244, 167, 185, 0.3);
@@ -208,9 +210,7 @@ if ($alreadyScheduled) {
             transition: border-color 0.2s;
         }
 
-        .scheduled-edit-inputs input:focus {
-            border-color: var(--pink);
-        }
+        .scheduled-edit-inputs input:focus { border-color: var(--pink); }
 
         .scheduled-edit-buttons {
             display: flex;
@@ -228,25 +228,10 @@ if ($alreadyScheduled) {
             transition: all 0.2s;
         }
 
-        .scheduled-edit-save {
-            background: var(--pink);
-            color: #fff;
-        }
-
-        .scheduled-edit-save:hover {
-            opacity: 0.9;
-        }
-
-        .scheduled-edit-cancel {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--muted);
-        }
-
-        .scheduled-edit-cancel:hover {
-            color: var(--pink);
-            border-color: var(--pink);
-        }
+        .scheduled-edit-save { background: var(--pink); color: #fff; }
+        .scheduled-edit-save:hover { opacity: 0.9; }
+        .scheduled-edit-cancel { background: transparent; border: 1px solid var(--border) !important; color: var(--muted); }
+        .scheduled-edit-cancel:hover { color: var(--pink); border-color: var(--pink) !important; }
 
         .result-theme-btn {
             background: transparent;
@@ -260,10 +245,7 @@ if ($alreadyScheduled) {
             transition: color 0.2s, border-color 0.2s;
         }
 
-        .result-theme-btn:hover {
-            color: var(--pink);
-            border-color: var(--pink);
-        }
+        .result-theme-btn:hover { color: var(--pink); border-color: var(--pink); }
 
         /* ── Right ── */
         .result-right {
@@ -304,8 +286,8 @@ if ($alreadyScheduled) {
             color: var(--muted);
         }
 
+        /* no flex:1 — natural content height */
         .scheduler-box {
-            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
@@ -375,28 +357,24 @@ if ($alreadyScheduled) {
 
         .not-sure-btn:hover { color: var(--pink); }
 
+        /* no flex:1 — natural content height */
         .not-sure-box {
             display: none;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             text-align: center;
-            flex: 1;
             gap: 1rem;
-            animation: fadeUp 0.4s ease;
         }
 
         .not-sure-box.show { display: flex; }
 
+        /* no flex:1 — natural content height */
         .confirmed-box {
             display: none;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             text-align: center;
-            flex: 1;
             gap: 1rem;
-            animation: fadeUp 0.4s ease;
         }
 
         .confirmed-box.show { display: flex; }
@@ -429,6 +407,7 @@ if ($alreadyScheduled) {
             border-radius: 10px;
             padding: 0.6rem 1rem;
             line-height: 1.5;
+            width: 100%;
         }
 
         .confirmed-date-display {
@@ -439,6 +418,7 @@ if ($alreadyScheduled) {
             font-size: 0.88rem;
             color: var(--pink);
             font-weight: 500;
+            width: 100%;
         }
 
         .confirmed-sub {
@@ -458,23 +438,24 @@ if ($alreadyScheduled) {
             transition: color 0.2s, border-color 0.2s;
         }
 
-        .confirmed-resched:hover {
-            color: var(--pink);
-            border-color: var(--pink);
-        }
+        .confirmed-resched:hover { color: var(--pink); border-color: var(--pink); }
 
+        /* margin-top fixed — not auto */
         .result-compat-section {
-            margin-top: auto;
+            margin-top: 1.5rem;
             padding-top: 1.2rem;
             border-top: 1px solid var(--border);
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
         }
 
         .result-divider-label {
             font-size: 0.72rem;
             color: var(--muted);
             text-align: center;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
 
         .compat-optional-btn {
@@ -490,58 +471,29 @@ if ($alreadyScheduled) {
 
         .compat-optional-btn:hover { color: var(--pink); }
 
-        /* ── Mobile ── */
-        @media (max-width: 680px) {
-            body.result-page {
-                padding: 1rem;
-                align-items: flex-start;
-                padding-top: 2rem;
-            }
-
-            .result-wrapper {
-                grid-template-columns: 1fr;
-            }
-
-            .result-wrapper.open {
-                grid-template-columns: 1fr;
-            }
-
-            .result-left {
-                border-right: none !important;
-                border-bottom: 1px solid var(--border);
-                padding: 2rem 1.5rem;
-            }
-
-            .result-right {
-                width: 100%;
-                max-height: 0;
-                transform: none;
-                transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                            opacity 0.4s ease 0.1s,
-                            padding 0.5s ease;
-            }
-
-            .result-right.open {
-                width: 100%;
-                max-height: 1000px;
-                opacity: 1;
-                padding: 2rem 1.5rem;
-                transform: none;
-            }
-
-            .datetime-grid {
-                grid-template-columns: 1fr;
-            }
+        .download-btn {
+            display: block;
+            text-align: center;
+            font-size: 0.82rem;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            color: var(--pink);
+            border: 1px solid rgba(244, 167, 185, 0.3);
+            transition: background 0.2s, border-color 0.2s;
         }
 
-        @media (max-width: 400px) {
-            .result-left { padding: 1.5rem 1.2rem; }
+        .download-btn:hover {
+            background: rgba(244, 167, 185, 0.08);
+            border-color: var(--pink);
         }
 
+        /* ── Message section ── */
         .message-section {
             margin-top: 1.8rem;
             padding-top: 1.8rem;
             border-top: 1px solid rgba(244, 167, 185, 0.2);
+            width: 100%;
         }
 
         .message-label {
@@ -569,13 +521,8 @@ if ($alreadyScheduled) {
             margin-bottom: 0.8rem;
         }
 
-        .message-textarea::placeholder {
-            color: var(--muted);
-        }
-
-        .message-textarea:focus {
-            border-color: var(--pink);
-        }
+        .message-textarea::placeholder { color: var(--muted); }
+        .message-textarea:focus { border-color: var(--pink); }
 
         .message-button {
             width: 100%;
@@ -590,14 +537,8 @@ if ($alreadyScheduled) {
             transition: opacity 0.2s;
         }
 
-        .message-button:hover {
-            opacity: 0.9;
-        }
-
-        .message-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .message-button:hover { opacity: 0.9; }
+        .message-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .message-sent {
             background: rgba(76, 175, 80, 0.1);
@@ -607,6 +548,49 @@ if ($alreadyScheduled) {
             text-align: center;
             color: #4caf50;
             font-size: 0.85rem;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 680px) {
+            body.result-page {
+                padding: 1rem;
+                padding-top: 2rem;
+                align-items: flex-start;
+                justify-content: flex-start;
+            }
+
+            .result-wrapper { grid-template-columns: 1fr; }
+            .result-wrapper.open { grid-template-columns: 1fr; }
+
+            .result-left {
+                border-right: none !important;
+                border-bottom: 1px solid var(--border);
+                padding: 2rem 1.5rem;
+            }
+
+            .result-right {
+                width: 100%;
+                max-height: 0;
+                transform: none;
+                transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                            opacity 0.4s ease 0.1s,
+                            padding 0.5s ease;
+            }
+
+            .result-right.open {
+                width: 100%;
+                max-height: 9999px;
+                opacity: 1;
+                padding: 2rem 1.5rem;
+                transform: none;
+            }
+
+            .datetime-grid { grid-template-columns: 1fr; }
+            .scheduled-edit-inputs { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 400px) {
+            .result-left { padding: 1.5rem 1.2rem; }
         }
     </style>
 </head>
@@ -627,30 +611,37 @@ if ($alreadyScheduled) {
             <div>
                 <div class="result-tag">✦ official result</div>
                 <h1>
-                     Seems like we should go on a 
-                    <span class="approved">date.</span> 
+                    Seems like we should go on a
+                    <span class="approved">date.</span>
                 </h1>
             </div>
 
-            <div class="result-left-bottom">
+            <div class="result-left-bottom" id="leftButtons">
                 <?php if ($alreadyScheduled): ?>
-                    <!-- Already scheduled — show note instead of button -->
                     <div class="already-scheduled-note">
                         <strong>date already set 🌸</strong>
-                        <div class="scheduled-date-display" id="scheduledDateDisplay" onclick="startEditingScheduledDate()">
+                        <div class="scheduled-date-display" id="scheduledDateDisplay"
+                             onclick="startEditingScheduledDate()">
                             <?= $displayScheduled ?>
                         </div>
                     </div>
-                    <a href="view_response.php" class="btn btn-yes btn-sched active" style="text-align:center; display:block;">
-    view details
-</a>
+                    <a href="view_response.php" class="btn btn-yes btn-sched active"
+                       style="text-align:center; display:block; color:#fff; text-decoration:none;">
+                        view details
+                    </a>
                 <?php else: ?>
                     <button class="btn btn-yes btn-sched" id="schedBtn" onclick="openScheduler()">
                         when are u free. sched a date 📅
                     </button>
+                    <button class="btn btn-maybe" id="iplanBtn" onclick="openIPlan()">
+                        i'll plan it, i'll let you know 🗓️
+                    </button>
                 <?php endif; ?>
-                <a href="https://instagram.com/sa.loooong.a" target="_blank" class="btn btn-maybe">
+                <a href="<?= $instagramLink ?>" target="_blank" class="btn btn-maybe">
                     send me a message instead 💌
+                </a>
+                <a href="download_view.php" target="_blank" class="download-btn">
+                    📥 save a copy of your answers
                 </a>
             </div>
         </div>
@@ -665,7 +656,7 @@ if ($alreadyScheduled) {
                 <button class="result-theme-btn" id="themeBtn" onclick="toggleTheme()">☀️ light</button>
             </div>
 
-            <!-- Scheduler (only if not yet scheduled) -->
+            <!-- Scheduler -->
             <div class="scheduler-box" id="schedulerBox"
                  style="<?= $alreadyScheduled ? 'display:none;' : '' ?>">
                 <div>
@@ -697,8 +688,13 @@ if ($alreadyScheduled) {
                 </button>
 
                 <div class="result-compat-section">
-                    <p class="result-divider-label">also, if you're curious —</p>
-                    <a href="compatibility.php" class="compat-optional-btn">check our compatibility 💘</a>
+                    <p class="result-divider-label">also —</p>
+                    <a href="download_view.php" target="_blank" class="download-btn">
+                        📥 save a copy of your answers
+                    </a>
+                    <a href="compatibility.php" class="compat-optional-btn">
+                        check our compatibility 💘
+                    </a>
                 </div>
             </div>
 
@@ -710,7 +706,7 @@ if ($alreadyScheduled) {
                     just message me when you're ready.<br>
                     i'll be here. probably waiting. 😭
                 </p>
-                <a href="https://instagram.com/sa.loooong.a" target="_blank"
+                <a href="<?= $instagramLink ?>" target="_blank"
                    class="btn btn-yes" style="color:#fff; width:100%; text-align:center;">
                     message me on instagram 💌
                 </a>
@@ -718,8 +714,39 @@ if ($alreadyScheduled) {
                     wait actually i have a date in mind
                 </button>
                 <div class="result-compat-section">
-                    <p class="result-divider-label">while you think about it —</p>
-                    <a href="compatibility.php" class="compat-optional-btn">check our compatibility 💘</a>
+                    <p class="result-divider-label">also —</p>
+                    <a href="download_view.php" target="_blank" class="download-btn">
+                        📥 save a copy of your answers
+                    </a>
+                    <a href="compatibility.php" class="compat-optional-btn">
+                        check our compatibility 💘
+                    </a>
+                </div>
+            </div>
+
+            <!-- I plan state -->
+            <div class="not-sure-box" id="iPlanBox">
+                <div class="confirmed-emoji">🗓️</div>
+                <p class="confirmed-title">i got this 🙌</p>
+                <p class="confirmed-funny">
+                    i'll plan everything — just message me so we can check
+                    if the time works for both of us. 🌸
+                </p>
+                <a href="<?= $instagramLink ?>" target="_blank"
+                   class="btn btn-yes" style="color:#fff; width:100%; text-align:center;">
+                    message me on instagram 💌
+                </a>
+                <button class="not-sure-btn" onclick="showSchedulerFromIPlan()">
+                    actually, i want to pick the date myself
+                </button>
+                <div class="result-compat-section">
+                    <p class="result-divider-label">also —</p>
+                    <a href="download_view.php" target="_blank" class="download-btn">
+                        📥 save a copy of your answers
+                    </a>
+                    <a href="compatibility.php" class="compat-optional-btn">
+                        check our compatibility 💘
+                    </a>
                 </div>
             </div>
 
@@ -737,20 +764,30 @@ if ($alreadyScheduled) {
                     i'll be looking forward to it.<br>
                     see you soon, <?= $name ?> 🌸
                 </p>
-                <a href="https://instagram.com/sa.loooong.a" target="_blank" class="confirmed-resched">
+                <a href="<?= $instagramLink ?>" target="_blank" class="confirmed-resched">
                     message me on instagram if you need to resched 💌
                 </a>
-                <div class="result-compat-section">
-                    <p class="result-divider-label">also, if you're curious —</p>
-                    <a href="compatibility.php" class="compat-optional-btn">check our compatibility 💘</a>
-                </div>
 
-                <!-- Message section -->
                 <div class="message-section" id="messageSection">
                     <label class="message-label">💌 leave a message</label>
-                    <textarea class="message-textarea" id="messageText" placeholder="hey! anything you want to tell me before we meet?"></textarea>
-                    <button class="message-button" id="messageSendBtn" onclick="sendMessage()">send message 💌</button>
-                    <div class="message-sent hidden" id="messageSentConfirm">✓ message sent! i'll see it soon 🌸</div>
+                    <textarea class="message-textarea" id="messageText"
+                        placeholder="hey! anything you want to tell me before we meet?"></textarea>
+                    <button class="message-button" id="messageSendBtn" onclick="sendMessage()">
+                        send message 💌
+                    </button>
+                    <div class="message-sent hidden" id="messageSentConfirm">
+                        ✓ message sent! i'll see it soon 🌸
+                    </div>
+                </div>
+
+                <div class="result-compat-section">
+                    <p class="result-divider-label">also —</p>
+                    <a href="download_view.php" target="_blank" class="download-btn">
+                        📥 save a copy of your answers
+                    </a>
+                    <a href="compatibility.php" class="compat-optional-btn">
+                        check our compatibility 💘
+                    </a>
                 </div>
             </div>
 
@@ -782,7 +819,7 @@ if ($alreadyScheduled) {
         schedDateEl.min = `${yyyy}-${mm}-${dd}`;
     }
 
-    // ── Already scheduled? Open right panel immediately, no animation ──
+    // ── Already scheduled? Open right panel immediately ──
     const alreadyScheduled = <?= $alreadyScheduled ? 'true' : 'false' ?>;
 
     setTimeout(() => {
@@ -790,14 +827,12 @@ if ($alreadyScheduled) {
         document.getElementById('resultScreen').classList.remove('hidden');
 
         if (alreadyScheduled) {
-            // open instantly without animation
             const wrapper = document.getElementById('resultWrapper');
             const right   = document.getElementById('resultRight');
             wrapper.style.transition = 'none';
             right.style.transition   = 'none';
             wrapper.classList.add('open');
             right.classList.add('open');
-            // restore transitions after
             setTimeout(() => {
                 wrapper.style.transition = '';
                 right.style.transition   = '';
@@ -808,37 +843,66 @@ if ($alreadyScheduled) {
     // ── Book open ──
     let isOpen = <?= $alreadyScheduled ? 'true' : 'false' ?>;
 
-    function openScheduler() {
+    function openRightPanel() {
         if (isOpen) return;
         isOpen = true;
-
         const wrapper = document.getElementById('resultWrapper');
         const right   = document.getElementById('resultRight');
-        const btn     = document.getElementById('schedBtn');
-
         wrapper.classList.add('open');
         setTimeout(() => { right.classList.add('open'); }, 80);
-
-        if (btn) {
-            btn.classList.add('active');
-            btn.textContent = 'see you soon 🌸';
-        }
-
         setTimeout(() => {
             right.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 400);
     }
 
-    // ── Not sure ──
+    function hideAllRightPanels() {
+        document.getElementById('schedulerBox').style.display  = 'none';
+        document.getElementById('notSureBox').classList.remove('show');
+        document.getElementById('iPlanBox').classList.remove('show');
+        document.getElementById('confirmedBox').classList.remove('show');
+    }
+
+    function openScheduler() {
+        openRightPanel();
+        const btn = document.getElementById('schedBtn');
+        if (btn) { btn.classList.add('active'); btn.textContent = 'see you soon 🌸'; }
+        hideAllRightPanels();
+        document.getElementById('schedulerBox').style.display = 'flex';
+        document.getElementById('schedulerBox').style.flexDirection = 'column';
+        document.getElementById('rightLabel').textContent = 'pick a date 🗓️';
+    }
+
+    function openIPlan() {
+        openRightPanel();
+        const btn = document.getElementById('iplanBtn');
+        if (btn) {
+            btn.classList.add('active');
+            btn.style.background = 'var(--dark-pink)';
+            btn.style.color = '#fff';
+            btn.style.border = 'none';
+            btn.textContent = 'i got this 🙌';
+        }
+        hideAllRightPanels();
+        document.getElementById('iPlanBox').classList.add('show');
+        document.getElementById('rightLabel').textContent = 'i got this 🗓️';
+    }
+
     function showNotSure() {
-        document.getElementById('schedulerBox').style.display = 'none';
+        hideAllRightPanels();
         document.getElementById('notSureBox').classList.add('show');
         document.getElementById('rightLabel').textContent = 'no pressure 🥹';
     }
 
     function showSchedulerAgain() {
-        document.getElementById('notSureBox').classList.remove('show');
-        document.getElementById('schedulerBox').style.display  = 'flex';
+        hideAllRightPanels();
+        document.getElementById('schedulerBox').style.display = 'flex';
+        document.getElementById('schedulerBox').style.flexDirection = 'column';
+        document.getElementById('rightLabel').textContent = 'pick a date 🗓️';
+    }
+
+    function showSchedulerFromIPlan() {
+        hideAllRightPanels();
+        document.getElementById('schedulerBox').style.display = 'flex';
         document.getElementById('schedulerBox').style.flexDirection = 'column';
         document.getElementById('rightLabel').textContent = 'pick a date 🗓️';
     }
@@ -855,21 +919,76 @@ if ($alreadyScheduled) {
         "uy papunta ka talaga ha. 👁️👁️",
     ];
 
+    // ── Save schedule ──
+    function saveSchedule() {
+        const date  = document.getElementById('schedDate').value;
+        const time  = document.getElementById('schedTime').value;
+        const error = document.getElementById('dateError');
+
+        if (!date || !time) {
+            error.style.display = 'block';
+            return;
+        }
+
+        error.style.display = 'none';
+
+        const combined = date + ' ' + time;
+        const dateObj  = new Date(date + 'T' + time);
+
+        const displayDate = dateObj.toLocaleDateString('en-PH', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+        const displayTime = dateObj.toLocaleTimeString('en-PH', {
+            hour: '2-digit', minute: '2-digit'
+        });
+
+        fetch('save_schedule.php', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:    'id=<?= $id ?>&date=' + encodeURIComponent(combined)
+        }).then(() => {
+            const funny = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
+
+            hideAllRightPanels();
+            document.getElementById('confirmedBox').classList.add('show');
+            document.getElementById('confirmedDateDisplay').textContent = displayDate + ' · ' + displayTime;
+            document.getElementById('confirmedFunny').textContent       = funny;
+            document.getElementById('rightLabel').textContent           = "it's a date! 🎉";
+
+            document.getElementById('leftButtons').innerHTML = `
+                <div class="already-scheduled-note">
+                    <strong>date already set 🌸</strong>
+                    ${displayDate} · ${displayTime}
+                </div>
+                <a href="view_response.php" class="btn btn-yes btn-sched active"
+                   style="text-align:center; display:block; color:#fff; text-decoration:none;">
+                    view details
+                </a>
+                <a href="<?= $instagramLink ?>" target="_blank" class="btn btn-maybe"
+                   style="text-align:center; display:block;">
+                    send me a message instead 💌
+                </a>
+                <a href="download_view.php" target="_blank" class="download-btn">
+                    📥 save a copy of your answers
+                </a>
+            `;
+        });
+    }
+
     // ── Edit scheduled date ──
     const origScheduledDate = '<?= $scheduledDate ?>';
-    
+
     function startEditingScheduledDate() {
         const display = document.getElementById('scheduledDateDisplay');
-        
         if (!origScheduledDate) return;
-        
+
         const dateObj = new Date(origScheduledDate + 'Z');
         const yyyy = dateObj.getUTCFullYear();
-        const mm = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
-        const dd = String(dateObj.getUTCDate()).padStart(2, '0');
-        const hh = String(dateObj.getUTCHours()).padStart(2, '0');
-        const min = String(dateObj.getUTCMinutes()).padStart(2, '0');
-        
+        const mm   = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+        const dd   = String(dateObj.getUTCDate()).padStart(2, '0');
+        const hh   = String(dateObj.getUTCHours()).padStart(2, '0');
+        const min  = String(dateObj.getUTCMinutes()).padStart(2, '0');
+
         display.innerHTML = `
             <div class="scheduled-edit-mode">
                 <div class="scheduled-edit-inputs">
@@ -882,72 +1001,55 @@ if ($alreadyScheduled) {
                 </div>
             </div>
         `;
-        
-        const schedDateInput = document.getElementById('editScheduledDate');
+
         const today = new Date();
-        const todayYyyy = today.getFullYear();
-        const todayMm = String(today.getMonth() + 1).padStart(2, '0');
-        const todayDd = String(today.getDate()).padStart(2, '0');
-        schedDateInput.min = `${todayYyyy}-${todayMm}-${todayDd}`;
-        
-        schedDateInput.focus();
+        document.getElementById('editScheduledDate').min =
+            `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
     }
-    
+
     function cancelEditScheduledDate() {
-        const display = document.getElementById('scheduledDateDisplay');
-        display.textContent = '<?= $displayScheduled ?>';
+        document.getElementById('scheduledDateDisplay').innerHTML =
+            `<span><?= $displayScheduled ?></span>`;
     }
-    
+
     function saveEditedScheduledDate() {
-        const dateInput = document.getElementById('editScheduledDate');
-        const timeInput = document.getElementById('editScheduledTime');
-        const date = dateInput.value;
-        const time = timeInput.value;
-        
-        if (!date || !time) {
-            alert('please pick both a date and time');
-            return;
-        }
-        
-        const combined = date + ' ' + time;
-        const dateObj = new Date(date + 'T' + time);
+        const date = document.getElementById('editScheduledDate').value;
+        const time = document.getElementById('editScheduledTime').value;
+
+        if (!date || !time) { alert('pick both a date and time'); return; }
+
+        const combined  = date + ' ' + time;
+        const dateObj   = new Date(date + 'T' + time);
         const displayDate = dateObj.toLocaleDateString('en-PH', {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
         const displayTime = dateObj.toLocaleTimeString('en-PH', {
             hour: '2-digit', minute: '2-digit'
         });
-        
+
         fetch('save_schedule.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'id=<?= $id ?>&date=' + encodeURIComponent(combined)
         }).then(() => {
-            const display = document.getElementById('scheduledDateDisplay');
-            display.innerHTML = `<span>${displayDate} · ${displayTime}</span>`;
-            
-            document.getElementById('confirmedDateDisplay').textContent = displayDate + ' · ' + displayTime;
-        }).catch(err => {
-            console.error('Error saving:', err);
-            alert('Failed to save the new date. Try again.');
-            cancelEditScheduledDate();
+            document.getElementById('scheduledDateDisplay').innerHTML =
+                `<span>${displayDate} · ${displayTime}</span>`;
+            document.getElementById('confirmedDateDisplay').textContent =
+                displayDate + ' · ' + displayTime;
         });
     }
 
     // ── Send message ──
     function sendMessage() {
         const message = document.getElementById('messageText').value.trim();
-        const btn = document.getElementById('messageSendBtn');
+        const btn     = document.getElementById('messageSendBtn');
         const confirm = document.getElementById('messageSentConfirm');
-        
-        if (!message) {
-            alert('write something before sending! 💌');
-            return;
-        }
-        
-        btn.disabled = true;
+
+        if (!message) { alert('write something before sending! 💌'); return; }
+
+        btn.disabled    = true;
         btn.textContent = 'sending...';
-        
+
         fetch('save_message.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -959,78 +1061,20 @@ if ($alreadyScheduled) {
                 confirm.classList.remove('hidden');
                 btn.textContent = 'message sent! 💌';
                 setTimeout(() => {
-                    btn.disabled = false;
+                    btn.disabled    = false;
                     btn.textContent = 'send another message 💌';
                 }, 2000);
             } else {
-                alert('failed to send message. try again.');
-                btn.disabled = false;
+                alert('failed to send. try again.');
+                btn.disabled    = false;
                 btn.textContent = 'send message 💌';
             }
-        }).catch(err => {
-            console.error('Error:', err);
+        }).catch(() => {
             alert('error sending message.');
-            btn.disabled = false;
+            btn.disabled    = false;
             btn.textContent = 'send message 💌';
         });
     }
-
-    // ── Save schedule ──
-    function saveSchedule() {
-    const date  = document.getElementById('schedDate').value;
-    const time  = document.getElementById('schedTime').value;
-    const error = document.getElementById('dateError');
-
-    if (!date || !time) {
-        error.style.display = 'block';
-        return;
-    }
-
-    error.style.display = 'none';
-
-    const combined = date + ' ' + time;
-    const dateObj  = new Date(date + 'T' + time);
-
-    const displayDate = dateObj.toLocaleDateString('en-PH', {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-    });
-    const displayTime = dateObj.toLocaleTimeString('en-PH', {
-        hour: '2-digit', minute: '2-digit'
-    });
-
-    fetch('save_schedule.php', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body:    'id=<?= $id ?>&date=' + encodeURIComponent(combined)
-    }).then(() => {
-        const funny = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
-
-        // ── Update right side ──
-        document.getElementById('schedulerBox').style.display   = 'none';
-        document.getElementById('notSureBox').classList.remove('show');
-        document.getElementById('confirmedBox').classList.add('show');
-        document.getElementById('confirmedDateDisplay').textContent = displayDate + ' · ' + displayTime;
-        document.getElementById('confirmedFunny').textContent       = funny;
-        document.getElementById('rightLabel').textContent           = "it's a date! 🎉";
-
-        // ── Update left side button instantly (no reload needed) ──
-        const leftBottom = document.querySelector('.result-left-bottom');
-        leftBottom.innerHTML = `
-            <div class="already-scheduled-note">
-                <strong>date already set 🌸</strong>
-                ${displayDate} · ${displayTime}
-            </div>
-            <a href="view_response.php" class="btn btn-yes btn-sched active"
-               style="text-align:center; display:block; color:#fff; text-decoration:none;">
-                view details
-            </a>
-            <a href="https://instagram.com/sa.loooong.a" target="_blank" class="btn btn-maybe"
-               style="text-align:center; display:block;">
-                send me a message instead 💌
-            </a>
-        `;
-    });
-}
     </script>
     <script src="js/main.js"></script>
 </body>

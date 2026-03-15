@@ -10,7 +10,7 @@ if (empty($_SESSION['response_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>date preferences 📋</title>
+    <title>date preferences</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <script>
@@ -89,9 +89,7 @@ if (empty($_SESSION['response_id'])) {
             border-color: var(--pink);
         }
 
-        .pref-side-heading {
-            flex: 0;
-        }
+        .pref-side-heading { flex: 0; }
 
         .pref-side-heading h1 {
             font-family: 'Playfair Display', serif;
@@ -107,7 +105,6 @@ if (empty($_SESSION['response_id'])) {
             line-height: 1.7;
         }
 
-        /* category list */
         .pref-side-visual {
             flex: 1;
             display: flex;
@@ -139,15 +136,9 @@ if (empty($_SESSION['response_id'])) {
             transition: color 0.2s;
         }
 
-        .pref-category.active .pref-category-text {
-            color: var(--pink);
-        }
+        .pref-category.active .pref-category-text { color: var(--pink); }
+        .pref-category.active { background: rgba(244, 167, 185, 0.06); }
 
-        .pref-category.active {
-            background: rgba(244, 167, 185, 0.06);
-        }
-
-        /* progress bar */
         .pref-side-bottom {
             padding-top: 1.5rem;
             border-top: 1px solid var(--border);
@@ -193,9 +184,7 @@ if (empty($_SESSION['response_id'])) {
             background: var(--bg);
         }
 
-        .pref-main-inner {
-            max-width: 520px;
-        }
+        .pref-main-inner { max-width: 520px; }
 
         .pref-top-bar {
             display: flex;
@@ -217,7 +206,6 @@ if (empty($_SESSION['response_id'])) {
             color: var(--muted);
         }
 
-        /* section dividers */
         .pref-section-divider {
             font-size: 0.7rem;
             text-transform: uppercase;
@@ -236,7 +224,6 @@ if (empty($_SESSION['response_id'])) {
             background: var(--border);
         }
 
-        /* override form-group label color inside here */
         .pref-main .form-group label {
             color: var(--text);
             font-size: 0.9rem;
@@ -258,32 +245,20 @@ if (empty($_SESSION['response_id'])) {
                 border-bottom: 1px solid var(--border);
             }
 
-            .pref-side-visual {
-                display: none;
-            }
-
-            .pref-side-bottom {
-                display: none;
-            }
+            .pref-side-visual { display: none; }
+            .pref-side-bottom { display: none; }
 
             .pref-side-heading h1 {
                 font-size: 1.4rem;
                 margin-bottom: 0.3rem;
             }
 
-            .pref-main {
-                padding: 2rem 1.5rem 4rem;
-            }
+            .pref-main { padding: 2rem 1.5rem 4rem; }
         }
 
         @media (max-width: 480px) {
-            .pref-side {
-                padding: 1.2rem 1.2rem 1rem;
-            }
-
-            .pref-main {
-                padding: 1.5rem 1.2rem 4rem;
-            }
+            .pref-side { padding: 1.2rem 1.2rem 1rem; }
+            .pref-main { padding: 1.5rem 1.2rem 4rem; }
         }
     </style>
 </head>
@@ -291,9 +266,8 @@ if (empty($_SESSION['response_id'])) {
 
 <div class="pref-layout">
 
-    <!-- ── Left sticky panel ── -->
+    <!-- Left sticky panel -->
     <div class="pref-side">
-
         <div class="pref-side-nav">
             <span class="pref-side-logo">✦</span>
             <div class="pref-side-nav-right">
@@ -303,46 +277,45 @@ if (empty($_SESSION['response_id'])) {
         </div>
 
         <div class="pref-side-heading">
-            <h1>the important questions 🔍</h1>
+            <h1>the important questions</h1>
             <p>tell me how you like things.<br>i'll plan around you.</p>
         </div>
 
         <div class="pref-side-visual" id="categoryList">
             <div class="pref-category" data-section="date">
-                <span class="pref-category-icon">🗓️</span>
-                <span class="pref-category-text">date type & spontaneity</span>
+                <span class="pref-category-icon">✦</span>
+                <span class="pref-category-text">the date itself</span>
             </div>
             <div class="pref-category" data-section="energy">
-                <span class="pref-category-icon">🔋</span>
-                <span class="pref-category-text">energy & mood</span>
+                <span class="pref-category-icon">✦</span>
+                <span class="pref-category-text">energy and mood</span>
             </div>
             <div class="pref-category" data-section="crowd">
-                <span class="pref-category-icon">👥</span>
-                <span class="pref-category-text">crowd & setting</span>
+                <span class="pref-category-icon">✦</span>
+                <span class="pref-category-text">where and how</span>
             </div>
             <div class="pref-category" data-section="convo">
-                <span class="pref-category-icon">💬</span>
-                <span class="pref-category-text">conversation style</span>
+                <span class="pref-category-icon">✦</span>
+                <span class="pref-category-text">the talking part</span>
             </div>
             <div class="pref-category" data-section="vibes">
-                <span class="pref-category-icon">✨</span>
-                <span class="pref-category-text">vibes & activities</span>
+                <span class="pref-category-icon">✦</span>
+                <span class="pref-category-text">vibe and activities</span>
             </div>
         </div>
 
         <div class="pref-side-bottom">
             <div class="pref-progress-label">
                 <span>answered</span>
-                <span class="pref-progress-count" id="progressCount">0 / 11</span>
+                <span class="pref-progress-count" id="progressCount">0 / 9</span>
             </div>
             <div class="pref-progress-track">
                 <div class="pref-progress-fill" id="progressFill"></div>
             </div>
         </div>
-
     </div>
 
-    <!-- ── Right main panel ── -->
+    <!-- Right main panel -->
     <div class="pref-main">
         <div class="pref-main-inner">
 
@@ -353,138 +326,215 @@ if (empty($_SESSION['response_id'])) {
 
             <form action="save_preferences.php" method="POST" id="prefForm">
 
-                <!-- DATE TYPE -->
-                <div class="pref-section-divider" data-section="date">🗓️ the date itself</div>
+                <!-- THE DATE ITSELF -->
+                <div class="pref-section-divider" data-section="date">the date itself</div>
 
                 <div class="form-group" data-field="date_type">
-                    <label>What kind of date sounds best?</label>
+                    <label>what kind of date actually sounds good to you?</label>
                     <div class="radio-group">
-                        <?php foreach (['Cozy indoor date','Outdoor adventure','Food trip','Nice view','Random spontaneous hang out','Surprise me'] as $opt): ?>
+                        <?php foreach ([
+                            'something lowkey, stay-in type',
+                            'food trip, just drive and eat',
+                            'go somewhere with a nice view',
+                            'do something, not just sit around',
+                            'totally spontaneous, figure it out as we go',
+                            'surprise me, i trust you',
+                        ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="date_type" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?>
+                            <input type="radio" name="date_type" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
                 <div class="form-group" data-field="spontaneity">
-                    <label>Spontaneity level ⚡</label>
+                    <label>how planned do you want it?</label>
                     <div class="radio-group">
-                        <?php foreach (['Yes please','A little structure',"Let's wing it",'Chaos'] as $opt): ?>
+                        <?php foreach ([
+                            'i like knowing what we\'re doing beforehand',
+                            'loose plan is fine, just a general idea',
+                            'figure it out as we go honestly',
+                            'the more chaotic the better',
+                        ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="spontaneity" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?>
+                            <input type="radio" name="spontaneity" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
-                <!-- ENERGY & MOOD -->
-                <div class="pref-section-divider" data-section="energy">🔋 energy & mood</div>
+                <!-- ENERGY AND MOOD -->
+                <div class="pref-section-divider" data-section="energy">energy and mood</div>
 
                 <div class="form-group" data-field="energy">
-                    <label>Energy level</label>
+                    <label>how much energy are you bringing?</label>
                     <div class="radio-group">
-                        <?php foreach (['Chill','Medium','Active','Illegal activities (joke)'] as $opt): ?>
+                        <?php foreach ([
+                            'low — let\'s just sit somewhere and exist',
+                            'medium — chill but actually doing something',
+                            'high — i want to actually go places',
+                            'depends on my mood that day honestly',
+                        ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="energy" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?>
+                            <input type="radio" name="energy" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
                 <div class="form-group" data-field="mood">
-                    <label>First date mood 🌙</label>
+                    <label>what's the vibe you're going for?</label>
                     <div class="radio-group">
-                        <?php foreach (['Relaxed','Playful','Adventurous','Slightly awkward but fun'] as $opt): ?>
+                        <?php foreach ([
+                            'chill and no pressure',
+                            'fun and a little chaotic',
+                            'we\'re both gonna be awkward and that\'s okay',
+                            'whatever happens, happens',
+                        ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="mood" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?>
+                            <input type="radio" name="mood" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
-                <!-- CROWD & SETTING -->
-                <div class="pref-section-divider" data-section="crowd">👥 crowd & setting</div>
+                <!-- WHERE AND HOW -->
+                <div class="pref-section-divider" data-section="crowd">where and how</div>
 
                 <div class="form-group" data-field="crowd">
-                    <label>Crowd preference</label>
+                    <label>how many people around us is acceptable?</label>
                     <div class="radio-group">
-                        <?php foreach (['Quiet','Some people','Busy',"Doesn't matter"] as $opt): ?>
+                        <?php foreach ([
+                            'ideally just us, somewhere quiet',
+                            'a few people around is fine',
+                            'busy place is okay, i don\'t mind noise',
+                            'doesn\'t matter at all',
+                        ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="crowd" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?>
+                            <input type="radio" name="crowd" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
                 <div class="form-group" data-field="walking">
-                    <label>Walking tolerance 👟</label>
+                    <label>how much walking can i make you do?</label>
                     <div class="radio-group">
-                        <?php foreach (['Minimal','Some walking','A lot','If we get lost we get lost'] as $opt): ?>
+                        <?php foreach ([
+                            'minimal, i\'m not here to exercise',
+                            'a little is fine',
+                            'walk me around, i don\'t care',
+                            'if we get lost, we get lost',
+                        ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="walking" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?>
+                            <input type="radio" name="walking" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
-                <!-- CONVERSATION -->
-                <div class="pref-section-divider" data-section="convo">💬 conversation</div>
+                <!-- THE TALKING PART -->
+                <div class="pref-section-divider" data-section="convo">the talking part</div>
 
                 <div class="form-group" data-field="convo_style">
-                    <label>Conversation style</label>
+                    <label>what do you actually want to talk about?</label>
                     <div class="radio-group">
-                        <?php foreach (['Deep talks','Random funny stuff','Getting to know each other','Bahala na'] as $opt): ?>
+                        <?php foreach ([
+                            'real stuff — get to know each other properly',
+                            'keep it light and funny, nothing heavy',
+                            'random topics, wherever it goes',
+                            'i\'ll talk when i feel like it, no pressure',
+                        ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="convo_style" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?>
+                            <input type="radio" name="convo_style" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
                 <div class="form-group" data-field="awkwardness">
-                    <label>Awkwardness level 😅</label>
+                    <label>be honest — how awkward are you?</label>
                     <div class="radio-group">
-                        <?php foreach (['Very','A little','Smooth',"I'll carry the conversation"] as $opt): ?>
+                        <?php foreach ([
+                            'very. silences will happen.',
+                            'a little at first, warms up fast',
+                            'not really, i talk a lot',
+                            'i\'ll make it weird on purpose',
+                        ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="awkwardness" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?>
+                            <input type="radio" name="awkwardness" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
                 <div class="form-group" data-field="convo_difficulty">
-                    <label>Conversation difficulty 🎮</label>
+                    <label>how hard is it to get you talking?</label>
                     <div class="radio-group">
-                        <?php foreach (['Easy mode','Medium difficulty','Hard mode','Legendary boss fight'] as $opt): ?>
+                        <?php foreach ([
+                            'easy — ask me anything',
+                            'medium — i need a warmup',
+                            'hard — you\'ll have to work for it',
+                            'good luck',
+                        ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="convo_difficulty" value="<?= htmlspecialchars($opt) ?>"> <?= htmlspecialchars($opt) ?>
+                            <input type="radio" name="convo_difficulty" value="<?= htmlspecialchars($opt) ?>">
+                            <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
-                <!-- VIBES -->
-                <div class="pref-section-divider" data-section="vibes">✨ vibes & activities</div>
+                <!-- VIBE AND ACTIVITIES -->
+                <div class="pref-section-divider" data-section="vibes">vibe and activities</div>
 
                 <div class="form-group" data-field="vibes">
-                    <label>Vibe check — pick all that apply</label>
+                    <label>pick everything that actually sounds good</label>
                     <div class="checkbox-group">
-                        <?php foreach (['Coffee shop','Night drive','Arcade / games','Watch a movie','Street food crawl','Stroll','Parking lot hangout','Beer and smoke','Nature','Dinner','Lunch','Creative activities'] as $v): ?>
+                        <?php foreach ([
+                            'coffee shop',
+                            'night drive',
+                            'arcade or games',
+                            'watch a movie',
+                            'street food',
+                            'random stroll',
+                            'parking lot hangout',
+                            'drinks and chill',
+                            'picnic',
+                            'bookstore or thrift',
+                            'museum date',
+                            'night market/park',
+                            'convenience store run at midnight',
+                            'beach or nature',
+                            'dinner somewhere nice',
+                            'lunch somewhere cheap and good',
+                            'music or a gig',
+                            'just drive, no destination',
+                            'creative stuff — art, crafts, that kind of thing',
+                        ] as $v): ?>
                         <label class="check-item">
-                            <input type="checkbox" name="vibes[]" value="<?= htmlspecialchars($v) ?>"> <?= htmlspecialchars($v) ?>
+                            <input type="checkbox" name="vibes[]" value="<?= htmlspecialchars($v) ?>">
+                            <?= htmlspecialchars($v) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
                 <div class="form-group" data-field="custom_vibe">
-                    <label>Your own idea? 💡</label>
-                    <input type="text" name="custom_vibe" placeholder="suggest something...">
+                    <label>something i didn't list?</label>
+                    <input type="text" name="custom_vibe" placeholder="tell me your idea...">
                 </div>
 
                 <button type="submit" class="btn btn-yes" style="width:100%; margin-top:2rem; color:#fff;">
-                    done na po
+                    done
                 </button>
 
             </form>
@@ -495,7 +545,7 @@ if (empty($_SESSION['response_id'])) {
 
 <script src="js/main.js"></script>
 <script>
-// ── Theme toggle ──
+// Theme toggle
 const themeBtn = document.getElementById('themeBtn');
 const savedTheme = localStorage.getItem('siteTheme') || 'dark';
 themeBtn.textContent = savedTheme === 'light' ? '🌙 dark' : '☀️ light';
@@ -508,26 +558,24 @@ function toggleTheme() {
     themeBtn.textContent = next === 'light' ? '🌙 dark' : '☀️ light';
 }
 
-// ── Progress tracker ──
+// Progress tracker
 const radioFields = [
     'date_type','spontaneity','energy','mood',
     'crowd','walking','convo_style','awkwardness','convo_difficulty'
 ];
-const totalRequired = 9; // 9 radio groups (vibes and custom are optional)
+const totalRequired = 9;
 
 function updateProgress() {
     let answered = 0;
-
     radioFields.forEach(name => {
         if (document.querySelector(`input[name="${name}"]:checked`)) answered++;
     });
-
     const pct = Math.round((answered / totalRequired) * 100);
     document.getElementById('progressFill').style.width = pct + '%';
     document.getElementById('progressCount').textContent = answered + ' / ' + totalRequired;
 }
 
-// ── Active section highlight on scroll ──
+// Active section highlight on scroll
 function updateActiveSection() {
     const dividers = document.querySelectorAll('.pref-section-divider');
     const scrollY  = document.querySelector('.pref-main').scrollTop;

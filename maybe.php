@@ -39,11 +39,11 @@ if ($ownerUsername) {
     $stmt->execute([$ownerUsername]);
     $ownerData = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($ownerData) {
-        if (!empty($ownerData['profile_items']))       $profileItems       = json_decode($ownerData['profile_items'], true);
-        if (!empty($ownerData['promise_text']))        $promiseText        = $ownerData['promise_text'];
-        if (!empty($ownerData['whyyy_text']))          $whyyyText          = $ownerData['whyyy_text'];
-        if (!empty($ownerData['resume_expectations'])) $savedExpectations  = json_decode($ownerData['resume_expectations'], true);
-        if (!empty($ownerData['resume_skills']))       $savedSkills        = json_decode($ownerData['resume_skills'], true);
+        if (!empty($ownerData['profile_items']))       $profileItems      = json_decode($ownerData['profile_items'], true);
+        if (!empty($ownerData['promise_text']))        $promiseText       = $ownerData['promise_text'];
+        if (!empty($ownerData['whyyy_text']))          $whyyyText         = $ownerData['whyyy_text'];
+        if (!empty($ownerData['resume_expectations'])) $savedExpectations = json_decode($ownerData['resume_expectations'], true);
+        if (!empty($ownerData['resume_skills']))       $savedSkills       = json_decode($ownerData['resume_skills'], true);
     }
 }
 ?>
@@ -215,6 +215,48 @@ if ($ownerUsername) {
             line-height: 1.7;
             opacity: 0.9;
         }
+
+        /* ── Perks section ── */
+        .resume-perks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-top: 0.4rem;
+        }
+
+        .resume-perk {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.7rem 0.9rem;
+            font-size: 0.82rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .resume-perk-icon {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .resume-perk-title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--pink);
+            display: block;
+            margin-bottom: 0.15rem;
+        }
+
+        .resume-perk-desc {
+            font-size: 0.75rem;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        @media (max-width: 480px) {
+            .resume-perks { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body class="maybe-page">
@@ -229,7 +271,7 @@ if ($ownerUsername) {
     </div>
 
     <!-- Step 2: Profile — resume style -->
-    <div class="center-card hidden" id="step-profile" style="max-width:620px; text-align:left;">
+    <div class="center-card hidden" id="step-profile" style="max-width:640px; text-align:left;">
         <div class="resume-wrapper">
 
             <!-- Header -->
@@ -269,6 +311,53 @@ if ($ownerUsername) {
                     <span><?= htmlspecialchars($exp) ?></span>
                 </div>
                 <?php endforeach; ?>
+            </div>
+
+            <!-- Date perks — the "you'll never spend" section -->
+            <div class="resume-section">
+                <div class="resume-section-title">date package includes 🎁</div>
+                <div class="resume-perks">
+                    <div class="resume-perk">
+                        <span class="resume-perk-icon">💸</span>
+                        <span class="resume-perk-title">fully covered</span>
+                        <span class="resume-perk-desc">you will never have to spend a single peso. ever. i got it.</span>
+                    </div>
+                    <div class="resume-perk">
+                        <span class="resume-perk-icon">🚗</span>
+                        <span class="resume-perk-title">door to door</span>
+                        <span class="resume-perk-desc">i'll pick you up and drop you off. you just tell me where.</span>
+                    </div>
+                    <div class="resume-perk">
+                        <span class="resume-perk-icon">🗓️</span>
+                        <span class="resume-perk-title">i plan everything</span>
+                        <span class="resume-perk-desc">you don't have to think about a single detail. just show up.</span>
+                    </div>
+                    <div class="resume-perk">
+                        <span class="resume-perk-icon">🍜</span>
+                        <span class="resume-perk-title">you pick the food</span>
+                        <span class="resume-perk-desc">whatever you're craving. your call, no questions asked.</span>
+                    </div>
+                    <div class="resume-perk">
+                        <span class="resume-perk-icon">🌸</span>
+                        <span class="resume-perk-title">zero pressure</span>
+                        <span class="resume-perk-desc">no weird expectations. just two people getting to know each other.</span>
+                    </div>
+                    <div class="resume-perk">
+                        <span class="resume-perk-icon">🏠</span>
+                        <span class="resume-perk-title">home safe, always</span>
+                        <span class="resume-perk-desc">i will make sure you get home safe. non-negotiable.</span>
+                    </div>
+                    <div class="resume-perk">
+                        <span class="resume-perk-icon">☕</span>
+                        <span class="resume-perk-title">coffee or milk tea</span>
+                        <span class="resume-perk-desc">whichever you want. or both. we don't judge here.</span>
+                    </div>
+                    <div class="resume-perk">
+                        <span class="resume-perk-icon">📱</span>
+                        <span class="resume-perk-title">phone stays down</span>
+                        <span class="resume-perk-desc">you have my full attention. no distractions.</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Skills -->
@@ -429,12 +518,12 @@ if ($ownerUsername) {
     }
 
     const previewMessages = {
-        "i don't know you well enough yet":     "that's completely fair. hopefully this helped a little at least 😊",
-        "the timing isn't right for me":        "timing is real — i get that. no rush on anything 🕐",
+        "i don't know you well enough yet":       "that's completely fair. hopefully this helped a little at least 😊",
+        "the timing isn't right for me":          "timing is real — i get that. no rush on anything 🕐",
         "i'm not looking for anything right now": "that's a valid place to be. take your time 🫂",
-        "i'm already talking to someone":       "oh okay! hope that's going well for you 😊",
-        "i just don't like you like that":      "respect for being honest about it. that actually takes guts 😄",
-        "something else":                       "tell me below — no pressure to explain but i appreciate it 🌸",
+        "i'm already talking to someone":         "oh okay! hope that's going well for you 😊",
+        "i just don't like you like that":        "respect for being honest about it. that actually takes guts 😄",
+        "something else":                         "tell me below — no pressure to explain but i appreciate it 🌸",
     };
 
     const sendMessages = {
@@ -467,14 +556,11 @@ if ($ownerUsername) {
     function selectWhyNot(label) {
         document.querySelectorAll('.why-label').forEach(l => l.classList.remove('selected'));
         label.classList.add('selected');
-
         const radio = label.querySelector('input');
         radio.checked = true;
         const val = radio.value;
-
         document.getElementById('customWhyField').style.display =
             val === 'something else' ? 'block' : 'none';
-
         const preview = document.getElementById('whyPreview');
         preview.textContent = previewMessages[val] || '';
         preview.classList.add('show');
@@ -482,10 +568,7 @@ if ($ownerUsername) {
 
     function submitWhyNot() {
         const selected = document.querySelector('input[name="whynot"]:checked');
-        if (!selected) {
-            alert('pick an option 🥺');
-            return;
-        }
+        if (!selected) { alert('pick an option 🥺'); return; }
 
         let reason = selected.value;
         if (reason === 'something else') {

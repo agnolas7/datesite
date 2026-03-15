@@ -20,11 +20,31 @@ if (!empty($_GET['u'])) {
             document.documentElement.setAttribute('data-theme', t);
         })();
     </script>
+    <style>
+        .easter-egg-hint {
+            position: fixed;
+            top: 3.2rem;
+            left: 1.5rem;
+            font-size: 0.65rem;
+            color: var(--muted);
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+            z-index: 100;
+            white-space: nowrap;
+        }
+
+        .logo:hover ~ .easter-egg-hint {
+            opacity: 0.4;
+        }
+    </style>
 </head>
 <body class="landing-page">
 
     <!-- Easter egg logo -->
     <div class="logo" id="easterEggLogo">✦</div>
+    <div class="easter-egg-hint">psst... try clicking me 👀</div>
     <div class="easter-egg-msg" id="easterEggMsg">
         I made this para sa crush kong SN na taga Cabanatuan :p
     </div>

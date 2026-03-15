@@ -276,6 +276,60 @@
             font-weight: 400;
         }
 
+        /* ── Scrollbar ── */
+:root[data-theme="dark"] {
+    scrollbar-width: thin;
+    scrollbar-color: #3a3a3a var(--bg);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 99px;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ── Select dropdown ── */
+:root[data-theme="dark"] select {
+    background: var(--input-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+:root[data-theme="dark"] select:focus {
+    border-color: var(--pink);
+}
+
+:root[data-theme="dark"] select option {
+    background: #1f1f1f;
+    color: #f0ece4;
+}
+
         @media (max-width: 768px) {
             .form-layout { grid-template-columns: 1fr; min-height: unset; }
             .form-side-panel {
@@ -298,7 +352,7 @@
 
 <div class="form-layout">
 
-    <!-- ── Left panel ── -->
+    <!-- Left panel -->
     <div class="form-side-panel">
         <div class="side-nav">
             <span class="side-nav-logo">✦</span>
@@ -310,7 +364,7 @@
 
         <div class="side-heading">
             <h1>let's get to know you 💌</h1>
-            <p>fill this out honestly<br>i actually read these :D</p>
+            <p>fill this out honestly.<br>i actually read these 😄</p>
         </div>
 
         <div class="side-visual">
@@ -321,7 +375,7 @@
                 </div>
                 <div class="side-step-row" id="step-row-1">
                     <div class="side-step-icon" id="step-icon-1">📍</div>
-                    <span class="side-step-label">your location</span>
+                    <span class="side-step-label">where you're from</span>
                 </div>
                 <div class="side-step-row" id="step-row-2">
                     <div class="side-step-icon" id="step-icon-2">💬</div>
@@ -360,7 +414,7 @@
         </div>
     </div>
 
-    <!-- ── Right panel ── -->
+    <!-- Right panel -->
     <div class="form-main-panel">
         <div class="form-container">
 
@@ -373,158 +427,230 @@
 
             <div class="validation-banner hidden" id="validationBanner">
                 <span class="validation-icon">⚠️</span>
-                <span>please answer all questions before continuing!</span>
+                <span>fill out the required ones first!</span>
             </div>
 
             <form id="mainForm" action="save_form.php" method="POST" novalidate>
 
-                <!-- ── THE BASICS ── -->
-                <div class="form-section-divider">who are you 👤</div>
+                <!-- WHO ARE YOU -->
+                <div class="form-section-divider">who are you</div>
 
                 <div class="form-group" id="group-name">
-                    <label>Name / Nickname <span class="required-star">*</span></label>
-                    <input type="text" name="name" id="field-name" placeholder="what do i call you?">
-                    <span class="field-error hidden">this one's required, kahit nickname lang boss</span>
+                    <label>what do i call you? <span class="required-star">*</span></label>
+                    <input type="text" name="name" id="field-name"
+                        placeholder="name, nickname, anything works">
+                    <span class="field-error hidden">kahit nickname lang, i need something to call you 😄</span>
                 </div>
 
                 <div class="form-group" id="group-age">
-                    <label>Age <span class="required-star">*</span></label>
+                    <label>how old are you? <span class="required-star">*</span></label>
                     <select name="age" id="field-age">
-                        <option value="">-- pick one --</option>
+                        <option value="">— pick one —</option>
                         <option>19</option>
                         <option>20</option>
                         <option>21</option>
                         <option>22</option>
                         <option>23+</option>
                     </select>
-                    <span class="field-error hidden">please pick your age, hard pass sa minor</span>
+                    <span class="field-error hidden">hard pass sa minor, sorry 😅</span>
                 </div>
 
                 <div class="form-group" id="group-city">
-                    <label>City / Location <span class="required-star">*</span></label>
-                    <input type="text" name="city" id="field-city" placeholder="or where should i pick you up?">
-                    <span class="field-error hidden">kahit kung san lang magmemeet g</span>
+                    <label>where are you? <span class="required-star">*</span></label>
+                    <input type="text" name="city" id="field-city"
+                        placeholder="city, area, or where should i pick you up?">
+                    <span class="field-error hidden">city or area lang, para makuha ka 😄</span>
                 </div>
 
-                <!-- ── HOW DO WE MEET ── -->
-                <div class="form-section-divider">how do we meet 📲</div>
+                <!-- HOW DO WE MEET -->
+                <div class="form-section-divider">how do we meet</div>
 
                 <div class="form-group" id="group-communication">
-                    <label>Preferred communication <span class="required-star">*</span></label>
+                    <label>where can i actually reach you? <span class="required-star">*</span></label>
                     <div class="checkbox-group">
                         <?php
-                        $comms = ['Instagram','Messenger','Text','Twitter','Telegram','Shopee message','I\'ll just pull up to your house','liham','In our dreams'];
-                        foreach($comms as $c) {
-                            echo "<label class='check-item'><input type='checkbox' name='communication[]' value='$c'> $c</label>";
-                        }
+                        $comms = [
+                            'Instagram',
+                            'Messenger',
+                            'Text',
+                            'Twitter',
+                            'Telegram',
+                            'Shopee message',
+                            "I'll just pull up to your house",
+                            'liham',
+                            'In our dreams',
+                        ];
+                        foreach ($comms as $c):
+                            $safe = htmlspecialchars($c);
                         ?>
+                        <label class="check-item">
+                            <input type="checkbox" name="communication[]" value="<?= $safe ?>">
+                            <?= $safe ?>
+                        </label>
+                        <?php endforeach; ?>
                     </div>
-                    <span class="field-error hidden">pick at least one way to reach you pls</span>
+                    <span class="field-error hidden">pick at least one so i can actually reach you 😄</span>
                 </div>
 
                 <div class="form-group" id="group-best_time">
-                    <label>Best time for a date <span class="required-star">*</span></label>
+                    <label>when's a good time for a date? <span class="required-star">*</span></label>
                     <div class="radio-group">
                         <?php
-                        $times = ['Morning coffee','Afternoon hangout','Sunset','Night vibes'];
-                        foreach($times as $t) {
-                            echo "<label class='radio-item'><input type='radio' name='best_time' value='$t'> $t</label>";
-                        }
+                        $times = [
+                            'Morning — coffee date kind of thing',
+                            'Afternoon — chill hangout',
+                            'Sunset — yeah that time',
+                            'Night — better vibes honestly',
+                        ];
+                        foreach ($times as $t):
+                            $safe = htmlspecialchars($t);
                         ?>
+                        <label class="radio-item">
+                            <input type="radio" name="best_time" value="<?= $safe ?>">
+                            <?= $safe ?>
+                        </label>
+                        <?php endforeach; ?>
                     </div>
-                    <span class="field-error hidden">pick a time that works for you pls</span>
+                    <span class="field-error hidden">pick one that works for you</span>
                 </div>
 
-                <!-- ── BEFORE WE MEET ── -->
-                <div class="form-section-divider">before we eat 🍜</div>
+                <!-- BEFORE WE EAT -->
+                <div class="form-section-divider">before we eat</div>
 
                 <div class="form-group" id="group-food_drink">
-                    <label>Favorite food and drink 🍜 <span class="required-star">*</span></label>
-                    <input type="text" name="food_drink" id="field-food_drink" placeholder="tell me what you like...">
-                    <span class="field-error hidden">food is important!! tell me</span>
+                    <label>what's your go-to food and drink? <span class="required-star">*</span></label>
+                    <input type="text" name="food_drink" id="field-food_drink"
+                        placeholder="anything you really like or always order...">
+                    <span class="field-error hidden">this one's important, food matters a lot 😄</span>
                 </div>
 
                 <div class="form-group" id="group-flower">
-                    <label>If someone randomly handed you a flower, which one would make you smile the most? 🌸 <span class="required-star">*</span></label>
+                    <label>if i randomly showed up with a flower, which one would you actually want? <span class="required-star">*</span></label>
                     <div class="radio-group">
                         <?php
-                        $flowers = ['Sunflower 🌻','Tulip 🌷','Rose 🌹','Daisy 🌼','Lily 🤍'];
-                        foreach($flowers as $f) {
-                            echo "<label class='radio-item'><input type='radio' name='flower' value='$f'> $f</label>";
-                        }
+                        $flowers = ['Sunflower 🌻', 'Tulip 🌷', 'Rose 🌹', 'Daisy 🌼', 'Lily 🤍'];
+                        foreach ($flowers as $f):
+                            $safe = htmlspecialchars($f);
                         ?>
+                        <label class="radio-item">
+                            <input type="radio" name="flower" value="<?= $safe ?>">
+                            <?= $safe ?>
+                        </label>
+                        <?php endforeach; ?>
                         <label class="radio-item">
                             <input type="radio" name="flower" value="__custom_flower__" id="flower-custom-radio">
                             something else...
                         </label>
                     </div>
-                    <input type="text" id="flower-custom-input" class="custom-field-input" placeholder="what flower? 🌿">
-                    <span class="field-error hidden">pick one pls 🌸</span>
+                    <input type="text" id="flower-custom-input" class="custom-field-input"
+                        placeholder="what flower? 🌿">
+                    <span class="field-error hidden">pick one 🌸</span>
                 </div>
 
                 <div class="form-group" id="group-craving">
-                    <label>Anything you're craving lately? 🍰 <span class="optional-label">(optional)</span></label>
-                    <input type="text" name="craving" id="field-craving" placeholder="food, dessert, drink, anything...">
+                    <label>anything you've been craving lately? <span class="optional-label">(optional)</span></label>
+                    <input type="text" name="craving" id="field-craving"
+                        placeholder="food, drink, dessert, anything...">
                 </div>
 
                 <div class="form-group" id="group-temperature">
-                    <label>Temperature preference 🌡️ <span class="required-star">*</span></label>
+                    <label>how do you handle temperature? i need to know where to take you <span class="required-star">*</span></label>
                     <div class="radio-group">
                         <?php
-                        $temps = ['I get cold easily 🥶','I\'m usually fine','I like cold places ❄️','I get hot easily 🥵','Doesn\'t matter'];
-                        foreach($temps as $t) {
-                            echo "<label class='radio-item'><input type='radio' name='temperature' value='$t'> $t</label>";
-                        }
+                        $temps = [
+                            'i get cold easily, i need a jacket everywhere',
+                            "i'm usually fine with most places",
+                            'i actually like cold places, the colder the better',
+                            'i get hot easily, aircon is non-negotiable',
+                            "honestly doesn't matter to me",
+                        ];
+                        foreach ($temps as $t):
+                            $safe = htmlspecialchars($t);
                         ?>
+                        <label class="radio-item">
+                            <input type="radio" name="temperature" value="<?= $safe ?>">
+                            <?= $safe ?>
+                        </label>
+                        <?php endforeach; ?>
                     </div>
-                    <span class="field-error hidden">this helps me plan where to take you 🌡️</span>
+                    <span class="field-error hidden">this helps me pick the right place 🌡️</span>
                 </div>
 
                 <div class="form-group" id="group-dislikes">
-                    <label>Anything you don't enjoy when going out? <span class="optional-label">(optional)</span></label>
+                    <label>anything you don't really enjoy when going out? <span class="optional-label">(optional)</span></label>
                     <div class="checkbox-group">
                         <?php
-                        $dislikes = ['Loud places','Very crowded spots','Long waiting lines','Walking too much','None really'];
-                        foreach($dislikes as $d) {
-                            echo "<label class='check-item'><input type='checkbox' name='dislikes[]' value='$d'> $d</label>";
-                        }
+                        $dislikes = [
+                            'loud places',
+                            'super crowded spots',
+                            'long waiting lines',
+                            'too much walking',
+                            "none really, i'm flexible",
+                        ];
+                        foreach ($dislikes as $d):
+                            $safe = htmlspecialchars($d);
                         ?>
+                        <label class="check-item">
+                            <input type="checkbox" name="dislikes[]" value="<?= $safe ?>">
+                            <?= $safe ?>
+                        </label>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
                 <div class="form-group" id="group-dessert">
-                    <label>Dessert situation 🍨 <span class="required-star">*</span></label>
+                    <label>what's your dessert situation? <span class="required-star">*</span></label>
                     <div class="radio-group">
                         <?php
-                        $desserts = ['Ice cream 🍦','Cake 🎂','Pastries 🥐','Chocolate 🍫','Not really a dessert person'];
-                        foreach($desserts as $d) {
-                            echo "<label class='radio-item'><input type='radio' name='dessert' value='$d'> $d</label>";
-                        }
+                        $desserts = [
+                            'ice cream, always',
+                            'cake is the answer',
+                            'pastries and stuff like that',
+                            'chocolate anything',
+                            "i don't really eat dessert",
+                        ];
+                        foreach ($desserts as $d):
+                            $safe = htmlspecialchars($d);
                         ?>
+                        <label class="radio-item">
+                            <input type="radio" name="dessert" value="<?= $safe ?>">
+                            <?= $safe ?>
+                        </label>
+                        <?php endforeach; ?>
                     </div>
                     <span class="field-error hidden">kahit isang sagot lang 😄</span>
                 </div>
 
                 <div class="form-group" id="group-dealbreaker">
-                    <label>Dealbreaker for you? <span class="required-star">*</span></label>
+                    <label>okay be honest — what's your dealbreaker? <span class="required-star">*</span></label>
                     <div class="radio-group">
                         <?php
-                        $deals = ['Bad music taste','Pineapple on pizza','Slow walkers','None I\'m chill'];
-                        foreach($deals as $d) {
-                            echo "<label class='radio-item'><input type='radio' name='dealbreaker' value='$d'> $d</label>";
-                        }
+                        $deals = [
+                            'bad music taste, that one matters',
+                            'pineapple on pizza, hard no',
+                            'slow walkers, i will lose my mind',
+                            "none honestly, i'm pretty chill",
+                        ];
+                        foreach ($deals as $d):
+                            $safe = htmlspecialchars($d);
                         ?>
+                        <label class="radio-item">
+                            <input type="radio" name="dealbreaker" value="<?= $safe ?>">
+                            <?= $safe ?>
+                        </label>
+                        <?php endforeach; ?>
                         <label class="radio-item">
                             <input type="radio" name="dealbreaker" value="__custom__" id="dealbreaker-custom-radio">
                             something else...
                         </label>
                     </div>
-                    <input type="text" id="dealbreaker-custom-input" class="custom-field-input" placeholder="tell me your dealbreaker...">
+                    <input type="text" id="dealbreaker-custom-input" class="custom-field-input"
+                        placeholder="tell me yours...">
                     <span class="field-error hidden">be honest nyahaha</span>
                 </div>
 
                 <button type="submit" class="btn btn-yes" style="width:100%; margin-top:2rem; color:#fff;">
-                    submit 🌸
+                    next 🌸
                 </button>
 
             </form>
@@ -570,8 +696,7 @@ function bindCustomRadio(radioName, triggerValue, textInput) {
 bindCustomRadio('dealbreaker', '__custom__',        dealbreakerInput);
 bindCustomRadio('flower',      '__custom_flower__', flowerInput);
 
-// ── Step tracker config ──
-// stepIndex matches the side-step-row IDs in the HTML
+// ── Step tracker ──
 const fieldStepMap = [
     { stepIndex: 0, test: () => !!document.getElementById('field-name')?.value.trim() && !!document.getElementById('field-age')?.value },
     { stepIndex: 1, test: () => !!document.getElementById('field-city')?.value.trim() },
@@ -594,8 +719,8 @@ const fieldStepMap = [
     }},
 ];
 
-const stepEmojis   = ['👤','📍','💬','🕐','🍜','🌸','🌡️','🍰','🚩'];
-const totalRequired = 9; // number of required fields
+const stepEmojis    = ['👤','📍','💬','🕐','🍜','🌸','🌡️','🍰','🚩'];
+const totalRequired = 9;
 
 function updateProgress() {
     let filled = 0;
@@ -626,7 +751,7 @@ dealbreakerInput.addEventListener('input', updateProgress);
 flowerInput.addEventListener('input', updateProgress);
 updateProgress();
 
-// ── Validation on submit ──
+// ── Validation ──
 document.getElementById('mainForm').addEventListener('submit', function(e) {
     e.preventDefault();
     let hasError = false;
@@ -650,7 +775,6 @@ document.getElementById('mainForm').addEventListener('submit', function(e) {
                 if (checked.value === '__custom_flower__') {
                     const val = flowerInput.value.trim();
                     if (!val) return false;
-                    // swap so the text gets submitted instead of "__custom_flower__"
                     flowerInput.setAttribute('name', 'flower');
                     flowerInput.setAttribute('type', 'hidden');
                     checked.removeAttribute('name');
