@@ -105,42 +105,93 @@ if (empty($_SESSION['response_id'])) {
             line-height: 1.7;
         }
 
+        /* ── Category checklist on left ── */
         .pref-side-visual {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 0.5rem;
-            padding: 1.5rem 0;
+            gap: 0;
+            padding: 1rem 0;
+            overflow-y: auto;
         }
 
         .pref-category {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            padding: 0.6rem 0.8rem;
+            padding: 0.55rem 0.8rem;
             border-radius: 10px;
             transition: background 0.2s;
+            position: relative;
         }
 
-        .pref-category-icon {
-            font-size: 1rem;
+        .pref-category:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 22px;
+            bottom: -4px;
+            width: 1px;
+            height: 8px;
+            background: var(--border);
+        }
+
+        .pref-cat-icon {
             width: 28px;
-            text-align: center;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--muted);
             flex-shrink: 0;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .pref-category.done .pref-cat-icon {
+            background: var(--pink);
+            border-color: var(--pink);
+            color: #1a0a10;
+            font-weight: 700;
+        }
+
+        .pref-category.active .pref-cat-icon {
+            border-color: var(--pink);
+            color: var(--pink);
+        }
+
+        .pref-cat-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
         }
 
         .pref-category-text {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: var(--muted);
             transition: color 0.2s;
+            line-height: 1.3;
         }
 
-        .pref-category.active .pref-category-text { color: var(--pink); }
-        .pref-category.active { background: rgba(244, 167, 185, 0.06); }
+        .pref-cat-sub {
+            font-size: 0.68rem;
+            color: var(--border);
+            transition: color 0.2s;
+            line-height: 1.2;
+        }
 
+        .pref-category.done .pref-category-text { color: var(--text); }
+        .pref-category.done .pref-cat-sub { color: var(--pink); font-size: 0.65rem; }
+        .pref-category.active .pref-category-text { color: var(--pink); }
+        .pref-category.active { background: rgba(244, 167, 185, 0.05); }
+
+        /* ── Progress ── */
         .pref-side-bottom {
-            padding-top: 1.5rem;
+            padding-top: 1.2rem;
             border-top: 1px solid var(--border);
         }
 
@@ -151,15 +202,8 @@ if (empty($_SESSION['response_id'])) {
             margin-bottom: 0.5rem;
         }
 
-        .pref-progress-label span {
-            font-size: 0.72rem;
-            color: var(--muted);
-        }
-
-        .pref-progress-label .pref-progress-count {
-            color: var(--pink);
-            font-weight: 500;
-        }
+        .pref-progress-label span { font-size: 0.72rem; color: var(--muted); }
+        .pref-progress-label .pref-progress-count { color: var(--pink); font-weight: 500; }
 
         .pref-progress-track {
             width: 100%;
@@ -201,17 +245,15 @@ if (empty($_SESSION['response_id'])) {
             color: var(--text);
         }
 
-        .pref-top-count {
-            font-size: 0.78rem;
-            color: var(--muted);
-        }
+        .pref-top-count { font-size: 0.78rem; color: var(--muted); }
 
+        /* ── Section divider ── */
         .pref-section-divider {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.4px;
             color: var(--muted);
-            margin: 2.2rem 0 1.2rem;
+            margin: 2.5rem 0 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.6rem;
@@ -224,35 +266,199 @@ if (empty($_SESSION['response_id'])) {
             background: var(--border);
         }
 
-        .pref-main .form-group label {
-            color: var(--text);
-            font-size: 0.9rem;
-            font-weight: 500;
+        /* ── Question card ── */
+        .pref-question-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
         }
+
+        .pref-question-card:focus-within {
+            border-color: rgba(244, 167, 185, 0.3);
+        }
+
+        .pref-question-card label.pref-q-label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .pref-question-card .pref-q-sub {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
+            display: block;
+        }
+
+        /* ── Live preview inside card ── */
+        .pref-preview {
+            margin-top: 0.8rem;
+            padding: 0.65rem 0.9rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-style: italic;
+            line-height: 1.5;
+            display: none;
+            animation: fadeUp 0.2s ease;
+        }
+
+        .pref-preview.show { display: block; }
+
+        /* ── Radio items inside card ── */
+        .pref-question-card .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .pref-question-card .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text);
+            transition: background 0.15s;
+            border: 1px solid transparent;
+        }
+
+        .pref-question-card .radio-item:hover {
+            background: var(--input-bg);
+        }
+
+        .pref-question-card .radio-item input[type="radio"] {
+            accent-color: var(--pink);
+            flex-shrink: 0;
+        }
+
+        .pref-question-card .radio-item.selected {
+            background: rgba(244, 167, 185, 0.06);
+            border-color: rgba(244, 167, 185, 0.2);
+        }
+
+        /* ── Checkbox pill style (vibes) ── */
+        .pref-question-card .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .pref-question-card .check-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.3rem 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text);
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .pref-question-card .check-item:has(input:checked) {
+            border-color: var(--pink);
+            background: rgba(244, 167, 185, 0.08);
+            color: var(--pink);
+        }
+
+        .pref-question-card .check-item input[type="checkbox"] {
+            accent-color: var(--pink);
+        }
+
+        /* ── Comfort checkbox list style (vertical) ── */
+        .comfort-check-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .comfort-check-list .check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.84rem;
+            color: var(--text);
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            width: 100%;
+        }
+
+        .comfort-check-list .check-item:has(input:checked) {
+            border-color: rgba(244, 167, 185, 0.35);
+            background: rgba(244, 167, 185, 0.06);
+            color: var(--text);
+        }
+
+        .comfort-check-list .check-item input[type="checkbox"] {
+            accent-color: var(--pink);
+            flex-shrink: 0;
+        }
+
+        /* ── Text inputs ── */
+        .pref-question-card input[type="text"] {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .pref-question-card input[type="text"]:focus {
+            border-color: var(--pink);
+        }
+
+        .comfort-custom-input {
+            display: none;
+            margin-top: 0.6rem;
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .comfort-custom-input.visible { display: block; animation: fadeUp 0.2s ease; }
+        .comfort-custom-input:focus { border-color: var(--pink); }
 
         /* ── Mobile ── */
         @media (max-width: 768px) {
-            .pref-layout {
-                grid-template-columns: 1fr;
-                min-height: unset;
-            }
-
+            .pref-layout { grid-template-columns: 1fr; min-height: unset; }
             .pref-side {
-                position: relative;
-                height: auto;
+                position: relative; height: auto;
                 padding: 1.5rem 1.5rem 1.2rem;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
+                border-right: none; border-bottom: 1px solid var(--border);
             }
-
             .pref-side-visual { display: none; }
             .pref-side-bottom { display: none; }
-
-            .pref-side-heading h1 {
-                font-size: 1.4rem;
-                margin-bottom: 0.3rem;
-            }
-
+            .pref-side-heading h1 { font-size: 1.4rem; margin-bottom: 0.3rem; }
             .pref-main { padding: 2rem 1.5rem 4rem; }
         }
 
@@ -271,7 +477,7 @@ if (empty($_SESSION['response_id'])) {
         <div class="pref-side-nav">
             <span class="pref-side-logo">✦</span>
             <div class="pref-side-nav-right">
-                <button class="pref-theme-btn" id="themeBtn" onclick="toggleTheme()">☀️ light</button>
+                <button class="pref-theme-btn" id="themeBtn" onclick="toggleTheme()">light</button>
                 <span class="pref-step-label">step 3 of 3</span>
             </div>
         </div>
@@ -282,25 +488,40 @@ if (empty($_SESSION['response_id'])) {
         </div>
 
         <div class="pref-side-visual" id="categoryList">
-            <div class="pref-category" data-section="date">
-                <span class="pref-category-icon">✦</span>
-                <span class="pref-category-text">the date itself</span>
+            <div class="pref-category" data-section="date" id="cat-date">
+                <div class="pref-cat-icon" id="cat-icon-date">1</div>
+                <div class="pref-cat-info">
+                    <span class="pref-category-text">the date itself</span>
+                    <span class="pref-cat-sub" id="cat-sub-date">2 questions</span>
+                </div>
             </div>
-            <div class="pref-category" data-section="energy">
-                <span class="pref-category-icon">✦</span>
-                <span class="pref-category-text">energy and mood</span>
+            <div class="pref-category" data-section="energy" id="cat-energy">
+                <div class="pref-cat-icon" id="cat-icon-energy">2</div>
+                <div class="pref-cat-info">
+                    <span class="pref-category-text">energy and mood</span>
+                    <span class="pref-cat-sub" id="cat-sub-energy">2 questions</span>
+                </div>
             </div>
-            <div class="pref-category" data-section="crowd">
-                <span class="pref-category-icon">✦</span>
-                <span class="pref-category-text">where and how</span>
+            <div class="pref-category" data-section="crowd" id="cat-crowd">
+                <div class="pref-cat-icon" id="cat-icon-crowd">3</div>
+                <div class="pref-cat-info">
+                    <span class="pref-category-text">where and how</span>
+                    <span class="pref-cat-sub" id="cat-sub-crowd">2 questions</span>
+                </div>
             </div>
-            <div class="pref-category" data-section="convo">
-                <span class="pref-category-icon">✦</span>
-                <span class="pref-category-text">the talking part</span>
+            <div class="pref-category" data-section="convo" id="cat-convo">
+                <div class="pref-cat-icon" id="cat-icon-convo">4</div>
+                <div class="pref-cat-info">
+                    <span class="pref-category-text">the talking part</span>
+                    <span class="pref-cat-sub" id="cat-sub-convo">3 questions</span>
+                </div>
             </div>
-            <div class="pref-category" data-section="vibes">
-                <span class="pref-category-icon">✦</span>
-                <span class="pref-category-text">vibe and activities</span>
+            <div class="pref-category" data-section="vibes" id="cat-vibes">
+                <div class="pref-cat-icon" id="cat-icon-vibes">5</div>
+                <div class="pref-cat-info">
+                    <span class="pref-category-text">vibe and activities</span>
+                    <span class="pref-cat-sub" id="cat-sub-vibes">pick what sounds good</span>
+                </div>
             </div>
         </div>
 
@@ -316,7 +537,7 @@ if (empty($_SESSION['response_id'])) {
     </div>
 
     <!-- Right main panel -->
-    <div class="pref-main">
+    <div class="pref-main" id="prefMain">
         <div class="pref-main-inner">
 
             <div class="pref-top-bar">
@@ -329,8 +550,8 @@ if (empty($_SESSION['response_id'])) {
                 <!-- THE DATE ITSELF -->
                 <div class="pref-section-divider" data-section="date">the date itself</div>
 
-                <div class="form-group" data-field="date_type">
-                    <label>what kind of date actually sounds good to you?</label>
+                <div class="pref-question-card" data-field="date_type" data-section="date">
+                    <label class="pref-q-label">what kind of date actually sounds good to you?</label>
                     <div class="radio-group">
                         <?php foreach ([
                             'something lowkey, stay-in type',
@@ -341,15 +562,17 @@ if (empty($_SESSION['response_id'])) {
                             'surprise me, i trust you',
                         ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="date_type" value="<?= htmlspecialchars($opt) ?>">
+                            <input type="radio" name="date_type" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('date_type', this.value); markSelected(this)">
                             <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
+                    <div class="pref-preview" id="preview-date_type"></div>
                 </div>
 
-                <div class="form-group" data-field="spontaneity">
-                    <label>how planned do you want it?</label>
+                <div class="pref-question-card" data-field="spontaneity" data-section="date">
+                    <label class="pref-q-label">how planned do you want it?</label>
                     <div class="radio-group">
                         <?php foreach ([
                             'i like knowing what we\'re doing beforehand',
@@ -358,35 +581,40 @@ if (empty($_SESSION['response_id'])) {
                             'the more chaotic the better',
                         ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="spontaneity" value="<?= htmlspecialchars($opt) ?>">
+                            <input type="radio" name="spontaneity" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('spontaneity', this.value); markSelected(this)">
                             <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
+                    <div class="pref-preview" id="preview-spontaneity"></div>
                 </div>
 
                 <!-- ENERGY AND MOOD -->
                 <div class="pref-section-divider" data-section="energy">energy and mood</div>
 
-                <div class="form-group" data-field="energy">
-                    <label>how much energy are you bringing?</label>
+                <div class="pref-question-card" data-field="energy" data-section="energy">
+                    <label class="pref-q-label">how should we keep the energy so i don't drain your social battery?</label>
                     <div class="radio-group">
                         <?php foreach ([
-                            'low — let\'s just sit somewhere and exist',
-                            'medium — chill but actually doing something',
-                            'high — i want to actually go places',
+                            'lowkey and relaxed',
+                            'chill but not boring',
+                            'high energy and fun',
                             'depends on my mood that day honestly',
+                            'go with the flow',
                         ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="energy" value="<?= htmlspecialchars($opt) ?>">
+                            <input type="radio" name="energy" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('energy', this.value); markSelected(this)">
                             <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
+                    <div class="pref-preview" id="preview-energy"></div>
                 </div>
 
-                <div class="form-group" data-field="mood">
-                    <label>what's the vibe you're going for?</label>
+                <div class="pref-question-card" data-field="mood" data-section="energy">
+                    <label class="pref-q-label">what's the vibe you're going for?</label>
                     <div class="radio-group">
                         <?php foreach ([
                             'chill and no pressure',
@@ -395,55 +623,63 @@ if (empty($_SESSION['response_id'])) {
                             'whatever happens, happens',
                         ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="mood" value="<?= htmlspecialchars($opt) ?>">
+                            <input type="radio" name="mood" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('mood', this.value); markSelected(this)">
                             <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
+                    <div class="pref-preview" id="preview-mood"></div>
                 </div>
 
                 <!-- WHERE AND HOW -->
                 <div class="pref-section-divider" data-section="crowd">where and how</div>
 
-                <div class="form-group" data-field="crowd">
-                    <label>how many people around us is acceptable?</label>
+                <div class="pref-question-card" data-field="crowd" data-section="crowd">
+                    <label class="pref-q-label">how many people around us is acceptable?</label>
                     <div class="radio-group">
                         <?php foreach ([
                             'ideally just us, somewhere quiet',
                             'a few people around is fine',
                             'busy place is okay, i don\'t mind noise',
                             'doesn\'t matter at all',
+                            'i\'ll leave it to you',
                         ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="crowd" value="<?= htmlspecialchars($opt) ?>">
+                            <input type="radio" name="crowd" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('crowd', this.value); markSelected(this)">
                             <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
+                    <div class="pref-preview" id="preview-crowd"></div>
                 </div>
 
-                <div class="form-group" data-field="walking">
-                    <label>how much walking can i make you do?</label>
+                <div class="pref-question-card" data-field="walking" data-section="crowd">
+                    <label class="pref-q-label">how much walking can i make you do?</label>
                     <div class="radio-group">
                         <?php foreach ([
                             'minimal, i\'m not here to exercise',
                             'a little is fine',
-                            'walk me around, i don\'t care',
-                            'if we get lost, we get lost',
+                            'walk me around',
+                            'depends on the place and how i feel that day',
+                            'no walking pls',
                         ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="walking" value="<?= htmlspecialchars($opt) ?>">
+                            <input type="radio" name="walking" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('walking', this.value); markSelected(this)">
                             <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
+                    <div class="pref-preview" id="preview-walking"></div>
                 </div>
 
                 <!-- THE TALKING PART -->
                 <div class="pref-section-divider" data-section="convo">the talking part</div>
 
-                <div class="form-group" data-field="convo_style">
-                    <label>what do you actually want to talk about?</label>
+                <div class="pref-question-card" data-field="convo_style" data-section="convo">
+                    <label class="pref-q-label">what do you actually want to talk about?</label>
                     <div class="radio-group">
                         <?php foreach ([
                             'real stuff — get to know each other properly',
@@ -452,72 +688,83 @@ if (empty($_SESSION['response_id'])) {
                             'i\'ll talk when i feel like it, no pressure',
                         ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="convo_style" value="<?= htmlspecialchars($opt) ?>">
+                            <input type="radio" name="convo_style" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('convo_style', this.value); markSelected(this)">
                             <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
+                    <div class="pref-preview" id="preview-convo_style"></div>
                 </div>
 
-                <div class="form-group" data-field="awkwardness">
-                    <label>be honest — how awkward are you?</label>
+                <div class="pref-question-card" data-field="awkwardness" data-section="convo">
+                    <label class="pref-q-label">are you more of a talker, a listener, or somewhere in between?</label>
                     <div class="radio-group">
                         <?php foreach ([
-                            'very. silences will happen.',
-                            'a little at first, warms up fast',
-                            'not really, i talk a lot',
-                            'i\'ll make it weird on purpose',
+                            'talker — i will carry the conversation, don\'t worry',
+                            'listener — i\'m better at responding than starting',
+                            'both — depends on who i\'m with',
+                            'neither — i communicate through eye contact',
+                            'dancer — hawak ko ang beat',
                         ] as $opt): ?>
                         <label class="radio-item">
-                            <input type="radio" name="awkwardness" value="<?= htmlspecialchars($opt) ?>">
+                            <input type="radio" name="awkwardness" value="<?= htmlspecialchars($opt) ?>"
+                                onchange="showPreview('awkwardness', this.value); markSelected(this)">
                             <?= htmlspecialchars($opt) ?>
                         </label>
                         <?php endforeach; ?>
                     </div>
+                    <div class="pref-preview" id="preview-awkwardness"></div>
                 </div>
 
-                <div class="form-group" data-field="convo_difficulty">
-                    <label>how hard is it to get you talking?</label>
-                    <div class="radio-group">
+                <div class="pref-question-card" data-field="convo_difficulty" data-section="convo">
+                    <label class="pref-q-label">anything that would make you more comfortable around me?</label>
+                    <span class="pref-q-sub">pick as many as you like — i genuinely want to know</span>
+                    <div class="comfort-check-list">
                         <?php foreach ([
-                            'easy — ask me anything',
-                            'medium — i need a warmup',
-                            'hard — you\'ll have to work for it',
-                            'good luck',
-                        ] as $opt): ?>
-                        <label class="radio-item">
-                            <input type="radio" name="convo_difficulty" value="<?= htmlspecialchars($opt) ?>">
-                            <?= htmlspecialchars($opt) ?>
+                            'don\'t put me on the spot too much at the start',
+                            'let me warm up before going into deep topics',
+                            'keep the mood light, especially at first',
+                            'don\'t make it feel like an interview',
+                            'let silences just exist, don\'t fill them awkwardly',
+                            'bring food. food helps.',
+                            'just be yourself, i\'ll relax if you\'re relaxed',
+                            'ask me about things i actually care about',
+                            'nothing specific, i\'m usually okay',
+                        ] as $tip): ?>
+                        <label class="check-item">
+                            <input type="checkbox" name="convo_difficulty[]"
+                                value="<?= htmlspecialchars($tip) ?>"
+                                onchange="updateProgress()">
+                            <?= htmlspecialchars($tip) ?>
                         </label>
                         <?php endforeach; ?>
+                        <label class="check-item">
+                            <input type="checkbox" name="convo_difficulty[]"
+                                value="__custom_comfort__"
+                                id="comfort-custom-cb"
+                                onchange="handleComfortCustom()">
+                            something else
+                        </label>
                     </div>
+                    <input type="text" id="comfort-custom-input" class="comfort-custom-input"
+                        placeholder="tell me what helps...">
                 </div>
 
                 <!-- VIBE AND ACTIVITIES -->
                 <div class="pref-section-divider" data-section="vibes">vibe and activities</div>
 
-                <div class="form-group" data-field="vibes">
-                    <label>pick everything that actually sounds good</label>
+                <div class="pref-question-card" data-field="vibes" data-section="vibes">
+                    <label class="pref-q-label">pick everything that actually sounds good</label>
                     <div class="checkbox-group">
                         <?php foreach ([
-                            'coffee shop',
-                            'night drive',
-                            'arcade or games',
-                            'watch a movie',
-                            'street food',
-                            'random stroll',
-                            'parking lot hangout',
-                            'drinks and chill',
-                            'picnic',
-                            'bookstore or thrift',
-                            'museum date',
-                            'night market/park',
-                            'convenience store run at midnight',
-                            'beach or nature',
-                            'dinner somewhere nice',
-                            'lunch somewhere cheap and good',
-                            'music or a gig',
-                            'just drive, no destination',
+                            'coffee shop', 'night drive', 'arcade or games',
+                            'watch a movie', 'street food', 'random stroll',
+                            'parking lot hangout', 'drinks and chill', 'picnic',
+                            'bookstore or thrift', 'museum date', 'night market/park',
+                            'convenience store run at midnight', 'beach or nature',
+                            'dinner somewhere nice', 'lunch somewhere cheap and good',
+                            'music or a gig', 'just drive, no destination',
                             'creative stuff — art, crafts, that kind of thing',
                         ] as $v): ?>
                         <label class="check-item">
@@ -528,12 +775,13 @@ if (empty($_SESSION['response_id'])) {
                     </div>
                 </div>
 
-                <div class="form-group" data-field="custom_vibe">
-                    <label>something i didn't list?</label>
+                <div class="pref-question-card" data-field="custom_vibe" data-section="vibes">
+                    <label class="pref-q-label">something i didn't list?</label>
                     <input type="text" name="custom_vibe" placeholder="tell me your idea...">
                 </div>
 
-                <button type="submit" class="btn btn-yes" style="width:100%; margin-top:2rem; color:#fff;">
+                <button type="submit" class="btn btn-yes"
+                    style="width:100%; margin-top:2rem; color:#fff;">
                     done
                 </button>
 
@@ -545,24 +793,158 @@ if (empty($_SESSION['response_id'])) {
 
 <script src="js/main.js"></script>
 <script>
-// Theme toggle
+// ── Theme ──
 const themeBtn = document.getElementById('themeBtn');
 const savedTheme = localStorage.getItem('siteTheme') || 'dark';
-themeBtn.textContent = savedTheme === 'light' ? '🌙 dark' : '☀️ light';
+themeBtn.textContent = savedTheme === 'light' ? 'dark' : 'light';
 
 function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme');
     const next = current === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('siteTheme', next);
-    themeBtn.textContent = next === 'light' ? '🌙 dark' : '☀️ light';
+    themeBtn.textContent = next === 'light' ? 'dark' : 'light';
 }
 
-// Progress tracker
-const radioFields = [
-    'date_type','spontaneity','energy','mood',
-    'crowd','walking','convo_style','awkwardness','convo_difficulty'
-];
+// ── Preview messages — matched exactly to your options ──
+const previews = {
+    date_type: {
+        'something lowkey, stay-in type':               'nice, comfortable energy. i can work with that.',
+        'food trip, just drive and eat':                "okay that's genuinely the best kind of date.",
+        'go somewhere with a nice view':                "noted. i'll find a good spot.",
+        'do something, not just sit around':            'i like that, keeps things interesting.',
+        'totally spontaneous, figure it out as we go':  "okay we're winging it then. i'm in.",
+        'surprise me, i trust you':                     "that's the best answer honestly. pressure's on me now.",
+    },
+    spontaneity: {
+        'i like knowing what we\'re doing beforehand':  "got it, i'll send you a heads up. no surprises.",
+        'loose plan is fine, just a general idea':      "perfect, that's how i usually do it too.",
+        'figure it out as we go honestly':              'chaos mode it is.',
+        'the more chaotic the better':                  "okay we're going to have a lot of fun.",
+    },
+    energy: {
+        'lowkey and relaxed':                       "perfect, no need to perform. just show up.",
+        'chill but not boring':                     "that's the sweet spot honestly.",
+        'high energy and fun':                      "okay let's go. i'm ready.",
+        'depends on my mood that day honestly':     "fair enough, i'll just match whatever you bring.",
+        'go with the flow':                         "easy, i can work with that.",
+    },
+    mood: {
+        'chill and no pressure':                            "that's the goal every time honestly.",
+        'fun and a little chaotic':                         "perfect, i was hoping you'd say that.",
+        'we\'re both gonna be awkward and that\'s okay':    "honestly refreshing. we'll survive.",
+        'whatever happens, happens':                        "i like that attitude. no overthinking.",
+    },
+    crowd: {
+        'ideally just us, somewhere quiet':     "noted. somewhere we can actually hear each other.",
+        'a few people around is fine':          "cool, a little background noise never hurt.",
+        'busy place is okay, i don\'t mind noise': "okay we have a lot of options then.",
+        'doesn\'t matter at all':               'easy to work with, good.',
+        'i\'ll leave it to you':                "on me then. i'll pick somewhere good.",
+    },
+    walking: {
+        'minimal, i\'m not here to exercise':           "we'll find somewhere to sit. noted.",
+        'a little is fine':                             "a short walk here and there, that's the plan.",
+        'walk me around':                               "okay we might end up somewhere unexpected then.",
+        'depends on the place and how i feel that day': "fair, i'll check in with you.",
+        'no walking pls':                               "okay we're staying put. got it.",
+    },
+    convo_style: {
+        'real stuff — get to know each other properly': "i like that. i'll ask you things people usually don't.",
+        'keep it light and funny, nothing heavy':       "no deep dives, just good energy. okay.",
+        'random topics, wherever it goes':              'favorite kind of conversation honestly.',
+        'i\'ll talk when i feel like it, no pressure':  "no pressure at all, i'll carry it when you're quiet.",
+    },
+    awkwardness: {
+        'talker — i will carry the conversation, don\'t worry':     "okay perfect, i'll match your energy.",
+        'listener — i\'m better at responding than starting':       "that works, i'll ask the questions. don't worry.",
+        'both — depends on who i\'m with':                          "same honestly. we'll just see how it goes.",
+        'neither — i communicate through eye contact'       :    "ay angas",
+        'dancer — hawak ko ang beat':                                  "ge lods sayaw",
+    },
+};
+
+function showPreview(field, val) {
+    const el  = document.getElementById('preview-' + field);
+    const msg = previews[field]?.[val];
+    if (el && msg) {
+        el.textContent = msg;
+        el.classList.add('show');
+    } else if (el) {
+        el.classList.remove('show');
+    }
+    updateProgress();
+}
+
+// ── Highlight selected radio ──
+function markSelected(input) {
+    const group = input.closest('.radio-group');
+    if (!group) return;
+    group.querySelectorAll('.radio-item').forEach(l => l.classList.remove('selected'));
+    input.closest('.radio-item').classList.add('selected');
+}
+
+// ── Comfort custom ──
+function handleComfortCustom() {
+    const cb    = document.getElementById('comfort-custom-cb');
+    const input = document.getElementById('comfort-custom-input');
+    if (cb.checked) {
+        input.classList.add('visible');
+        input.focus();
+    } else {
+        input.classList.remove('visible');
+        input.value = '';
+    }
+    updateProgress();
+}
+
+// ── Category checklist config ──
+const catFields = {
+    date:   ['date_type', 'spontaneity'],
+    energy: ['energy', 'mood'],
+    crowd:  ['crowd', 'walking'],
+    convo:  ['convo_style', 'awkwardness'],
+    vibes:  [],
+};
+
+const catDoneText = {
+    date:   'both answered',
+    energy: 'both answered',
+    crowd:  'both answered',
+    convo:  'all answered',
+    vibes:  'picked',
+};
+
+function updateCategoryStatus() {
+    Object.entries(catFields).forEach(([cat, fields]) => {
+        const catEl  = document.getElementById('cat-' + cat);
+        const iconEl = document.getElementById('cat-icon-' + cat);
+        const subEl  = document.getElementById('cat-sub-' + cat);
+        if (!catEl) return;
+
+        let done = false;
+        if (cat === 'vibes') {
+            done = document.querySelectorAll('input[name="vibes[]"]:checked').length > 0;
+        } else {
+            done = fields.every(f => document.querySelector(`input[name="${f}"]:checked`));
+        }
+
+        if (done) {
+            catEl.classList.add('done');
+            catEl.classList.remove('active');
+            if (iconEl) iconEl.textContent = '✓';
+            if (subEl)  subEl.textContent  = catDoneText[cat] || 'done';
+        } else {
+            catEl.classList.remove('done');
+            if (iconEl && !catEl.classList.contains('active')) {
+                iconEl.textContent = String(Object.keys(catFields).indexOf(cat) + 1);
+            }
+        }
+    });
+}
+
+// ── Progress ──
+const radioFields   = ['date_type','spontaneity','energy','mood','crowd','walking','convo_style','awkwardness'];
 const totalRequired = 9;
 
 function updateProgress() {
@@ -570,32 +952,60 @@ function updateProgress() {
     radioFields.forEach(name => {
         if (document.querySelector(`input[name="${name}"]:checked`)) answered++;
     });
+    // comfort tips count as 1 if at least one checked
+    if (document.querySelectorAll('input[name="convo_difficulty[]"]:checked').length > 0) answered++;
+
     const pct = Math.round((answered / totalRequired) * 100);
     document.getElementById('progressFill').style.width = pct + '%';
     document.getElementById('progressCount').textContent = answered + ' / ' + totalRequired;
+    updateCategoryStatus();
 }
 
-// Active section highlight on scroll
+// ── Active section on scroll ──
 function updateActiveSection() {
     const dividers = document.querySelectorAll('.pref-section-divider');
-    const scrollY  = document.querySelector('.pref-main').scrollTop;
+    const scrollY  = document.getElementById('prefMain').scrollTop;
 
-    let current = null;
+    let currentSection = null;
     dividers.forEach(d => {
-        const top = d.offsetTop - 100;
-        if (scrollY >= top) current = d.dataset.section;
+        if (scrollY >= d.offsetTop - 120) currentSection = d.dataset.section;
     });
 
     document.querySelectorAll('.pref-category').forEach(cat => {
-        cat.classList.toggle('active', cat.dataset.section === current);
+        const sec    = cat.dataset.section;
+        const icon   = document.getElementById('cat-icon-' + sec);
+        const isDone = cat.classList.contains('done');
+
+        if (sec === currentSection && !isDone) {
+            cat.classList.add('active');
+            if (icon) icon.textContent = String(Object.keys(catFields).indexOf(sec) + 1);
+        } else {
+            cat.classList.remove('active');
+        }
     });
 }
 
-document.querySelectorAll('input[type="radio"]').forEach(el => {
-    el.addEventListener('change', updateProgress);
+// ── Submit — inject comfort custom text ──
+document.getElementById('prefForm').addEventListener('submit', function() {
+    const cb    = document.getElementById('comfort-custom-cb');
+    const input = document.getElementById('comfort-custom-input');
+    if (cb?.checked && input?.value.trim()) {
+        const h = document.createElement('input');
+        h.type = 'hidden'; h.name = 'convo_difficulty[]';
+        h.value = input.value.trim();
+        this.appendChild(h);
+        cb.removeAttribute('name');
+    }
 });
 
-document.querySelector('.pref-main').addEventListener('scroll', updateActiveSection);
+document.querySelectorAll('input[type="radio"]').forEach(el =>
+    el.addEventListener('change', updateProgress));
+document.querySelectorAll('input[name="vibes[]"]').forEach(el =>
+    el.addEventListener('change', updateProgress));
+document.querySelectorAll('input[name="convo_difficulty[]"]').forEach(el =>
+    el.addEventListener('change', updateProgress));
+document.getElementById('comfort-custom-input')?.addEventListener('input', updateProgress);
+document.getElementById('prefMain').addEventListener('scroll', updateActiveSection);
 
 updateProgress();
 updateActiveSection();
