@@ -417,12 +417,27 @@ if (!empty($_GET['download'])) {
             <div class="row"><span class="row-label">Difficulty</span><span class="row-val"><?= v($row['convo_difficulty']) ?></span></div>
         </div>
 
+        <!-- Before we plan -->
+        <div class="section">
+            <div class="section-label">before we plan</div>
+            <div class="row"><span class="row-label">Curfew</span><span class="row-val"><?= v($row['curfew']) ?></span></div>
+            <div class="row"><span class="row-label">Parents' rules</span><span class="row-val"><?= v($row['parents']) ?></span></div>
+            <div class="row"><span class="row-label">Distance willing</span><span class="row-val"><?= v($row['distance']) ?></span></div>
+        </div>
+
         <!-- Vibes -->
         <div class="section">
             <div class="section-label">vibes and activities</div>
             <div class="row"><span class="row-label">Picked vibes</span><span class="row-val"><?= tags($row['vibes']) ?></span></div>
             <?php if (!empty($row['custom_vibe'])): ?>
             <div class="row"><span class="row-label">Their idea</span><span class="row-val"><?= v($row['custom_vibe']) ?></span></div>
+            <?php endif; ?>
+            <div class="row"><span class="row-label">Place in mind?</span><span class="row-val"><?= v($row['place_in_mind']) ?></span></div>
+            <?php if (!empty($row['place_name'])): ?>
+            <div class="row"><span class="row-label">Place name</span><span class="row-val"><?= v($row['place_name']) ?></span></div>
+            <?php endif; ?>
+            <?php if (!empty($row['place_timing'])): ?>
+            <div class="row"><span class="row-label">When?</span><span class="row-val"><?= v($row['place_timing']) ?></span></div>
             <?php endif; ?>
         </div>
 
