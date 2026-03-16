@@ -32,9 +32,12 @@ if ($alreadyScheduled) {
 $ownerUsername = $row['owner_username'] ?? null;
 $instagramLink = 'https://instagram.com/sa.loooong.a'; // default
 if ($ownerUsername) {
-    $ownerStmt = $pdo->prepare("SELECT * FROM site_owners WHERE username = ?");
+    $ownerStmt = $pdo->prepare("SELECT instagram_link FROM site_owners WHERE username = ?");
     $ownerStmt->execute([$ownerUsername]);
     $ownerData = $ownerStmt->fetch(PDO::FETCH_ASSOC);
+    if ($ownerData && !empty($ownerData['instagram_link'])) {
+        $instagramLink = $ownerData['instagram_link'];
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -612,7 +615,7 @@ if ($ownerUsername) {
                 <div class="result-tag">✦ official result</div>
                 <h1>
                     Seems like we should go on a
-                    <span class="approved">date.</span>
+                    <span class="approved">date</span>
                 </h1>
             </div>
 
@@ -631,10 +634,10 @@ if ($ownerUsername) {
                     </a>
                 <?php else: ?>
                     <button class="btn btn-yes btn-sched" id="schedBtn" onclick="openScheduler()">
-                        when are u free. sched a date 📅
+                        tell me a day you're available
                     </button>
-                    <button class="btn btn-maybe" id="iplanBtn" onclick="openIPlan()">
-                        i'll plan it, i'll let you know 🗓️
+                    <button class="btn btn-maybe" id="notSureBtn" onclick="openNotSureFromLeft()">
+                        not sure about the date yet
                     </button>
                 <?php endif; ?>
                 <a href="<?= $instagramLink ?>" target="_blank" class="btn btn-maybe">
@@ -642,6 +645,23 @@ if ($ownerUsername) {
                 </a>
                 <a href="download_view.php" target="_blank" class="download-btn">
                     📥 save a copy of your answers
+                </a>
+            </div>
+
+            <div style="margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1); text-align:center;">
+                <a href="feedback.php" style="
+                    display: inline-block;
+                    color: var(--muted);
+                    text-decoration: none;
+                    font-size: 0.75rem;
+                    padding: 0.6rem 1rem;
+                    border: 1px solid rgba(255,255,255,0.15);
+                    border-radius: 16px;
+                    transition: all 0.2s ease;
+                " 
+                onmouseover="this.style.backgroundColor='rgba(244,167,185,0.08)'; this.style.borderColor='rgba(244,167,185,0.3)'; this.style.color='var(--pink)'"
+                onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.color='var(--muted)'">
+                    🐛 found a bug?
                 </a>
             </div>
         </div>
@@ -700,11 +720,11 @@ if ($ownerUsername) {
 
             <!-- Not sure state -->
             <div class="not-sure-box" id="notSureBox">
-                <div class="confirmed-emoji">🥹</div>
+                <div class="confirmed-emoji"></div>
                 <p class="confirmed-title">okay, no pressure!</p>
                 <p class="confirmed-funny">
                     just message me when you're ready.<br>
-                    i'll be here. probably waiting. 😭
+                    i'll be waiting 
                 </p>
                 <a href="<?= $instagramLink ?>" target="_blank"
                    class="btn btn-yes" style="color:#fff; width:100%; text-align:center;">
@@ -762,7 +782,7 @@ if ($ownerUsername) {
                 </p>
                 <p class="confirmed-sub">
                     i'll be looking forward to it.<br>
-                    see you soon, <?= $name ?> 🌸
+                    see you soon, <?= $name ?> 
                 </p>
                 <a href="<?= $instagramLink ?>" target="_blank" class="confirmed-resched">
                     message me on instagram if you need to resched 💌
@@ -885,6 +905,20 @@ if ($ownerUsername) {
         hideAllRightPanels();
         document.getElementById('iPlanBox').classList.add('show');
         document.getElementById('rightLabel').textContent = 'i got this 🗓️';
+    }
+
+    function openNotSureFromLeft() {
+        openRightPanel();
+        const btn = document.getElementById('notSureBtn');
+        if (btn) {
+            btn.classList.add('active');
+            btn.style.background = 'var(--dark-pink)';
+            btn.style.color = '#fff';
+            btn.style.border = 'none';
+        }
+        hideAllRightPanels();
+        document.getElementById('notSureBox').classList.add('show');
+        document.getElementById('rightLabel').textContent = 'no pressure 🥹';
     }
 
     function showNotSure() {

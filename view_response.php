@@ -920,5 +920,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
         }
     }
 </script>
+
+<footer style="margin-top:4rem; padding:2rem 1rem; text-align:center;">
+    <a href="feedback.php" style="
+        display: inline-block;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.8rem;
+        padding: 0.8rem 1.2rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        transition: all 0.2s ease;
+    " 
+    onmouseover="this.style.backgroundColor='rgba(244,167,185,0.08)'; this.style.borderColor='rgba(244,167,185,0.3)'; this.style.color='var(--pink)'"
+    onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='var(--muted)'">
+        🐛 found a bug or have feedback?
+    </a>
+</footer>
 </body>
 </html>

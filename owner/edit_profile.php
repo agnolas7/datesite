@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $items        = array_values(array_filter(array_map('trim', $_POST['items'] ?? [])));
     $expectations = array_values(array_filter(array_map('trim', $_POST['expectations'] ?? [])));
     $skills       = array_values(array_filter(array_map('trim', $_POST['skills'] ?? [])));
+    $instaLink    = trim($_POST['instagram_link'] ?? '');
 
     if (empty($items)) {
         $error = 'add at least one item in core qualifications!';
@@ -67,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $pdo->prepare("UPDATE site_owners SET
             profile_items = ?, promise_text = ?, whyyy_text = ?,
-            resume_expectations = ?, resume_skills = ?
+            resume_expectations = ?, resume_skills = ?, instagram_link = ?
             WHERE username = ?")
             ->execute([
                 json_encode($items),
@@ -75,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $whyyy,
                 json_encode($expectations),
                 json_encode($skills),
+                $instaLink,
                 $username
             ]);
 
@@ -330,6 +332,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p style="color:var(--muted); font-size:0.75rem; margin-top:0.4rem;">
                 shows in the handwritten-style box at the bottom of your resume
             </p>
+        </div>
+
+        <!-- ── Instagram Link ── -->
+        <div class="resume-section-divider">contact</div>
+
+        <div class="form-group">
+            <span class="section-label">your instagram profile 📱</span>
+            <p class="section-desc">
+                people will use this link to message you after saying yes. leave blank to use default.
+            </p>
+            <input type="text" name="instagram_link"
+                value="<?= htmlspecialchars($owner['instagram_link'] ?? '') ?>"
+                placeholder="https://instagram.com/yourname"
+                style="width:100%; background:var(--input-bg); border:1px solid var(--border);
+                       border-radius:10px; padding:0.75rem 1rem; color:var(--text);
+                       font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none; box-sizing:border-box;">
         </div>
 
         <button type="submit" class="btn btn-yes" style="width:100%; margin-top:1.5rem; color:#fff;">

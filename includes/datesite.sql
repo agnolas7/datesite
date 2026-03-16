@@ -270,7 +270,8 @@ CREATE TABLE `site_owners` (
   `promise_text` varchar(500) DEFAULT 'di ako masamang tao promise, go out with me please',
   `whyyy_text` varchar(255) DEFAULT 'okay okay let me make my case first...',
   `resume_expectations` text DEFAULT NULL,
-  `resume_skills` text DEFAULT NULL
+  `resume_skills` text DEFAULT NULL,
+  `instagram_link` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -280,6 +281,20 @@ CREATE TABLE `site_owners` (
 INSERT INTO `site_owners` (`id`, `username`, `password`, `created_at`, `profile_items`, `promise_text`, `whyyy_text`, `resume_expectations`, `resume_skills`) VALUES
 (1, 'noriel7', '$2y$10$g40ei83djInI9WEsSxmvOu7CWprbzMHyMrq4WX0pPoPeYFpko3AEy', '2026-03-11 08:14:55', '[\"\\ud83c\\udf5c will always share food\",\"\\ud83c\\udf19 good late night company\",\"\\ud83d\\udde3\\ufe0f actually listens when you talk\",\"\\ud83d\\ude02 kinda funny naman\",\"\\ud83d\\ude97 may wheels (important)\",\"checkkk\"]', 'checkkkk', 'okay okay let me tasngdjahsgdjhasgdjh', '[\"i pay attention to the small things you mention. if you say you\'ve been craving something, i\'ll remember it.\",\"i don\'t just buy gifts \\u2014 i make them. cards, playlists, little things that took actual thought and time.\",\"if something needs fixing, i fix it. if you need help carrying something, i\'m already carrying it.\",\"i check in. not in an overwhelming way \\u2014 just a \\\"how was your day\\\" kind of way that actually means it.\",\"i\'ll plan the date so you don\'t have to think about it. just show up.\",\"i\'m the kind of person who stays until the end \\u2014 of the movie, the conversation, the night.\",\"i\'ll make sure you get home safe. always.\",\"checkkk\"]', '[\"\\u2726 active listener\",\"\\u2726 gift maker (not just buyer)\",\"\\u2726 remembers what you said\",\"\\u2726 drives\",\"\\u2726 pays for food\",\"\\u2726 actually funny\",\"\\u2726 good playlist curator\",\"\\u2726 will not ghost\",\"\\u2726 opens doors\",\"\\u2726 no weird expectations\",\"\\u2726 night drive certified \\ud83d\\ude97\",\"\\u2726 makes the effort\",\"checkkkk\"]'),
 (2, 'juan123', '$2y$10$UAhB9wCaIYd8q/qdmS.9yuR0ZainhM2r3l1oLpB4rh5LIWg8jpOwq', '2026-03-11 08:22:52', NULL, 'di ako masamang tao promise, go out with me please', 'okay okay let me make my case first...', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) DEFAULT 'Anonymous',
+  `message` longtext NOT NULL,
+  `type` varchar(50) DEFAULT 'general',
+  `submitted_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
@@ -362,6 +377,12 @@ ALTER TABLE `messages`
 --
 ALTER TABLE `responder_compatibility_answers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `responses`

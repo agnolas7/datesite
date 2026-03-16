@@ -45,6 +45,9 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
         <a href="compatibility_answers.php" class="quick-link">
             ✦ my compatibility answers
         </a>
+        <a href="view_feedback.php" class="quick-link">
+            🐛 view feedback & bugs
+        </a>
         <a href="create_owner.php" class="quick-link quick-link-highlight">
             + create buyer account
             <span class="owner-count"><?= $ownerCount ?> account<?= $ownerCount != 1 ? 's' : '' ?></span>

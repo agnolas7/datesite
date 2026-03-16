@@ -79,6 +79,10 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
         <a href="compatibility_answers.php" style="color:var(--pink); text-decoration:none;">💘 my compatibility answers</a>
         <span style="color:var(--border);">·</span>
         <a href="edit_profile.php" style="color:var(--pink); text-decoration:none;">✏️ edit my profile</a>
+        <span style="color:var(--border);">·</span>
+        <a href="view_feedback.php" style="color:var(--pink); text-decoration:none;">🐛 view feedback</a>
+        <span style="color:var(--border);">·</span>
+        <a href="https://instagram.com/sa.loooong.a" target="_blank" style="color:var(--pink); text-decoration:none;">💬 message dev</a>
     </div>
 
     <!-- ── Responses table ── -->
