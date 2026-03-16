@@ -102,11 +102,10 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
         <div style="background:rgba(244,167,185,0.08); border:1px solid rgba(244,167,185,0.2); 
                     border-radius:12px; padding:1.5rem; margin-top:2rem;">
             <p style="color:var(--text); margin-bottom:0.5rem; font-weight:500;">
-                🌸 psst... they can't say yes if they don't know you exist
+                share mo na link na to para mareject ka na
             </p>
             <p style="color:var(--muted); font-size:0.9rem;">
-                share your link with people, add it to your bio, send it in those random dms. 
-                the algorithm isn't gonna help you here 😉
+                goodluck out there, thank me later
             </p>
         </div>
     <?php else: ?>
@@ -184,11 +183,7 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- ── Footer message ── -->
     <?php if ($count < 10): ?>
-    <div style="margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border); text-align:center;">
-        <p style="color:var(--pink); font-weight:500; font-size:0.95rem;">
-            good luck out there, thank me later
-        </p>
-    </div>
+    
     <?php endif; ?>
 
     <script>
@@ -227,5 +222,11 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
     </script>
+
+    <footer style="margin-top:4rem; padding:1.5rem 0; border-top:1px solid var(--border); text-align:center; opacity:0.5;">
+        <p style="color:var(--muted); font-weight:400; font-size:0.75rem; margin:0;">
+            © <?= date('Y') ?> @sa.loooong.a. all rights reserved.
+        </p>
+    </footer>
 </body>
 </html>
