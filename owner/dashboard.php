@@ -8,6 +8,27 @@ require '../includes/db.php';
 
 $username = $_SESSION['owner'];
 
+// Handle deletion
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+    $deleteId = intval($_POST['delete_id']);
+    
+    // Verify ownership
+    $checkStmt = $pdo->prepare("SELECT id FROM responses WHERE id = ? AND owner_username = ?");
+    $checkStmt->execute([$deleteId, $username]);
+    
+    if ($checkStmt->rowCount() > 0) {
+        $delStmt = $pdo->prepare("DELETE FROM responses WHERE id = ? AND owner_username = ?");
+        $delStmt->execute([$deleteId, $username]);
+        
+        // Also delete any maybe reasons associated with this response
+        $delMaybeStmt = $pdo->prepare("DELETE FROM maybe_reasons WHERE response_id = ?");
+        $delMaybeStmt->execute([$deleteId]);
+        
+        header('Location: dashboard.php');
+        exit;
+    }
+}
+
 $stmt = $pdo->prepare("SELECT id, name, age, city, scheduled_date, submitted_at
                         FROM responses WHERE owner_username = ? ORDER BY submitted_at DESC");
 $stmt->execute([$username]);
@@ -50,7 +71,7 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <h1>hi, <?= htmlspecialchars($username) ?> 🌸</h1>
+    <h1>yo, <?= htmlspecialchars($username) ?>. what's good g</h1>
 
     <div style="display:flex; gap:1.2rem; margin-bottom:1.8rem; flex-wrap:wrap; font-size:0.85rem;">
         <a href="change_password.php" style="color:var(--pink); text-decoration:none;">🔑 change password</a>
@@ -61,14 +82,33 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <!-- ── Responses table ── -->
-    <p style="color:var(--muted); margin-bottom:1rem; font-size:0.9rem;">
-        <?= count($rows) ?> response<?= count($rows) !== 1 ? 's' : '' ?> so far
+    <?php 
+        $count = count($rows);
+        $messages = [
+            0 => "no bites yet...share mo kasi link wag ka torpe",
+            1 => "naks one person interested, not bad ",
+            2 => "two dates?? sana same person lang yan",
+            3 => "three's a crowd bro... baka may mag overlap sa sched mo nyan",
+            4 => "four dates?? hakot ka na boi magtira ka naman",
+            5 => "five?? this mf knows ball",
+        ];
+        $message = $messages[$count] ?? ($count . " dates na naka-set mo g, paawat ka naman");
+    ?>
+    <p style="color:var(--pink); margin-bottom:1rem; font-size:0.95rem; font-weight:500;">
+        <?= $message ?>
     </p>
 
     <?php if (empty($rows)): ?>
-        <p style="color:var(--muted); font-style:italic; margin-top:2rem;">
-            no responses yet. share your link with your crush! 🌸
-        </p>
+        <div style="background:rgba(244,167,185,0.08); border:1px solid rgba(244,167,185,0.2); 
+                    border-radius:12px; padding:1.5rem; margin-top:2rem;">
+            <p style="color:var(--text); margin-bottom:0.5rem; font-weight:500;">
+                🌸 psst... they can't say yes if they don't know you exist
+            </p>
+            <p style="color:var(--muted); font-size:0.9rem;">
+                share your link with people, add it to your bio, send it in those random dms. 
+                the algorithm isn't gonna help you here 😉
+            </p>
+        </div>
     <?php else: ?>
     <table>
         <thead>
@@ -76,8 +116,9 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Name</th>
                 <th>Age</th>
                 <th>City</th>
-                <th>Scheduled Date</th>
-                <th>Submitted</th>
+                <th>Planned Date</th>
+                <th>Responded</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -86,13 +127,18 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($r['name']) ?></td>
                 <td><?= $r['age'] ?></td>
                 <td><?= htmlspecialchars($r['city']) ?></td>
-                <td><?= $r['scheduled_date'] ?: '—' ?></td>
-                <td><?= $r['submitted_at'] ?></td>
+                <td style="<?= $r['scheduled_date'] ? 'color:var(--pink); font-weight:500;' : 'color:var(--muted);' ?>">
+                    <?= $r['scheduled_date'] ? ('📅 ' . $r['scheduled_date']) : '—' ?>
+                </td>
+                <td style="font-size:0.8rem; color:var(--muted);"><?= $r['submitted_at'] ?></td>
+                <td style="text-align:right;">
+                    <button onclick="playfulDelete(event, '<?= htmlspecialchars($r['name']) ?>', <?= $r['id'] ?>)" style="background:none; border:none; color:var(--pink); cursor:pointer; font-size:1rem; padding:0.4rem;" title="delete">🗑️</button>
+                </td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-    <p class="table-hint">tap a row to view full response</p>
+    <p class="table-hint">✨ tap a row to see if they're actually your person</p>
     <?php endif; ?>
 
     <!-- ── Maybe reasons ── -->
@@ -100,29 +146,32 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
     <div style="margin-top:3rem;">
         <h2 style="font-family:'Playfair Display',serif; font-size:1.1rem;
                    margin-bottom:0.4rem; color:var(--text);">
-            why she said maybe 🤔
+            the plot twist moments 📺
         </h2>
         <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1.2rem;">
-            from people who went through the maybe flow —
-            <?= count($maybeRows) ?> reason<?= count($maybeRows) !== 1 ? 's' : '' ?> recorded
+            people said maybe, and here's why they weren't 100% sold (yet?) —
+            could be opportunity, could be just not vibe. <?= count($maybeRows) ?> confession<?= count($maybeRows) !== 1 ? 's' : '' ?> 👀
         </p>
         <table>
             <thead>
                 <tr>
-                    <th>Reason</th>
-                    <th>Name</th>
+                    <th>What They Said</th>
+                    <th>Who</th>
                     <th>When</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($maybeRows as $mr): ?>
                 <tr>
-                    <td><?= htmlspecialchars($mr['reason']) ?></td>
+                    <td>
+                        <span style="color:var(--pink);">💭</span>
+                        <?= htmlspecialchars($mr['reason']) ?>
+                    </td>
                     <td>
                         <?php if ($mr['name']): ?>
-                            <?= htmlspecialchars($mr['name']) ?>
+                            <strong><?= htmlspecialchars($mr['name']) ?></strong>
                         <?php else: ?>
-                            <span style="color:var(--muted); font-style:italic;">never filled form</span>
+                            <span style="color:var(--muted); font-style:italic;">mystery person</span>
                         <?php endif; ?>
                     </td>
                     <td style="font-size:0.8rem; color:var(--muted);"><?= $mr['submitted_at'] ?></td>
@@ -130,6 +179,15 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
+    <?php endif; ?>
+
+    <!-- ── Footer message ── -->
+    <?php if ($count < 10): ?>
+    <div style="margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border); text-align:center;">
+        <p style="color:var(--pink); font-weight:500; font-size:0.95rem;">
+            good luck out there, thank me later
+        </p>
     </div>
     <?php endif; ?>
 
@@ -144,6 +202,29 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('ownerTheme', next);
             btn.textContent = next === 'light' ? '🌙 dark' : '☀️ light';
+        }
+
+        function playfulDelete(event, name, id) {
+            event.stopPropagation();
+            
+            const messages = [
+                `nah, ${name}'s not it?`,
+                `bat mo naman dedelete si ${name} `,
+                `removing ${name} from the maybe pile?`,
+                `${name} didn't pass vibe?`,
+                `pass kay ${name}?`,
+                `out with ${name}? okay okay, your loss`,
+            ];
+            
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            
+            if (confirm(randomMsg + '\n\n\nsure ka na? this can\'t be undone...')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.innerHTML = '<input type="hidden" name="delete_id" value="' + id + '">';
+                document.body.appendChild(form);
+                form.submit();
+            }
         }
     </script>
 </body>

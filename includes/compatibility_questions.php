@@ -79,7 +79,7 @@ $compatibility_questions = [
     'social_battery' => [
         'label'   => 'After a long day, your ideal hangout is...',
         'type'    => 'radio',
-        'options' => ['Quiet place, just talking','Chill food trip','Watching something together','Going out somewhere lively'],
+        'options' => ['Quiet place, just talking','Chill food trip','Chill drinks','Watching something together','Going out somewhere lively'],
     ],
     'getting_to_know' => [
         'label'   => 'When meeting someone new, I usually...',
