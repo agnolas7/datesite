@@ -909,14 +909,12 @@ if ($ownerUsername) {
 
     // ── Funny messages ──
     const funnyMsgs = [
-        "sana di ka paasa 🙏",
-        "pag di ka pumunta iiyak ako. joke. half joke. 😭",
-        "noted. di ko ito kakalimutan ha. 👀",
-        "okaaay exciting. wag mong baguhin ng isip mo.",
-        "screenshot ko to para may proof. 😂",
-        "sana totoo toh. sana. 🥺",
-        "officially locked in. wag nang mag-back out 😭",
-        "uy papunta ka talaga ha. 👁️👁️",
+        "sana di ka paasa ;(",
+        "pag umatras ka iiyak ako",
+        "noted. di ko to kakalimutan",
+        "screenshot ko to para may proof",
+        "bawal na mag-back out",
+        "sure ka na ba sa desisyon mo",
     ];
 
     // ── Save schedule ──

@@ -6,28 +6,28 @@ $compatibility_questions = [
         'type'    => 'rank',
         'max'     => 99,
         'min'     => 2,
-        'options' => ['OPM','Pop','Indie','R&B','Hip-hop / Rap','Rock','Alternative','Jazz','Classical','Electronic / EDM','Metal','Country','K-pop'],
+        'options' => ['OPM','Pop','Indie','R&B','Hip-hop / Rap','Rock','Pop Rock','Alternative','Jazz','Classical','Electronic / EDM','Metal','Country','K-pop'],
     ],
     'movie_genres' => [
         'label'   => 'Movie / series genres — rank what you actually watch',
         'type'    => 'rank',
         'max'     => 99,
         'min'     => 2,
-        'options' => ['Romance','Comedy','Horror','Thriller','Action','Sci-fi','Fantasy','Documentary','Anime','K-drama','Crime / Mystery','Animation'],
+        'options' => ['Romance','Romcom','Comedy','Horror','Thriller','Action','Sci-fi','Fantasy','Documentary','Anime','K-drama','Crime / Mystery','Animation'],
     ],
     'weekend_activities' => [
         'label'   => 'Ideal weekend activities — rank what you\'d actually do',
         'type'    => 'rank',
         'max'     => 99,
         'min'     => 2,
-        'options' => ['Food trips','Coffee shop hopping','Night drives','Watching movies at home','Going to the mall','Nature / outdoors','Arcade / games','Art galleries','Concerts / events','Just staying in bed','Random drives','Bar / chill night out'],
+        'options' => ['Food trips','Coffee shop hopping','Night drives','Watching movies at home','Going to the mall','Nature / outdoors','Arcade / games','Art galleries','Concerts / events','Just staying in bed','Random drives','Chill night out','Bar/Clubbing'],
     ],
     'humor_style' => [
         'label'   => 'Your humor style — rank what actually fits you',
         'type'    => 'rank',
         'max'     => 99,
         'min'     => 2,
-        'options' => ['Dry humor','Dark humor','Stupid jokes','Sarcasm','Wholesome','Self-deprecating','Witty / clever','Physical comedy','Memes only'],
+        'options' => ['Wholesome','Witty','Brainrot','Chronically online humor','Dark humor','Sarcasm'],
     ],
 
     // ── Radios ──
@@ -44,12 +44,12 @@ $compatibility_questions = [
     'food_preference' => [
         'label'   => 'Food preference',
         'type'    => 'radio',
-        'options' => ['Filipino food always','Anything as long as it\'s good','I like trying new stuff','I eat the same 5 things'],
+        'options' => ['Filipino food always','Anything as long as it\'s good','I like trying new stuff','I eat the same 5 things','Vegan', 'Spicy food enojyer', 'Sweet tooth'],
     ],
     'coffee_preference' => [
-        'label'   => 'Coffee or milk tea?',
+        'label'   => 'What do you usually drink?',
         'type'    => 'radio',
-        'options' => ['Coffee, always','Milk tea, always','Both honestly','Neither'],
+        'options' => ['Coffee','Milk tea','Juice / smoothies','Soft drinks enjoyer','Water mostly','Beer / alcohol','Anything as long as it\'s cold'],
     ],
     'crowd_preference' => [
         'label'   => 'Crowd preference',

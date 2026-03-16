@@ -466,6 +466,32 @@ if (empty($_SESSION['response_id'])) {
         .comfort-custom-input.visible { display: block; animation: fadeUp 0.2s ease; }
         .comfort-custom-input:focus { border-color: var(--pink); }
 
+        /* ── Scrollbar styling for dark mode ── */
+        :root[data-theme="dark"] {
+            scrollbar-width: thin;
+            scrollbar-color: #2a2a2a #1a1a1a;
+        }
+
+        :root[data-theme="dark"] ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        :root[data-theme="dark"] ::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        :root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 10px;
+            border: 2px solid var(--bg);
+        }
+
+        :root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+            background: #3a3a3a;
+        }
+
         /* ── Mobile ── */
         @media (max-width: 768px) {
             .pref-layout { grid-template-columns: 1fr; min-height: unset; }
@@ -724,10 +750,10 @@ if (empty($_SESSION['response_id'])) {
                 </div>
 
                 <div class="pref-question-card" data-field="awkwardness" data-section="convo">
-                    <label class="pref-q-label">are you more of a talker, a listener, or somewhere in between?</label>
+                    <label class="pref-q-label">are you more of a yapper, a listener, or somewhere in between?</label>
                     <div class="radio-group">
                         <?php foreach ([
-                            'talker — i will carry the conversation, don\'t worry',
+                            'yapper — i will carry the conversation, don\'t worry',
                             'listener — i\'m better at responding than starting',
                             'both — depends',
                             'neither — i communicate through eye contact',
@@ -809,6 +835,7 @@ if (empty($_SESSION['response_id'])) {
                             'chill, just need to update them',
                             'they don\'t really mind',
                             'i\'m independent, not an issue',
+                            'won\'t be allowed, they\'re very strict',
                         ] as $opt): ?>
                         <label class="radio-item">
                             <input type="radio" name="parents" value="<?= htmlspecialchars($opt) ?>"
@@ -943,25 +970,25 @@ function toggleTheme() {
 // ── Preview messages ──
 const previews = {
     date_type: {
-        'something lowkey, stay-in type':               'nice, comfortable energy. i can work with that.',
-        'food trip, just drive and eat':                "aight that's genuinely a nice kind of date.",
-        'go somewhere with a nice view':                "noted. i'll find a good spot.",
-        'do something, not just sit around':            'i like that, keeps things interesting.',
-        'totally spontaneous, figure it out as we go':  "okay we're winging it then. i'm in.",
-        'surprise me, i trust you':                     "that's the best answer honestly. pressure's on me now. i got this",
+        'something lowkey, stay-in type':               'nice, comfortable energy. i can work with that',
+        'food trip, just drive and eat':                "aight that's genuinely a nice kind of date",
+        'go somewhere with a nice view':                "noted. i know a good spot" ,
+        'do something, not just sit around':            'i like that, we\'ll keep it interesting',
+        'totally spontaneous, figure it out as we go':  "okay we're winging it then. i'm in",
+        'surprise me, i trust you':                     "aight bet i got u",
     },
     spontaneity: {
         'i like knowing what we\'re doing beforehand':  "got it, i'll send you a heads up",
-        'As long as we have a direction.':              "perfect, i like it that way too.",
-        'figure it out as we go honestly':              'sponty it is.',
-        'the more chaotic the better':                  "okay we're going to have a lot of fun.",
+        'As long as we have a direction.':              "perfect, i like it that way too",
+        'figure it out as we go honestly':              'sponty it is',
+        'the more chaotic the better':                  "how about we commit a crime together",
     },
     energy: {
-        'lowkey and relaxed':                       "perfect, no need to perform. just show up type shi.",
-        'chill but not boring':                     "okay we\'re js chill like that",
+        'lowkey and relaxed':                       "on some nonchalant shi",
+        'chill but not boring':                     "oh ok coz we\'re js chill like that",
         'high energy and fun':                      "okay we gon turn it upppp",
         'depends on my mood that day honestly':     "fair enough, we'll see",
-        'go with the flow':                         "type shi",
+        'go with the flow':                         "i fw this heavy",
     },
     mood: {
         'chill and no pressure':                            "that's the goal every time honestly",
@@ -970,49 +997,50 @@ const previews = {
         'whatever happens, happens':                        "type shiii",
     },
     crowd: {
-        'ideally just us, somewhere quiet':         "noted. somewhere we can actually hear each other.",
-        'a few people around is fine':              "cool, a little background noise never hurt.",
-        'busy place is okay, i don\'t mind noise':  "okay we have a lot of options then.",
-        'doesn\'t matter at all':                   'easy to work with, nice.',
-        'i\'ll leave it to you':                    "on me then. i'll pick somewhere good.",
+        'ideally just us, somewhere quiet':         "noted. somewhere we can actually hear each other",
+        'a few people around is fine':              "cool, a little background noise never hurt",
+        'busy place is okay, i don\'t mind noise':  "okay we have a lot of options then",
+        'doesn\'t matter at all':                   'wowz easy to work with',
+        'i\'ll leave it to you':                    "basta makasama ka lang 😍",
     },
     walking: {
-        'minimal, i\'m not here to exercise':           "we'll find somewhere to sit. noted.",
-        'a little is fine':                             "a short walk here and there, tokay okay",
-        'walk me around':                               "okay we might end up somewhere unexpected then.",
-        'depends on the place and how i feel that day': "fair, i'll check in with you.",
+        'minimal, i\'m not here to exercise':           "we'll find somewhere to sit. noted",
+        'a little is fine':                             "a short walk here and there, okay okay",
+        'walk me around':                               "takbo ka na lang sa isip ko",
+        'depends on the place and how i feel that day': "fair, i'll check in with you",
         'no walking pls':                               "how about running",
     },
     convo_style: {
-        'get to know each other properly'   : "i like that. Let's actually talk.",
-        'keep it light and funny, nothing heavy':       "alright we'll keep it easy and chill dw",
-        'random topics, wherever it goes':              'I like that',
-        'i\'ll talk when i feel like it, no pressure':  "no pressure at all, we'll keep it comfortable",
+        'get to know each other properly'   : "okay po let's actually talk",
+        'keep it light and funny, nothing heavy':       "alright we'll keep it easy and chill",
+        'random topics, wherever it goes':              'always been like this with me',
+        'i\'ll talk when i feel like it, no pressure':  "yes maam",
     },
     awkwardness: {
-        'talker — i will carry the conversation, don\'t worry':  "wow perfect",
-        'listener — i\'m better at responding than starting':    "that works, i'll ask the questions. don't worry.",
-        'both — depends':                       "same honestly",
-        'neither — i communicate through eye contact':           "ay angas",
+        'yapper — i will carry the conversation, don\'t worry':  "wow perfect",
+        'listener — i\'m better at responding than starting':    "im curious george, i'll ask the questions",
+        'both — depends':                       "u da real yappener",
+        'neither — i communicate through eye contact':           "ay angas, good thing i love ur eyes",
         'dancer — hawak ko ang beat':                            "ge lods sayaw",
     },
     // new logistics previews
     curfew: {
         'yes, i have a strict curfew':                          "okay noted, we'll make sure you're home on time",
-        'yes but it\'s flexible depending on the situation':    "got it, i'll keep that in mind and plan accordingly.",
+        'yes but it\'s flexible depending on the situation':    "got it, i'll keep that in mind and plan accordingly",
         'kind of, i just need to let them know':                "that works, just update them and we're good",
-        'no curfew, i\'m free':                                 "wowz okay we have time then",
+        'no curfew, i\'m free':                                 "okay we have a lot of time then",
     },
     parents: {
-        'very strict, they need to know everything':   "noted, we'll make sure everything is above board.",
-        'strict but okay if i tell them in advance':    "okay, i'll give you enough notice to sort it out.",
-        'chill, just need to update them':              "easy, just drop them a message and we're set.",
-        'they don\'t really mind':                      "nice, that makes planning a lot easier.",
-        'i\'m independent, not an issue':               "okay we're good then, no worries.",
+        'very strict — they need to know everything':   "noted, we'll make sure everything is above board",
+        'strict but okay if i tell them in advance':    "okay, i'll give you enough notice to sort it out",
+        'chill, just need to update them':              "easy, just drop them a message and we're set",
+        'they don\'t really mind':                      "nice, that makes planning a lot easier",
+        'i\'m independent, not an issue':               "okay we're good then, no worries",
+        'won\'t be allowed, they\'re very strict':      "tell me if u want me to sneak u out",
     },
     distance: {
-        'close by only, around our area':               "okay i'll keep it local. there's plenty to do nearby.",
-        'nearby cities are fine':                       "nice, that opens up a lot more options.",
+        'close by only, around our area':               "okay i'll keep it local. there's plenty to do nearby",
+        'nearby cities are fine':                       "nice, that opens up a lot more options",
         'doesn\'t matter, i\'m down wherever':          "okay anywhere is on the table then.",
         'depends on the day and situation':             "fair, i'll just check with you when we're planning.",
     },
