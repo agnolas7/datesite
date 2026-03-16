@@ -612,7 +612,7 @@
                     <!-- yes — loves flowers, match that energy -->
                     <div class="flower-followup" id="flower-yes">
                         <div class="flower-response-note">
-                            okay that's the energy!! which one would you want?
+                            okayyyyy! which would you want?
                         </div>
                         <p style="font-size:0.78rem; color:var(--muted); margin-bottom:0.6rem;">pick as many as you like</p>
                         <div class="checkbox-group">

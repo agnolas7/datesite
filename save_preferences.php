@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['response_id'])) {
     $convo_style = $_POST['convo_style'] ?? '';
     $walking = $_POST['walking'] ?? '';
     $awkwardness = $_POST['awkwardness'] ?? '';
-    $convo_difficulty = $_POST['convo_difficulty'] ?? '';
     $vibes = isset($_POST['vibes']) ? implode(', ', $_POST['vibes']) : '';
     $custom_vibe = trim($_POST['custom_vibe'] ?? '');
     $curfew = $_POST['curfew'] ?? '';
@@ -25,14 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['response_id'])) {
 
     $stmt = $pdo->prepare("UPDATE responses SET 
         date_type=?, spontaneity=?, energy=?, mood=?, crowd=?, convo_style=?,
-        walking=?, awkwardness=?, convo_difficulty=?, vibes=?, custom_vibe=?,
+        walking=?, awkwardness=?, vibes=?, custom_vibe=?,
         curfew=?, parents=?, distance=?, place_in_mind=?, place_name=?,
-        place_timing=?, compatibility_score=?
+        place_timing=?, compatibility_score=?, submitted_at=NOW()
         WHERE id=?");
 
     $stmt->execute([
         $date_type, $spontaneity, $energy, $mood, $crowd, $convo_style,
-        $walking, $awkwardness, $convo_difficulty, $vibes, $custom_vibe,
+        $walking, $awkwardness, $vibes, $custom_vibe,
         $curfew, $parents, $distance, $place_in_mind, $place_name,
         $place_timing, $compatibility_score, $id
     ]);

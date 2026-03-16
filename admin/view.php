@@ -89,7 +89,6 @@ $sections = [
         'convo_style'      => 'Convo style',
         'walking'          => 'Walking',
         'awkwardness'      => 'Awkwardness',
-        'convo_difficulty' => 'Difficulty',
     ],
     'before we plan' => [
         'curfew'   => 'Curfew',
