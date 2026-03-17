@@ -148,10 +148,16 @@ function buildSummary($question_results, $final_score) {
     $mismatches = [];
     $partials  = [];
 
+    // Clean label function - removes descriptive text after em-dash
+    $cleanLabel = function($label) {
+        return trim(explode('—', $label)[0]);
+    };
+
     foreach ($question_results as $name => $r) {
-        if ($r['percent'] >= 80) $matches[]    = $r['label'];
-        elseif ($r['percent'] >= 40) $partials[] = $r['label'];
-        else $mismatches[] = $r['label'];
+        $clean = $cleanLabel($r['label']);
+        if ($r['percent'] >= 80) $matches[]    = $clean;
+        elseif ($r['percent'] >= 40) $partials[] = $clean;
+        else $mismatches[] = $clean;
     }
 
     $lines = [];
@@ -184,6 +190,15 @@ function buildSummary($question_results, $final_score) {
 }
 
 $summaryLines = buildSummary($question_results, $final_score);
+
+// Helper function for vibe rating
+function getVibeRating($percent) {
+    if ($percent >= 81) return "matched!";
+    if ($percent >= 61) return "pwedeee";
+    if ($percent >= 41) return "may potential pa rin";
+    if ($percent >= 21) return "pwede na yan ";
+    return "might be worth a try ";
+}
 
 // Group questions into categories for display
 $categories = [
@@ -248,25 +263,25 @@ $categories = [
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 2rem 0;
+            margin: 2.5rem 0 3rem;
         }
 
         .compat-score-ring {
             position: relative;
-            width: 160px;
-            height: 160px;
-            margin-bottom: 1.2rem;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 1.5rem;
         }
 
         .compat-score-ring svg {
             transform: rotate(-90deg);
-            width: 160px;
-            height: 160px;
+            width: 200px;
+            height: 200px;
         }
 
         .compat-score-ring circle {
             fill: none;
-            stroke-width: 10;
+            stroke-width: 11;
         }
 
         .compat-ring-bg   { stroke: var(--border); }
@@ -279,20 +294,25 @@ $categories = [
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 1rem;
         }
 
         .compat-score-num-big {
             font-family: 'Playfair Display', serif;
-            font-size: 2.4rem;
+            font-size: clamp(1.1rem, 4vw, 1.6rem);
             color: var(--pink);
-            line-height: 1;
+            line-height: 1.4;
+            text-align: center;
+            max-width: 150px;
+            font-weight: 500;
         }
 
         .compat-score-sub {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            margin-top: 0.4rem;
         }
 
         /* ── Summary box ── */
@@ -521,11 +541,20 @@ $categories = [
             margin-top: 2.5rem;
         }
 
+        @media (max-width: 640px) {
+            .compat-score-big { margin: 1.8rem 0 2.5rem; }
+            .compat-score-ring { width: 170px; height: 170px; }
+            .compat-score-ring svg { width: 170px; height: 170px; }
+            .compat-score-num-big { font-size: clamp(1rem, 3vw, 1.4rem); max-width: 130px; }
+        }
+
         @media (max-width: 540px) {
             .compat-card-body { grid-template-columns: 1fr; }
             .compat-answer-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
             .compat-mini-bar { width: 50px; }
             .compat-legend-items { flex-direction: column; }
+            .compat-score-ring { width: 160px; height: 160px; }
+            .compat-score-ring svg { width: 160px; height: 160px; }
         }
     </style>
 </head>
@@ -553,8 +582,8 @@ $categories = [
                     id="scoreRing"/>
             </svg>
             <div class="compat-score-text">
-                <span class="compat-score-num-big"><?= $final_score ?>%</span>
-                <span class="compat-score-sub">overall</span>
+                <span class="compat-score-num-big"><?= getVibeRating($final_score) ?></span>
+                <span class="compat-score-sub">compatibility vibe</span>
             </div>
         </div>
     </div>

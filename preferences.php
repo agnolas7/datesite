@@ -1227,6 +1227,82 @@ document.querySelectorAll('input[name="convo_difficulty[]"]').forEach(el =>
 document.getElementById('comfort-custom-input')?.addEventListener('input', updateProgress);
 document.getElementById('prefMain').addEventListener('scroll', updateActiveSection);
 
+// ── Auto-save preferences to localStorage ──
+function savePrefData() {
+    const data = {};
+    
+    // Save radio buttons
+    document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+        data[el.name] = el.value;
+    });
+    
+    // Save checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+        if (el.name) {
+            data[el.name + '_' + el.value] = el.checked ? '1' : '0';
+        }
+    });
+    
+    // Save text inputs
+    document.querySelectorAll('input[type="text"]').forEach(el => {
+        if (el.value) {
+            data[el.id || el.name] = el.value;
+        }
+    });
+    
+    localStorage.setItem('prefAutoSave', JSON.stringify(data));
+}
+
+function restorePrefData() {
+    const saved = localStorage.getItem('prefAutoSave');
+    if (!saved) return;
+    
+    const data = JSON.parse(saved);
+    
+    // Restore all radio buttons by checking each one
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        if (data[radio.name] === radio.value) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    });
+    
+    // Restore all checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        const key = checkbox.name + '_' + checkbox.value;
+        if (data[key] === '1') {
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        } else if (data[key] === '0') {
+            checkbox.checked = false;
+        }
+    });
+    
+    // Restore text inputs
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        const val = data[input.id] || data[input.name];
+        if (val) {
+            input.value = val;
+        }
+    });
+    
+    updateProgress();
+}
+
+// Save on any input change
+document.addEventListener('change', savePrefData);
+document.addEventListener('input', savePrefData);
+
+// Restore on page load
+window.addEventListener('DOMContentLoaded', restorePrefData);
+
+// Clear saved data on successful form submit
+document.getElementById('prefForm').addEventListener('submit', function(e) {
+    if (!e.defaultPrevented) {
+        localStorage.removeItem('prefAutoSave');
+    }
+});
+
 updateProgress();
 updateActiveSection();
 </script>

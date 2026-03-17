@@ -252,7 +252,7 @@ $name = htmlspecialchars($_SESSION['name']);
             <div class="greeting-tag">✦ step 2 of 3</div>
             <h1>
                 nice to meet you,
-                <span class="name-highlight"><?= $name ?> 🌸</span>
+                <span class="name-highlight"><?= $name ?> </span>
             </h1>
         </div>
 

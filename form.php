@@ -103,7 +103,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 1rem 0;
             overflow-y: auto;
         }
@@ -447,8 +447,8 @@
         </div>
 
         <div class="side-bottom">
-            <p class="side-bottom-quote">"every answer helps me plan a better date for us."</p>
-            <p class="side-bottom-author">— the person who made this site</p>
+            <p class="side-bottom-quote">"every answer helps me plan a better date for us"</p>
+            <p class="side-bottom-author">— corny ba</p>
         </div>
     </div>
 
@@ -956,7 +956,7 @@ const fieldStepMap = [
     }},
     { stepIndex: 6, test: () => !!document.querySelector('input[name="temperature"]:checked') },
     { stepIndex: 7, test: () => !!document.querySelector('input[name="dessert"]:checked') },
-    { stepIndex: 8, test: () => true },
+    { stepIndex: 8, test: () => !!document.querySelector('input[name="dealbreaker"]:checked') },
 ];
 
 const stepNums      = ['1','2','3','4','5','6','7','8','9'];
@@ -1108,6 +1108,74 @@ document.querySelectorAll('input[type="text"]').forEach(input => {
             }
         }
     });
+});
+
+// ── Auto-save form data to localStorage ──
+function saveFormData() {
+    const formData = new FormData(document.getElementById('mainForm'));
+    const data = {};
+    
+    // Save text inputs, selects
+    formData.forEach((value, key) => {
+        if (!data[key]) {
+            data[key] = value;
+        } else if (Array.isArray(data[key])) {
+            data[key].push(value);
+        } else {
+            data[key] = [data[key], value];
+        }
+    });
+    
+    // Save individual radio/checkbox states
+    document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+        if (el.name) {
+            data[el.name + '_' + el.value] = el.checked ? '1' : '0';
+        }
+    });
+    
+    localStorage.setItem('formAutoSave', JSON.stringify(data));
+}
+
+function restoreFormData() {
+    const saved = localStorage.getItem('formAutoSave');
+    if (!saved) return;
+    
+    const data = JSON.parse(saved);
+    
+    // Restore text inputs, selects
+    document.querySelectorAll('input[type="text"], select, textarea').forEach(el => {
+        if (data[el.name]) {
+            el.value = data[el.name];
+        }
+    });
+    
+    // Restore radio/checkbox states
+    document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+        const key = el.name + '_' + el.value;
+        if (data[key] === '1') {
+            el.checked = true;
+            // Trigger change event for dependent fields (like flower/dealbreaker custom inputs)
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+            el.checked = false;
+        }
+    });
+    
+    updateProgress();
+}
+
+// Save on any input change
+document.addEventListener('change', saveFormData);
+document.addEventListener('input', saveFormData);
+
+// Restore on page load
+window.addEventListener('DOMContentLoaded', restoreFormData);
+
+// Clear saved data on successful form submit
+document.getElementById('mainForm').addEventListener('submit', function(e) {
+    if (!e.defaultPrevented) {
+        localStorage.removeItem('formAutoSave');
+    }
 });
 </script>
 </body>
