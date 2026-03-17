@@ -31,19 +31,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
     $section = $_POST['edit_section'];
 
     if ($section === 'about') {
+        $flower_comfort = $_POST['flower_comfort'] ?? '';
         $flower      = trim($_POST['flower'] ?? '');
         $craving     = trim($_POST['craving'] ?? '');
         $temperature = $_POST['temperature'] ?? '';
         $dislikes    = isset($_POST['dislikes']) ? implode(', ', $_POST['dislikes']) : '';
         $dessert     = $_POST['dessert'] ?? '';
 
-        $pdo->prepare("UPDATE responses SET name=?, age=?, city=?, food_drink=?, flower=?, craving=?, temperature=?, dislikes=?, dessert=?, dealbreaker=? WHERE id=?")
+        $pdo->prepare("UPDATE responses SET name=?, age=?, city=?, food_drink=?, flower=?, flower_comfort=?, craving=?, temperature=?, dislikes=?, dessert=?, dealbreaker=? WHERE id=?")
             ->execute([
                 trim($_POST['name'] ?? ''),
                 $_POST['age'] ?? '',
                 trim($_POST['city'] ?? ''),
                 trim($_POST['food_drink'] ?? ''),
                 $flower,
+                $flower_comfort,
                 $craving,
                 $temperature,
                 $dislikes,
@@ -386,15 +388,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
         .vr-answer { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
         .vr-answer.empty { color: var(--border); font-style: italic; }
 
-        .vr-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+        .vr-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
 
         .vr-tag {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 0.2rem 0.65rem;
-            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(244, 167, 185, 0.08);
+            border: 1px solid rgba(244, 167, 185, 0.25);
+            border-radius: 6px;
+            padding: 0.5rem 0.9rem;
+            font-size: 0.87rem;
             color: var(--text);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            transition: all 0.2s ease;
+        }
+
+        .vr-tag:hover {
+            background: rgba(244, 167, 185, 0.15);
+            border-color: rgba(244, 167, 185, 0.4);
         }
 
         /* ── Edit form inside section ── */
@@ -599,7 +611,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
                 'age'         => 'Age',
                 'city'        => 'City / Location',
                 'food_drink'  => 'Fave food & drink',
-                'flower'      => 'Flower',
                 'craving'     => 'Craving lately',
                 'temperature' => 'Temperature pref',
                 'dessert'     => 'Dessert',
@@ -613,6 +624,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
                 <span class="vr-answer <?= $val ? '' : 'empty' ?>"><?= $val ? htmlspecialchars($val) : '—' ?></span>
             </div>
             <?php endforeach; ?>
+            
+            <!-- Flower comfort (radio) and selections (checkboxes) -->
+            <div class="vr-row">
+                <span class="vr-question">Flowers</span>
+                <div class="vr-answer">
+                    <?php 
+                    $flowerComfort = trim($row['flower_comfort'] ?? '');
+                    $flowerSelections = array_filter(array_map('trim', explode(', ', $row['flower'] ?? '')));
+                    $hasData = $flowerComfort || !empty($flowerSelections);
+                    ?>
+                    <?php if ($hasData): ?>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <?php if ($flowerComfort): ?>
+                            <div><strong>Answer:</strong> <?= htmlspecialchars($flowerComfort) ?></div>
+                            <?php endif; ?>
+                            <?php if (!empty($flowerSelections)): ?>
+                            <div>
+                                <strong>Types:</strong>
+                                <div class="vr-tags" style="margin-top: 0.25rem;">
+                                    <?php foreach ($flowerSelections as $f): ?>
+                                    <span class="vr-tag"><?= htmlspecialchars($f) ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php else: ?><span class="empty">—</span><?php endif; ?>
+                </div>
+            </div>
             
             <!-- Dislikes as tags -->
             <?php $dislikes = array_filter(array_map('trim', explode(', ', $row['dislikes'] ?? ''))); ?>
@@ -659,8 +699,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
             </div>
 
             <div class="form-group">
-                <label>Flower</label>
-                <input type="text" name="flower" value="<?= htmlspecialchars($row['flower'] ?? '') ?>">
+                <label>Flowers - how do you feel about getting them?</label>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="flower_comfort" value="yes, i love flowers!"
+                            <?= ($row['flower_comfort'] ?? '') === "yes, i love flowers!" ? 'checked' : '' ?>>
+                        yes, i love flowers!
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="flower_comfort" value="that would be sweet, i'd appreciate it"
+                            <?= ($row['flower_comfort'] ?? '') === "that would be sweet, i'd appreciate it" ? 'checked' : '' ?>>
+                        that would be sweet, i'd appreciate it
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="flower_comfort" value="i like it but i'd be a bit shy carrying it around"
+                            <?= ($row['flower_comfort'] ?? '') === "i like it but i'd be a bit shy carrying it around" ? 'checked' : '' ?>>
+                        i like it but i'd be a bit shy carrying it around
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="flower_comfort" value="not so fond but i won't mind receiving them"
+                            <?= ($row['flower_comfort'] ?? '') === "not so fond but i won't mind receiving them" ? 'checked' : '' ?>>
+                        not so fond but i won't mind receiving them
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="flower_comfort" value="not really my thing"
+                            <?= ($row['flower_comfort'] ?? '') === "not really my thing" ? 'checked' : '' ?>>
+                        not really my thing
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Flower types you like</label>
+                <input type="text" name="flower" placeholder="e.g., Rose, Sunflower, Tulip" value="<?= htmlspecialchars($row['flower'] ?? '') ?>">
             </div>
 
             <div class="form-group">
@@ -815,14 +886,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
         <div class="vr-rows" id="view-prefs">
             <?php
             $prefFields = [
-                'date_type'        => 'Kind of date',
-                'spontaneity'      => 'Spontaneity',
-                'energy'           => 'Energy level',
-                'mood'             => 'First date mood',
-                'crowd'            => 'Crowd preference',
-                'walking'          => 'Walking tolerance',
-                'convo_style'      => 'Conversation style',
-                'awkwardness'      => 'Yapper or listener?',
+                'date_type'        => 'what kind of date actually sounds good to you?',
+                'spontaneity'      => 'how planned do you want it?',
+                'energy'           => "how should we keep the energy so i don't drain your social battery?",
+                'mood'             => "what's the vibe you're going for?",
+                'crowd'            => 'how many people around us is acceptable?',
+                'walking'          => 'how much walking can i make you do?',
+                'convo_style'      => 'what do you actually want to talk about?',
+                'awkwardness'      => 'are you more of a yapper, a listener, or somewhere in between?',
             ];
             foreach ($prefFields as $key => $label):
                 $val = trim($row[$key] ?? '');
@@ -838,14 +909,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
             <input type="hidden" name="edit_section" value="prefs">
             <?php
             $prefOptions = [
-                'date_type'        => ['label' => 'Kind of date',       'options' => ['Cozy indoor date','Outdoor adventure','Food trip','Nice view','Random spontaneous hang out','Surprise me']],
-                'spontaneity'      => ['label' => 'Spontaneity level',  'options' => ['Yes please','A little structure',"Let's wing it",'Chaos']],
-                'energy'           => ['label' => 'Energy level',       'options' => ['Chill','Medium','Active','Illegal activities (joke)']],
-                'mood'             => ['label' => 'First date mood',    'options' => ['Relaxed','Playful','Adventurous','Slightly awkward but fun']],
-                'crowd'            => ['label' => 'Crowd preference',   'options' => ['Quiet','Some people','Busy',"Doesn't matter"]],
-                'walking'          => ['label' => 'Walking tolerance',  'options' => ['Minimal','Some walking','A lot','If we get lost we get lost']],
-                'convo_style'      => ['label' => 'Conversation style', 'options' => ['Deep talks','Random funny stuff','Getting to know each other','Bahala na']],
-                'awkwardness'      => ['label' => 'Yapper or listener?',  'options' => ['yapper — i will carry the conversation, don\'t worry','listener — i\'m better at responding than starting','both — depends','neither — i communicate through eye contact','dancer — hawak ko ang beat']],
+                'date_type'        => ['label' => 'what kind of date actually sounds good to you?',       'options' => ['Cozy indoor date','Outdoor adventure','Food trip','Nice view','Random spontaneous hang out','Surprise me']],
+                'spontaneity'      => ['label' => 'how planned do you want it?',  'options' => ['Yes please','A little structure',"Let's wing it",'Chaos']],
+                'energy'           => ['label' => "how should we keep the energy so i don't drain your social battery?",       'options' => ['Chill','Medium','Active','Illegal activities (joke)']],
+                'mood'             => ['label' => "what's the vibe you're going for?",    'options' => ['Relaxed','Playful','Adventurous','Slightly awkward but fun']],
+                'crowd'            => ['label' => 'how many people around us is acceptable?',   'options' => ['Quiet','Some people','Busy',"Doesn't matter"]],
+                'walking'          => ['label' => 'how much walking can i make you do?',  'options' => ['Minimal','Some walking','A lot','If we get lost we get lost']],
+                'convo_style'      => ['label' => 'what do you actually want to talk about?', 'options' => ['Deep talks','Random funny stuff','Getting to know each other','Bahala na']],
+                'awkwardness'      => ['label' => 'are you more of a yapper, a listener, or somewhere in between?',  'options' => ['yapper — i will carry the conversation, don\'t worry','listener — i\'m better at responding than starting','both — depends','neither — i communicate through eye contact','dancer — hawak ko ang beat']],
             ];
             foreach ($prefOptions as $name => $q):
             ?>

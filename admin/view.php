@@ -73,40 +73,40 @@ $matchingDetailJSON = json_encode($matchingDetail);
 
 $sections = [
     'about them' => [
-        'age'           => 'Age',
-        'city'          => 'City',
-        'communication' => 'Reach them via',
-        'best_time'     => 'Best time',
-        'food_drink'    => 'Food & drink',
-        'flower'        => 'Flower',
-        'craving'       => 'Craving lately',
-        'temperature'   => 'Temperature pref',
-        'dislikes'      => 'Dislikes going out',
-        'dessert'       => 'Dessert',
-        'dealbreaker'   => 'Dealbreaker',
+        'age'           => 'how old are you?',
+        'city'          => 'wya',
+        'communication' => 'where can i actually reach you?',
+        'best_time'     => "when's a good time for a date?",
+        'food_drink'    => "what's your go-to food and drink?",
+        'flower_comfort' => 'are you the type who likes receiving flowers?',
+        'craving'       => "anything you've been craving lately?",
+        'temperature'   => 'how do you usually handle the temperature?',
+        'dislikes'      => 'what are the things that make dates uncomfortable?',
+        'dessert'       => 'favorite dessert or sweet treat?',
+        'dealbreaker'   => 'dealbreaker for dating?',
         'maybe_reason' => 'Why she said maybe',
     ],
     'date preferences' => [
-        'date_type'        => 'Date type',
-        'spontaneity'      => 'Spontaneity',
-        'energy'           => 'Energy',
-        'mood'             => 'Mood',
-        'crowd'            => 'Crowd',
-        'convo_style'      => 'Convo style',
-        'walking'          => 'Walking',
-        'awkwardness'      => 'Yapper or listener?',
+        'date_type'        => 'what kind of date actually sounds good to you?',
+        'spontaneity'      => 'how planned do you want it?',
+        'energy'           => "how should we keep the energy so i don't drain your social battery?",
+        'mood'             => "what's the vibe you're going for?",
+        'crowd'            => 'how many people around us is acceptable?',
+        'convo_style'      => 'what do you actually want to talk about?',
+        'walking'          => 'how much walking can i make you do?',
+        'awkwardness'      => 'are you more of a yapper, a listener, or somewhere in between?',
     ],
     'before we plan' => [
-        'curfew'   => 'Do you have a curfew?',
-        'parents'  => 'How are your parents about going out?',
-        'distance' => 'How far from home are you okay going?',
+        'curfew'   => 'do you have a curfew?',
+        'parents'  => 'how are your parents about going out?',
+        'distance' => 'how far from home are you okay going?',
     ],
     'vibes & extras' => [
-        'vibes'        => 'What activities sound good?',
-        'custom_vibe'  => 'Something else you had in mind?',
-        'place_in_mind' => 'Is there somewhere you want to go?',
-        'place_name'   => 'What place?',
-        'place_timing' => 'When do you want to go?',
+        'vibes'        => 'pick everything that actually sounds good',
+        'custom_vibe'  => "something i didn't list?",
+        'place_in_mind' => 'is there somewhere you want to go that i should know about?',
+        'place_name'   => 'what place?',
+        'place_timing' => 'when do you want to go?',
     ],
     'results' => [
         'compatibility_score' => 'Compatibility',
@@ -353,6 +353,24 @@ $sections = [
                 <strong><?= $label ?></strong>
                 <?php if ($isEmpty): ?>
                     <span class="empty">—</span>
+                <?php elseif ($key === 'flower_comfort'): ?>
+                    <!-- Display both flower_comfort and flower types -->
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <div><strong>Answer:</strong> <?= htmlspecialchars($raw) ?></div>
+                        <?php 
+                        $flowerTypes = array_filter(array_map('trim', explode(', ', $r['flower'] ?? '')));
+                        if (!empty($flowerTypes)): 
+                        ?>
+                        <div>
+                            <strong>Types:</strong>
+                            <div class="field-tags" style="margin-top: 0.3rem;">
+                                <?php foreach ($flowerTypes as $f): ?>
+                                <span class="field-tag"><?= htmlspecialchars($f) ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
                 <?php elseif ($isMultiple): ?>
                     <div class="field-tags">
                         <?php foreach ($items as $item): ?>

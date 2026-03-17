@@ -16,6 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dessert       = $_POST['dessert'] ?? '';
     $owner_username = $_SESSION['owner'] ?? null;
 
+    // flower comfort (radio answer)
+    $flower_comfort = $_POST['flower_comfort'] ?? '';
+
     // flower is now an array — join into a string
     $flower = '';
     if (!empty($_POST['flower'])) {
@@ -31,12 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = $pdo->prepare("INSERT INTO responses
         (name, age, city, communication, best_time, food_drink, dealbreaker,
-         flower, craving, temperature, dislikes, dessert, owner_username)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+         flower, flower_comfort, craving, temperature, dislikes, dessert, owner_username)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     $stmt->execute([
         $name, $age, $city, $communication, $best_time, $food_drink, $dealbreaker,
-        $flower, $craving, $temperature, $dislikes, $dessert, $owner_username
+        $flower, $flower_comfort, $craving, $temperature, $dislikes, $dessert, $owner_username
     ]);
 
     $new_id = $pdo->lastInsertId();
