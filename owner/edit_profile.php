@@ -16,13 +16,13 @@ $owner = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Defaults
 $defaultItems = [
-    '😊 genuinely kind and thoughtful',
-    '🎵 good music taste (subjective but trust me)',
-    '🍜 will always share food',
-    '🌙 good late night company',
-    '🗣️ actually listens when you talk',
-    '😂 kinda funny naman',
-    '🚗 may wheels (important)',
+    'genuinely kind and thoughtful',
+    'good music taste (subjective but trust me)',
+    'will always share food',
+    'good late night company',
+    'actually listens when you talk',
+    'kinda funny naman',
+    'may wheels (important)',
 ];
 
 $defaultExpectations = [
@@ -36,18 +36,18 @@ $defaultExpectations = [
 ];
 
 $defaultSkills = [
-    '✦ active listener',
-    '✦ gift maker (not just buyer)',
-    '✦ remembers what you said',
-    '✦ drives',
-    '✦ pays for food',
-    '✦ actually funny',
-    '✦ good playlist curator',
-    '✦ will not ghost',
-    '✦ opens doors',
-    '✦ no weird expectations',
-    '✦ night drive certified 🚗',
-    '✦ makes the effort',
+    'active listener',
+    'gift maker (not just buyer)',
+    'remembers what you said',
+    'drives',
+    'pays for food',
+    'actually funny',
+    'good playlist curator',
+    'will not ghost',
+    'opens doors',
+    'no weird expectations',
+    'night drive certified',
+    'makes the effort',
 ];
 
 $savedItems        = $owner['profile_items']         ? json_decode($owner['profile_items'], true)         : $defaultItems;
@@ -218,20 +218,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="logout.php" class="topbar-btn topbar-logout">logout</a>
     </div>
 
-    <h1 style="margin-top:1rem;">edit my profile 🌸</h1>
+    <h1 style="margin-top:1rem;">edit my profile</h1>
     <p class="subtitle">this is your "resume" shown on the maybe page when your crush is deciding</p>
 
     <?php if ($success): ?>
     <div style="background:rgba(100,200,140,0.1); border:1px solid rgba(100,200,140,0.4);
                 border-radius:10px; padding:0.85rem 1.2rem; color:#6dc88a; margin:1rem 0; font-size:0.9rem;">
-        ✔ profile saved!
+        profile saved!
     </div>
     <?php endif; ?>
 
     <?php if ($error): ?>
     <div style="background:rgba(224,122,138,0.1); border:1px solid rgba(224,122,138,0.4);
                 border-radius:10px; padding:0.85rem 1.2rem; color:#e07a8a; margin:1rem 0; font-size:0.9rem;">
-        ⚠️ <?= $error ?>
+        <?= $error ?>
     </div>
     <?php endif; ?>
 
@@ -241,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="resume-section-divider">header text</div>
 
         <div class="form-group">
-            <span class="section-label">text under "WHYYY 😭"</span>
+            <span class="section-label">text under "WHYYY"</span>
             <input type="text" name="whyyy_text"
                 value="<?= htmlspecialchars($owner['whyyy_text'] ?? 'okay okay let me make my case first...') ?>"
                 placeholder="okay okay let me make my case first..."
@@ -254,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="resume-section-divider">core qualifications</div>
 
         <div class="form-group">
-            <span class="section-label">your selling points 😄</span>
+            <span class="section-label">your selling points</span>
             <p class="section-desc">
                 these show as bullet points under "core qualifications". add emoji at the start!
             </p>
@@ -277,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="resume-section-divider">what they can actually expect</div>
 
         <div class="form-group">
-            <span class="section-label">specific things you'd actually do 🌸</span>
+            <span class="section-label">specific things you'd actually do</span>
             <p class="section-desc">
                 this is the convincing part — be specific and genuine. "i remember the small things you mention", "i make gifts instead of just buying them", etc.
             </p>
@@ -299,7 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="resume-section-divider">skills & competencies</div>
 
         <div class="form-group">
-            <span class="section-label">your tags / skills 🏷️</span>
+            <span class="section-label">your tags / skills</span>
             <p class="section-desc">
                 these show as small pill tags. keep them short — 2 to 5 words each. tip: start with ✦ for the highlighted ones.
             </p>
@@ -338,20 +338,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="resume-section-divider">contact</div>
 
         <div class="form-group">
-            <span class="section-label">your instagram profile 📱</span>
+            <span class="section-label">your instagram profile</span>
             <p class="section-desc">
                 people will use this link to message you after saying yes. leave blank to use default.
             </p>
             <input type="text" name="instagram_link"
                 value="<?= htmlspecialchars($owner['instagram_link'] ?? '') ?>"
-                placeholder="https://instagram.com/yourname"
+                placeholder="https://instagram.com/username"
                 style="width:100%; background:var(--input-bg); border:1px solid var(--border);
                        border-radius:10px; padding:0.75rem 1rem; color:var(--text);
                        font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none; box-sizing:border-box;">
         </div>
 
         <button type="submit" class="btn btn-yes" style="width:100%; margin-top:1.5rem; color:#fff;">
-            save profile 🌸
+            save profile
         </button>
     </form>
 </div>

@@ -6,31 +6,29 @@ $ownerUsername = $_SESSION['owner'] ?? null;
 
 // ── Defaults ──
 $profileItems = [
-    '😊 genuinely kind and thoughtful',
-    '🎵 good music taste (subjective but trust me)',
-    '🍜 will always share food',
-    '🌙 good late night company',
-    '🗣️ actually listens when you talk',
-    '😂 kinda funny naman',
-    '🚗 may wheels (important)',
+    'kind and thoughtful.........',
+    'good music taste (trust)',
+    'will always share food',
+    'good late night company',
+    'actually listens  when you talk',
+    'kinda funny naman',
+    'may pang hatid sundo',
 ];
-$promiseText = 'di ako masamang tao promise, go out with me please';
-$whyyyText   = 'okay okay let me make my case first...';
+$promiseText = 'matino naman ako halata ba..? 😇';
+$whyyyText   = 'please';
 $savedExpectations = [
-    "i pay attention to the small things you mention. if you say you've been craving something, i'll remember it.",
-    "i don't just buy gifts — i make them. cards, playlists, little things that took actual thought and time.",
-    "if something needs fixing, i fix it. if you need help carrying something, i'm already carrying it.",
-    "i check in. not in an overwhelming way — just a \"how was your day\" kind of way that actually means it.",
-    "i'll plan the date so you don't have to think about it. just show up.",
-    "i'm the kind of person who stays until the end — of the movie, the conversation, the night.",
-    "i'll make sure you get home safe. always.",
+    "i pay attention",
+    "i don't just buy gifts, i make them. things that took actual thought, effort, and time",
+    "i'll make sure you get home safe. always",
+    "i respect your time, your space, and your boundaries",
+    "i'll treat you like a princess",
+    "i don't rush things",
+    
 ];
 $savedSkills = [
-    'active listener', 'gift maker (not just buyer)',
-    'remembers what you said', 'drives', 'pays for food',
-    'actually funny', 'good playlist curator', 'will not ghost',
-    'opens doors', 'no weird expectations',
-    'night drive certified 🚗', 'makes the effort',
+    'active listener',
+    'remembers what you said', 'driver', 'pays for food', 'handy',
+    'funny', 'good playlist curator', 'no weird expectations', 'makes the effort',
 ];
 
 // ── Load from database ──
@@ -277,7 +275,7 @@ if ($ownerUsername) {
             <!-- Header -->
             <div class="resume-header">
                 <div class="resume-name"><?= htmlspecialchars($ownerUsername ?? 'your future date') ?></div>
-                <div class="resume-title">Applicant for: one date with you 💌</div>
+                <div class="resume-title">Applicant for: one date with you</div>
                 <div class="resume-tagline">open to coffee, food trips, and getting to know each other</div>
             </div>
 
@@ -285,9 +283,7 @@ if ($ownerUsername) {
             <div class="resume-section">
                 <div class="resume-section-title">objective</div>
                 <div class="resume-note">
-                    to take you out on one genuinely good date. no pressure beyond that.
-                    just good company, good food, and hopefully you laughing at least once.
-                    open to second date pending your review. 👀
+                    to take you out, make it a good experience for you, and see if we actually get along.
                 </div>
             </div>
 
@@ -315,45 +311,45 @@ if ($ownerUsername) {
 
             <!-- Date perks — the "you'll never spend" section -->
             <div class="resume-section">
-                <div class="resume-section-title">date package includes 🎁</div>
+                <div class="resume-section-title">date package includes</div>
                 <div class="resume-perks">
                     <div class="resume-perk">
-                        <span class="resume-perk-icon">💸</span>
+                        <span class="resume-perk-icon"></span>
                         <span class="resume-perk-title">fully covered</span>
                         <span class="resume-perk-desc">you will never have to spend a single peso. ever. i got it.</span>
                     </div>
                     <div class="resume-perk">
-                        <span class="resume-perk-icon">🚗</span>
+                        <span class="resume-perk-icon"></span>
                         <span class="resume-perk-title">door to door</span>
                         <span class="resume-perk-desc">i'll pick you up and drop you off. you just tell me where.</span>
                     </div>
                     <div class="resume-perk">
-                        <span class="resume-perk-icon">🗓️</span>
+                        <span class="resume-perk-icon"></span>
                         <span class="resume-perk-title">i plan everything</span>
                         <span class="resume-perk-desc">you don't have to think about a single detail. just show up.</span>
                     </div>
                     <div class="resume-perk">
-                        <span class="resume-perk-icon">🍜</span>
+                        <span class="resume-perk-icon"></span>
                         <span class="resume-perk-title">you pick the food</span>
                         <span class="resume-perk-desc">whatever you're craving. your call, no questions asked.</span>
                     </div>
                     <div class="resume-perk">
-                        <span class="resume-perk-icon">🌸</span>
+                        <span class="resume-perk-icon"></span>
                         <span class="resume-perk-title">zero pressure</span>
                         <span class="resume-perk-desc">no weird expectations. just two people getting to know each other.</span>
                     </div>
                     <div class="resume-perk">
-                        <span class="resume-perk-icon">🏠</span>
+                        <span class="resume-perk-icon"></span>
                         <span class="resume-perk-title">home safe, always</span>
                         <span class="resume-perk-desc">i will make sure you get home safe. non-negotiable.</span>
                     </div>
                     <div class="resume-perk">
-                        <span class="resume-perk-icon">☕</span>
+                        <span class="resume-perk-icon"></span>
                         <span class="resume-perk-title">coffee or milk tea</span>
                         <span class="resume-perk-desc">whichever you want. or both. we don't judge here.</span>
                     </div>
                     <div class="resume-perk">
-                        <span class="resume-perk-icon">📱</span>
+                        <span class="resume-perk-icon"></span>
                         <span class="resume-perk-title">phone stays down</span>
                         <span class="resume-perk-desc">you have my full attention. no distractions.</span>
                     </div>
@@ -374,13 +370,13 @@ if ($ownerUsername) {
 
             <!-- Handwritten note -->
             <div class="resume-handwritten">
-                "<?= htmlspecialchars($promiseText) ?>" 🙏
+                "<?= htmlspecialchars($promiseText) ?>"
             </div>
 
             <!-- Footer disclaimer -->
             <div class="resume-footer">
-                ✦ this resume was made with genuine effort and zero exaggeration ✦<br>
-                references available upon request (just go on the date and find out)
+                this resume was made with genuine effort and zero exaggeration<br>
+                references available upon request (just  go on the date and find out)
             </div>
 
         </div>
@@ -523,7 +519,7 @@ if ($ownerUsername) {
         "i'm not looking for anything right now": "fair enough. focusing on yourself is always valid. take care of yourself :)",
         "i'm already talking to someone":         "aray kooo! hahahhjk hope that's going well for you ",
         "i just don't like you like that":        "ARAYYYY",
-        "something else":                         "tell me below — no pressure to explain but i appreciate it 🌸",
+        "something else":                         "tell me below — no pressure to explain but i appreciate it",
     };
 
     const sendMessages = {
@@ -532,11 +528,11 @@ if ($ownerUsername) {
             msg: 'makes complete sense. no pressure at all.'
         },
         "the timing isn't right for me": {
-            emoji: '🕐', title: 'timing is everything.',
+            emoji: '', title: 'timing is everything.',
             msg: 'understood. maybe some other time'
         },
         "i'm not looking for anything right now": {
-            emoji: '🫂', title: 'all good!',
+            emoji: '', title: 'all good!',
             msg: "take care of yourself :)"
         },
         "i'm already talking to someone": {
@@ -548,7 +544,7 @@ if ($ownerUsername) {
             msg: 'respect for being straight up though, no hard feelings at all :) '
         },
         "something else": {
-            emoji: '🙌', title: 'got it!',
+            emoji: '', title: 'got it!',
             msg: 'thanks for sharing :) hope you have a good day!'
         },
     };

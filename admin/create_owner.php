@@ -18,13 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$username || !$password) {
             $error = 'fill in both fields.';
         } else {
-            try {
+            // Check if username already exists
+            $stmt = $pdo->prepare("SELECT id FROM site_owners WHERE username = ?");
+            $stmt->execute([$username]);
+            if ($stmt->fetch()) {
+                $error = 'that username is already taken.';
+            } else {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
                 $pdo->prepare("INSERT INTO site_owners (username, password) VALUES (?, ?)")
                     ->execute([$username, $hash]);
-                $success = "✔ account created! send them → username: <strong>$username</strong> / password: <strong>$password</strong>";
-            } catch (PDOException $e) {
-                $error = 'that username is already taken.';
+                $success = "✔ account created! username: <strong>$username</strong> (share password securely)";
             }
         }
     }
