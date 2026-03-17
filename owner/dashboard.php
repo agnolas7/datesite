@@ -29,8 +29,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     }
 }
 
-$stmt = $pdo->prepare("SELECT id, name, age, city, scheduled_date, submitted_at
-                        FROM responses WHERE owner_username = ? ORDER BY submitted_at DESC");
+$stmt = $pdo->prepare("
+    SELECT r.id, r.name, r.age, r.city, r.scheduled_date, r.submitted_at,
+           IF(r.scheduled_date IS NOT NULL, r.scheduled_date, 
+              IF(m.id IS NOT NULL, 'not sure', NULL)) as display_date
+    FROM responses r
+    LEFT JOIN messages m ON r.id = m.response_id
+    WHERE r.owner_username = ? AND r.compatibility_score IS NOT NULL
+    GROUP BY r.id
+    ORDER BY r.submitted_at DESC
+");
 $stmt->execute([$username]);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -130,8 +138,14 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($r['name']) ?></td>
                 <td><?= $r['age'] ?></td>
                 <td><?= htmlspecialchars($r['city']) ?></td>
-                <td style="<?= $r['scheduled_date'] ? 'color:var(--pink); font-weight:500;' : 'color:var(--muted);' ?>">
-                    <?= $r['scheduled_date'] ? ('📅 ' . $r['scheduled_date']) : '—' ?>
+                <td style="<?= $r['display_date'] ? 'color:var(--pink); font-weight:500;' : 'color:var(--muted);' ?>">
+                    <?php if ($r['display_date'] === 'not sure'): ?>
+                        ⏳ not sure
+                    <?php elseif ($r['display_date']): ?>
+                        📅 <?= htmlspecialchars($r['display_date']) ?>
+                    <?php else: ?>
+                        —
+                    <?php endif; ?>
                 </td>
                 <td style="font-size:0.8rem; color:var(--muted);"><?= $r['submitted_at'] ?></td>
                 <td style="text-align:right;">

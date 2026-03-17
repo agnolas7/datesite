@@ -6,13 +6,26 @@ if (empty($_SESSION['admin'])) {
 }
 require '../includes/db.php';
 
-$stmt = $pdo->query("SELECT id, name, age, city, compatibility_score, scheduled_date, submitted_at, owner_username
-                     FROM responses ORDER BY submitted_at DESC");
+$stmt = $pdo->query("
+    SELECT r.id, r.name, r.age, r.city, r.compatibility_score, r.scheduled_date, r.submitted_at, r.owner_username,
+           IF(r.scheduled_date IS NOT NULL, r.scheduled_date, 
+              IF(m.id IS NOT NULL, 'not sure', NULL)) as display_date
+    FROM responses r
+    LEFT JOIN messages m ON r.id = m.response_id
+    WHERE r.compatibility_score IS NOT NULL
+    GROUP BY r.id
+    ORDER BY r.submitted_at DESC
+");
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $ownerCount = $pdo->query("SELECT COUNT(*) FROM site_owners")->fetchColumn();
 $responseCount = count($rows);
-$scheduledCount = $pdo->query("SELECT COUNT(*) FROM responses WHERE scheduled_date IS NOT NULL")->fetchColumn();
+$scheduledCount = $pdo->query("
+    SELECT COUNT(DISTINCT r.id) FROM responses r
+    LEFT JOIN messages m ON r.id = m.response_id
+    WHERE r.compatibility_score IS NOT NULL
+          AND (r.scheduled_date IS NOT NULL OR m.id IS NOT NULL)
+")->fetchColumn();
 $feedbackCount = $pdo->query("SELECT COUNT(*) FROM feedback")->fetchColumn();
 
 // Recent accounts
@@ -20,9 +33,12 @@ $recentAccounts = $pdo->query("SELECT username, created_at FROM site_owners ORDE
 
 // Recent responses by date
 $recentResponses = $pdo->query("
-    SELECT DATE(submitted_at) as date, COUNT(*) as count
-    FROM responses
-    GROUP BY DATE(submitted_at)
+    SELECT DATE(r.submitted_at) as date, COUNT(DISTINCT r.id) as count
+    FROM responses r
+    LEFT JOIN messages m ON r.id = m.response_id
+    WHERE r.compatibility_score IS NOT NULL
+          AND (r.scheduled_date IS NOT NULL OR m.id IS NOT NULL)
+    GROUP BY DATE(r.submitted_at)
     ORDER BY date DESC
     LIMIT 7
 ")->fetchAll(PDO::FETCH_ASSOC);
@@ -53,7 +69,6 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="admin-dashboard">
 
     <a href="logout.php" class="logout">logout</a>
-    <a href="change_password.php" style="position:absolute; top:2rem; right:6rem; color:var(--muted); text-decoration:none; font-size:0.8rem; padding:0.4rem 0.8rem; border:1px solid rgba(244,167,185,0.2); border-radius:6px; transition:all 0.2s ease;" onmouseover="this.style.borderColor='var(--pink)'; this.style.color='var(--pink)';" onmouseout="this.style.borderColor='rgba(244,167,185,0.2)'; this.style.color='var(--muted)';">🔑 change password</a>
     <h1 id="mainTitle">create account 🔐</h1>
 
     <!-- Create account section - enlarged -->
@@ -155,7 +170,15 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
                         <?= htmlspecialchars($r['owner_username'] ?? '—') ?>
                     </td>
                     <td><?= $r['compatibility_score'] ? $r['compatibility_score'] . '%' : '—' ?></td>
-                    <td><?= $r['scheduled_date'] ?: '—' ?></td>
+                    <td>
+                        <?php if ($r['display_date'] === 'not sure'): ?>
+                            ⏳ not sure
+                        <?php elseif ($r['display_date']): ?>
+                            📅 <?= htmlspecialchars($r['display_date']) ?>
+                        <?php else: ?>
+                            —
+                        <?php endif; ?>
+                    </td>
                     <td><?= $r['submitted_at'] ?></td>
                 </tr>
                 <?php endforeach; ?>

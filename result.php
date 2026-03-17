@@ -947,6 +947,13 @@ if ($ownerUsername) {
     }
 
     function openNotSureFromLeft() {
+        // Mark "not sure" state
+        fetch('save_not_sure.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=<?= $id ?>'
+        });
+        
         openRightPanel();
         const btn = document.getElementById('notSureBtn');
         if (btn) {
