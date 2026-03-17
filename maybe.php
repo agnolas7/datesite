@@ -13,9 +13,10 @@ $profileItems = [
     'actually listens  when you talk',
     'kinda funny naman',
     'may pang hatid sundo',
+    'i will pay syempre',
 ];
 $promiseText = 'matino naman ako halata ba..? 😇';
-$whyyyText   = 'please';
+$whyyyText   = 'PLEASEEE give me a chance';
 $savedExpectations = [
     "i pay attention",
     "i don't just buy gifts, i make them. things that took actual thought, effort, and time",
@@ -23,11 +24,18 @@ $savedExpectations = [
     "i respect your time, your space, and your boundaries",
     "i'll treat you like a princess",
     "i don't rush things",
-    
+];
+$savedPerks = [
+    ['title' => 'fully covered', 'desc' => 'you will never have to spend a single peso. ever. i got it'],
+    ['title' => 'door to door', 'desc' => "i'll pick you up and drop you off. you just tell me where"],
+    ['title' => 'you pick the food', 'desc' => "whatever you're craving. your call, no questions asked"],
+    ['title' => 'zero pressure', 'desc' => "no weird expectations. just two people getting to know each other"],
+    ['title' => 'home safe, always', 'desc' => "i will make sure you get home safe. non-negotiable"],
+    ['title' => 'phone stays down', 'desc' => "you have my full attention. no distractions"],
 ];
 $savedSkills = [
     'active listener',
-    'remembers what you said', 'driver', 'pays for food', 'handy',
+    'remembers what you said', 'driver',  'handy',
     'funny', 'good playlist curator', 'no weird expectations', 'makes the effort',
 ];
 
@@ -42,6 +50,7 @@ if ($ownerUsername) {
         if (!empty($ownerData['whyyy_text']))          $whyyyText         = $ownerData['whyyy_text'];
         if (!empty($ownerData['resume_expectations'])) $savedExpectations = json_decode($ownerData['resume_expectations'], true);
         if (!empty($ownerData['resume_skills']))       $savedSkills       = json_decode($ownerData['resume_skills'], true);
+        if (!empty($ownerData['resume_perks']))        $savedPerks        = json_decode($ownerData['resume_perks'], true);
     }
 }
 ?>
@@ -276,7 +285,6 @@ if ($ownerUsername) {
             <div class="resume-header">
                 <div class="resume-name"><?= htmlspecialchars($ownerUsername ?? 'your future date') ?></div>
                 <div class="resume-title">Applicant for: one date with you</div>
-                <div class="resume-tagline">open to coffee, food trips, and getting to know each other</div>
             </div>
 
             <!-- Objective -->
@@ -313,46 +321,13 @@ if ($ownerUsername) {
             <div class="resume-section">
                 <div class="resume-section-title">date package includes</div>
                 <div class="resume-perks">
+                    <?php foreach ($savedPerks as $perk): ?>
                     <div class="resume-perk">
                         <span class="resume-perk-icon"></span>
-                        <span class="resume-perk-title">fully covered</span>
-                        <span class="resume-perk-desc">you will never have to spend a single peso. ever. i got it.</span>
+                        <span class="resume-perk-title"><?= htmlspecialchars($perk['title'] ?? '') ?></span>
+                        <span class="resume-perk-desc"><?= htmlspecialchars($perk['desc'] ?? '') ?></span>
                     </div>
-                    <div class="resume-perk">
-                        <span class="resume-perk-icon"></span>
-                        <span class="resume-perk-title">door to door</span>
-                        <span class="resume-perk-desc">i'll pick you up and drop you off. you just tell me where.</span>
-                    </div>
-                    <div class="resume-perk">
-                        <span class="resume-perk-icon"></span>
-                        <span class="resume-perk-title">i plan everything</span>
-                        <span class="resume-perk-desc">you don't have to think about a single detail. just show up.</span>
-                    </div>
-                    <div class="resume-perk">
-                        <span class="resume-perk-icon"></span>
-                        <span class="resume-perk-title">you pick the food</span>
-                        <span class="resume-perk-desc">whatever you're craving. your call, no questions asked.</span>
-                    </div>
-                    <div class="resume-perk">
-                        <span class="resume-perk-icon"></span>
-                        <span class="resume-perk-title">zero pressure</span>
-                        <span class="resume-perk-desc">no weird expectations. just two people getting to know each other.</span>
-                    </div>
-                    <div class="resume-perk">
-                        <span class="resume-perk-icon"></span>
-                        <span class="resume-perk-title">home safe, always</span>
-                        <span class="resume-perk-desc">i will make sure you get home safe. non-negotiable.</span>
-                    </div>
-                    <div class="resume-perk">
-                        <span class="resume-perk-icon"></span>
-                        <span class="resume-perk-title">coffee or milk tea</span>
-                        <span class="resume-perk-desc">whichever you want. or both. we don't judge here.</span>
-                    </div>
-                    <div class="resume-perk">
-                        <span class="resume-perk-icon"></span>
-                        <span class="resume-perk-title">phone stays down</span>
-                        <span class="resume-perk-desc">you have my full attention. no distractions.</span>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
