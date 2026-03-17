@@ -22,50 +22,68 @@ if (!empty($_GET['u'])) {
     </script>
     <style>
         .easter-egg-hint {
-            position: fixed;
-            top: 3.2rem;
-            left: 1.5rem;
-            font-size: 0.65rem;
+            text-align: center;
+            font-size: 0.7rem;
             color: var(--muted);
             font-style: italic;
-            opacity: 0;
-            transition: opacity 0.4s;
-            pointer-events: none;
-            z-index: 100;
-            white-space: nowrap;
+            opacity: 0.6;
+            margin-top: 2.5rem;
+            letter-spacing: 0.5px;
         }
 
-        .logo:hover ~ .easter-egg-hint {
-            opacity: 0.4;
+        .easter-egg-hint:hover {
+            opacity: 0.9;
+            color: var(--pink);
+            cursor: pointer;
         }
     </style>
 </head>
 <body class="landing-page">
 
     <!-- Easter egg logo -->
-    <div class="logo" id="easterEggLogo">✦</div>
-    <div class="easter-egg-hint">psst... try clicking me 👀</div>
+    <div class="logo" id="easterEggLogo">🌸</div>
     <div class="easter-egg-msg" id="easterEggMsg">
-        I made this para sa crush kong SN na taga Cabanatuan :p
+        crush ng developer yung SN na taga cab :p
     </div>
 
     <!-- Theme toggle -->
     <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">☀️ light</button>
 
     <div class="center-card">
-        <p class="subtitle">hey, so...</p>
-        <h1 class="main-question">Would you be interested to go out on a date with me?</h1>
-        <p class="small-note">think carefully before answering 👀</p>
+        <p class="subtitle">hey............</p>
+        <h1 class="main-question">Would you be interested to go out with me?</h1>
+        <p class="small-note">think carefully before answering</p>
 
         <div class="button-group" id="buttonGroup">
             <a href="form.php" class="btn btn-yes">Yes 💌</a>
             <a href="maybe.php" class="btn btn-maybe">Maybe 🤔</a>
             <button class="btn btn-no" id="noBtn">No 🚪</button>
         </div>
+
+        <div class="easter-egg-hint">🔍 find the easter egg</div>
     </div>
 
     <script src="js/main.js"></script>
     <script>
+        let easterEggClicks = 0;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const easterEggLogo = document.getElementById('easterEggLogo');
+            const easterEggHint = document.querySelector('.easter-egg-hint');
+
+            if (easterEggLogo && easterEggHint) {
+                easterEggLogo.style.cursor = 'pointer';
+                easterEggLogo.addEventListener('click', function() {
+                    easterEggClicks++;
+                    console.log('Clicks:', easterEggClicks);
+                    if (easterEggClicks === 4) {
+                        easterEggHint.classList.add('show');
+                        console.log('Easter egg hint revealed!');
+                    }
+                });
+            }
+        });
+
         const themeBtn = document.getElementById('themeBtn');
         const saved = localStorage.getItem('siteTheme') || 'dark';
         themeBtn.textContent = saved === 'light' ? '🌙 dark' : '☀️ light';

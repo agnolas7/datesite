@@ -693,7 +693,7 @@ if ($ownerUsername) {
                     </div>
                 </div>
                 
-                <a href="download_view.php" target="_blank" class="btn-secondary" style="text-decoration:none;">
+                <a href="download_view.php?download=1" target="_blank" class="btn-secondary" style="text-decoration:none;">
                     📥 save a copy of your answers
                 </a>
             </div>

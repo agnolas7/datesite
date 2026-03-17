@@ -340,7 +340,7 @@ if (!empty($_GET['download'])) {
 
         <!-- Header -->
         <div class="doc-header">
-            <div class="doc-tag">✦ your answers</div>
+            <div class="doc-tag">🌙 your answers</div>
             <h1>hey, <span><?= $name ?></span> 🌸</h1>
             <p>here's everything you told me — submitted <?= htmlspecialchars($row['submitted_at']) ?></p>
         </div>
@@ -440,8 +440,9 @@ if (!empty($_GET['download'])) {
 
         <!-- Footer -->
         <div class="doc-footer">
-            ✦ saved on <?= date('F j, Y') ?> ✦<br>
-            made just for you
+            🌙 saved on <?= date('F j, Y') ?> 🌙<br>
+            made just for you<br>
+            <span style="font-size: 0.7rem; color: var(--muted); margin-top: 0.5rem; display: block;">👀 psst... find the easter egg</span>
         </div>
 
     </div>
