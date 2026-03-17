@@ -553,6 +553,14 @@ if ($ownerUsername) {
             font-size: 0.85rem;
         }
 
+        .left-message-section {
+            margin-top: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(244, 167, 185, 0.2);
+        }
+
+        .left-message-section.hidden { display: none; }
+
         /* ── Mobile ── */
         @media (max-width: 680px) {
             body.result-page {
@@ -628,10 +636,6 @@ if ($ownerUsername) {
                             <?= $displayScheduled ?>
                         </div>
                     </div>
-                    <a href="view_response.php" class="btn btn-yes btn-sched active"
-                       style="text-align:center; display:block; color:#fff; text-decoration:none;">
-                        view details
-                    </a>
                 <?php else: ?>
                     <button class="btn btn-yes btn-sched" id="schedBtn" onclick="openScheduler()">
                         tell me a day you're available
@@ -640,9 +644,36 @@ if ($ownerUsername) {
                         not sure about the date yet
                     </button>
                 <?php endif; ?>
-                <a href="<?= $instagramLink ?>" target="_blank" class="btn btn-maybe">
-                    send me a message instead 💌
+                
+                <a href="view_response.php" class="btn btn-yes btn-sched active"
+                   style="text-align:center; display:block; color:#fff; text-decoration:none;">
+                    view details & edit
                 </a>
+                
+                <button class="btn btn-maybe" id="messageToggleBtn" onclick="toggleMessageForm()">
+                    leave me a message or ur ig 
+                </button>
+                
+                <div class="left-message-section hidden" id="leftMessageSection">
+                    <label class="message-label">📱 your instagram (optional)</label>
+                    <input type="text" id="leftInstagramHandle"
+                        placeholder="@yourhandle"
+                        style="width:100%; background:var(--input-bg); border:1px solid var(--border);
+                               border-radius:10px; padding:0.8rem; color:var(--text);
+                               font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none;
+                               margin-bottom:1rem;"/>
+                    
+                    <label class="message-label">💌 your message</label>
+                    <textarea class="message-textarea" id="leftMessageText"
+                        placeholder="hey! anything you want to tell me?"></textarea>
+                    <button class="message-button" id="leftMessageSendBtn" onclick="sendLeftMessage()">
+                        send message 💌
+                    </button>
+                    <div class="message-sent hidden" id="leftMessageSentConfirm">
+                        ✓ message sent! i'll see it soon 🌸
+                    </div>
+                </div>
+                
                 <a href="download_view.php" target="_blank" class="download-btn">
                     📥 save a copy of your answers
                 </a>
@@ -1100,6 +1131,56 @@ if ($ownerUsername) {
             if (data.success) {
                 document.getElementById('messageText').value = '';
                 document.getElementById('instagramHandle').value = '';
+                confirm.classList.remove('hidden');
+                btn.textContent = 'message sent! 💌';
+                setTimeout(() => {
+                    btn.disabled    = false;
+                    btn.textContent = 'send another message 💌';
+                }, 2000);
+            } else {
+                alert('failed to send. try again.');
+                btn.disabled    = false;
+                btn.textContent = 'send message 💌';
+            }
+        }).catch(() => {
+            alert('error sending message.');
+            btn.disabled    = false;
+            btn.textContent = 'send message 💌';
+        });
+    }
+
+    function toggleMessageForm() {
+        const section = document.getElementById('leftMessageSection');
+        const btn = document.getElementById('messageToggleBtn');
+        if (section.classList.contains('hidden')) {
+            section.classList.remove('hidden');
+            btn.textContent = 'nevermind';
+        } else {
+            section.classList.add('hidden');
+            btn.textContent = 'leave me a message 💌';
+        }
+    }
+
+    function sendLeftMessage() {
+        const message = document.getElementById('leftMessageText').value.trim();
+        const instagram = document.getElementById('leftInstagramHandle').value.trim();
+        const btn     = document.getElementById('leftMessageSendBtn');
+        const confirm = document.getElementById('leftMessageSentConfirm');
+
+        if (!message) { alert('write something before sending! 💌'); return; }
+
+        btn.disabled    = true;
+        btn.textContent = 'sending...';
+
+        fetch('save_message.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=<?= $id ?>&message=' + encodeURIComponent(message) + '&instagram=' + encodeURIComponent(instagram)
+        }).then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('leftMessageText').value = '';
+                document.getElementById('leftInstagramHandle').value = '';
                 confirm.classList.remove('hidden');
                 btn.textContent = 'message sent! 💌';
                 setTimeout(() => {

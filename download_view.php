@@ -329,8 +329,6 @@ if (!empty($_GET['download'])) {
             📄 your answers
         </div>
         <div class="top-bar-right">
-            <button class="top-btn" onclick="copyLink()">copy link 🔗</button>
-            <button class="top-btn" onclick="window.print()">save as PDF 🖨️</button>
             <a class="top-btn" href="?id=<?= $shareToken ?>&download=1">download file 📥</a>
         </div>
     </div>
@@ -443,22 +441,12 @@ if (!empty($_GET['download'])) {
         <!-- Footer -->
         <div class="doc-footer">
             ✦ saved on <?= date('F j, Y') ?> ✦<br>
-            made with <span>🌸</span> just for you
+            made just for you
         </div>
 
     </div>
 
     <script>
-    // Copy the stable shareable link (not session-dependent)
-    function copyLink() {
-        const url = '<?= htmlspecialchars($shareUrl) ?>';
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('link copied!');
-        }).catch(() => {
-            prompt('copy this link:', url);
-        });
-    }
-
     function showToast(msg) {
         const toast = document.getElementById('toast');
         toast.textContent = msg;

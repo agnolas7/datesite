@@ -511,7 +511,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
     <div class="vr-topbar">
         <a href="result.php" class="vr-back">← back to results</a>
         <div class="vr-topbar-buttons">
-            <a href="download_view.php" class="vr-download-btn" download>📥 download</a>
+            <a href="download_view.php?download=1" class="vr-download-btn">📥 download</a>
             <button class="vr-theme-btn" id="themeBtn" onclick="toggleTheme()">☀️ light</button>
         </div>
     </div>
