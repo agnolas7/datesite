@@ -34,10 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
         $flower      = trim($_POST['flower'] ?? '');
         $craving     = trim($_POST['craving'] ?? '');
         $temperature = $_POST['temperature'] ?? '';
-        $dont_enjoy  = isset($_POST['dont_enjoy']) ? implode(', ', $_POST['dont_enjoy']) : '';
+        $dislikes    = isset($_POST['dislikes']) ? implode(', ', $_POST['dislikes']) : '';
         $dessert     = $_POST['dessert'] ?? '';
 
-        $pdo->prepare("UPDATE responses SET name=?, age=?, city=?, food_drink=?, flower=?, craving=?, temperature=?, dont_enjoy=?, dessert=?, dealbreaker=? WHERE id=?")
+        $pdo->prepare("UPDATE responses SET name=?, age=?, city=?, food_drink=?, flower=?, craving=?, temperature=?, dislikes=?, dessert=?, dealbreaker=? WHERE id=?")
             ->execute([
                 trim($_POST['name'] ?? ''),
                 $_POST['age'] ?? '',
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
                 $flower,
                 $craving,
                 $temperature,
-                $dont_enjoy,
+                $dislikes,
                 $dessert,
                 trim($_POST['dealbreaker'] ?? ''),
                 $id
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
 
     if ($section === 'prefs') {
         $pdo->prepare("UPDATE responses SET date_type=?, spontaneity=?, energy=?, mood=?,
-                        crowd=?, walking=?, convo_style=?, awkwardness=?, convo_difficulty=? WHERE id=?")
+                        crowd=?, walking=?, convo_style=?, awkwardness=? WHERE id=?")
             ->execute([
                 $_POST['date_type'] ?? '',
                 $_POST['spontaneity'] ?? '',
@@ -72,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
                 $_POST['walking'] ?? '',
                 $_POST['convo_style'] ?? '',
                 $_POST['awkwardness'] ?? '',
-                $_POST['convo_difficulty'] ?? '',
                 $id
             ]);
     }
@@ -81,6 +80,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
         $vibes = isset($_POST['vibes']) ? implode(', ', $_POST['vibes']) : '';
         $pdo->prepare("UPDATE responses SET vibes=?, custom_vibe=? WHERE id=?")
             ->execute([$vibes, trim($_POST['custom_vibe'] ?? ''), $id]);
+    }
+
+    if ($section === 'logistics') {
+        $pdo->prepare("UPDATE responses SET curfew=?, parents=?, distance=? WHERE id=?")
+            ->execute([
+                $_POST['curfew'] ?? '',
+                $_POST['parents'] ?? '',
+                $_POST['distance'] ?? '',
+                $id
+            ]);
+    }
+
+    if ($section === 'place') {
+        $pdo->prepare("UPDATE responses SET place_in_mind=?, place_name=?, place_timing=? WHERE id=?")
+            ->execute([
+                $_POST['place_in_mind'] ?? '',
+                trim($_POST['place_name'] ?? ''),
+                trim($_POST['place_timing'] ?? ''),
+                $id
+            ]);
     }
 
     // Reload row
@@ -580,6 +599,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
                 'age'         => 'Age',
                 'city'        => 'City / Location',
                 'food_drink'  => 'Fave food & drink',
+                'flower'      => 'Flower',
+                'craving'     => 'Craving lately',
+                'temperature' => 'Temperature pref',
+                'dessert'     => 'Dessert',
                 'dealbreaker' => 'Dealbreaker',
             ];
             foreach ($aboutFields as $key => $label):
@@ -590,6 +613,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
                 <span class="vr-answer <?= $val ? '' : 'empty' ?>"><?= $val ? htmlspecialchars($val) : '—' ?></span>
             </div>
             <?php endforeach; ?>
+            
+            <!-- Dislikes as tags -->
+            <?php $dislikes = array_filter(array_map('trim', explode(', ', $row['dislikes'] ?? ''))); ?>
+            <div class="vr-row">
+                <span class="vr-question">Dislikes going out</span>
+                <div class="vr-answer">
+                    <?php if ($dislikes): ?>
+                    <div class="vr-tags">
+                        <?php foreach ($dislikes as $d): ?>
+                        <span class="vr-tag"><?= htmlspecialchars($d) ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php else: ?><span class="empty">—</span><?php endif; ?>
+                </div>
+            </div>
         </div>
 
         <!-- Edit form -->
@@ -618,6 +656,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
             <div class="form-group">
                 <label>Fave food & drink</label>
                 <input type="text" name="food_drink" value="<?= htmlspecialchars($row['food_drink'] ?? '') ?>">
+            </div>
+
+            <div class="form-group">
+                <label>Flower</label>
+                <input type="text" name="flower" value="<?= htmlspecialchars($row['flower'] ?? '') ?>">
+            </div>
+
+            <div class="form-group">
+                <label>Craving lately</label>
+                <input type="text" name="craving" value="<?= htmlspecialchars($row['craving'] ?? '') ?>">
+            </div>
+
+            <div class="form-group">
+                <label>Temperature pref</label>
+                <select name="temperature">
+                    <option value="">— select</option>
+                    <?php foreach (['hot', 'cold', 'dont care'] as $t): ?>
+                    <option <?= ($row['temperature'] ?? '') === $t ? 'selected' : '' ?>><?= htmlspecialchars($t) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Dislikes going out</label>
+                <div class="checkbox-group">
+                    <?php 
+                    $currentDislikes = array_filter(array_map('trim', explode(', ', $row['dislikes'] ?? '')));
+                    $dislikeOptions = ['crowds', 'heat', 'being dirty', 'getting lost'];
+                    foreach ($dislikeOptions as $opt): 
+                    ?>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="dislikes[]" value="<?= htmlspecialchars($opt) ?>"
+                            <?= in_array($opt, $currentDislikes) ? 'checked' : '' ?>> <?= htmlspecialchars($opt) ?>
+                    </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Dessert</label>
+                <select name="dessert">
+                    <option value="">— select</option>
+                    <?php foreach (['chocolate', 'fruity', 'creamy', 'no dessert'] as $d): ?>
+                    <option <?= ($row['dessert'] ?? '') === $d ? 'selected' : '' ?>><?= htmlspecialchars($d) ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="form-group">
@@ -738,8 +822,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
                 'crowd'            => 'Crowd preference',
                 'walking'          => 'Walking tolerance',
                 'convo_style'      => 'Conversation style',
-                'awkwardness'      => 'Awkwardness level',
-                'convo_difficulty' => 'Convo difficulty',
+                'awkwardness'      => 'Yapper or listener?',
             ];
             foreach ($prefFields as $key => $label):
                 $val = trim($row[$key] ?? '');
@@ -762,8 +845,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
                 'crowd'            => ['label' => 'Crowd preference',   'options' => ['Quiet','Some people','Busy',"Doesn't matter"]],
                 'walking'          => ['label' => 'Walking tolerance',  'options' => ['Minimal','Some walking','A lot','If we get lost we get lost']],
                 'convo_style'      => ['label' => 'Conversation style', 'options' => ['Deep talks','Random funny stuff','Getting to know each other','Bahala na']],
-                'awkwardness'      => ['label' => 'Awkwardness level',  'options' => ['Very','A little','Smooth',"I'll carry the conversation"]],
-                'convo_difficulty' => ['label' => 'Convo difficulty',   'options' => ['Easy mode','Medium difficulty','Hard mode','Legendary boss fight']],
+                'awkwardness'      => ['label' => 'Yapper or listener?',  'options' => ['yapper — i will carry the conversation, don\'t worry','listener — i\'m better at responding than starting','both — depends','neither — i communicate through eye contact','dancer — hawak ko ang beat']],
             ];
             foreach ($prefOptions as $name => $q):
             ?>
@@ -792,7 +874,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
     ══════════════════════════════════ -->
     <div class="vr-section">
         <div class="vr-section-header">
-            <span class="vr-section-label">✨ vibes & activities</span>
+            <span class="vr-section-label">✨ what activities sound good?</span>
             <button class="vr-edit-btn" onclick="toggleEdit('vibes')">✏️ edit</button>
         </div>
 
@@ -801,7 +883,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
             $vibes = array_filter(array_map('trim', explode(', ', $row['vibes'] ?? '')));
             ?>
             <div class="vr-row">
-                <span class="vr-question">Vibe check</span>
+                <span class="vr-question">Activities</span>
                 <div class="vr-answer">
                     <?php if ($vibes): ?>
                     <div class="vr-tags">
@@ -813,7 +895,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
                 </div>
             </div>
             <div class="vr-row">
-                <span class="vr-question">Custom idea</span>
+                <span class="vr-question">Something else?</span>
                 <span class="vr-answer <?= !empty($row['custom_vibe']) ? '' : 'empty' ?>">
                     <?= !empty($row['custom_vibe']) ? htmlspecialchars($row['custom_vibe']) : '—' ?>
                 </span>
@@ -824,7 +906,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
             <input type="hidden" name="edit_section" value="vibes">
 
             <div class="form-group">
-                <label>Vibe check</label>
+                <label>What activities sound good?</label>
                 <div class="checkbox-group">
                     <?php
                     $vibeOptions = ['Coffee shop','Night drive','Arcade / games','Watch a movie','Street food crawl','Stroll','Parking lot hangout','Beer and smoke','Nature','Dinner','Lunch','Creative activities'];
@@ -839,7 +921,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
             </div>
 
             <div class="form-group">
-                <label>Your own idea</label>
+                <label>Something else?</label>
                 <input type="text" name="custom_vibe"
                     value="<?= htmlspecialchars($row['custom_vibe'] ?? '') ?>"
                     placeholder="suggest something...">
@@ -852,7 +934,147 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_section'])) {
         </form>
     </div>
 
-    <!-- Bottom actions -->
+    <!-- ══════════════════════════════════
+         SECTION 5 — Before we plan
+    ══════════════════════════════════ -->
+    <div class="vr-section">
+        <div class="vr-section-header">
+            <span class="vr-section-label">🕐 before we plan</span>
+            <button class="vr-edit-btn" onclick="toggleEdit('logistics')">✏️ edit</button>
+        </div>
+
+        <div class="vr-rows" id="view-logistics">
+            <div class="vr-row">
+                <span class="vr-question">Do you have a curfew?</span>
+                <span class="vr-answer <?= !empty($row['curfew']) ? '' : 'empty' ?>">
+                    <?= !empty($row['curfew']) ? htmlspecialchars($row['curfew']) : '—' ?>
+                </span>
+            </div>
+            <div class="vr-row">
+                <span class="vr-question">How are your parents about going out?</span>
+                <span class="vr-answer <?= !empty($row['parents']) ? '' : 'empty' ?>">
+                    <?= !empty($row['parents']) ? htmlspecialchars($row['parents']) : '—' ?>
+                </span>
+            </div>
+            <div class="vr-row">
+                <span class="vr-question">How far from home are you okay going?</span>
+                <span class="vr-answer <?= !empty($row['distance']) ? '' : 'empty' ?>">
+                    <?= !empty($row['distance']) ? htmlspecialchars($row['distance']) : '—' ?>
+                </span>
+            </div>
+        </div>
+
+        <form class="edit-form hidden" id="form-logistics" method="POST">
+            <input type="hidden" name="edit_section" value="logistics">
+
+            <div class="form-group">
+                <label>Do you have a curfew?</label>
+                <div class="radio-group">
+                    <?php foreach (['yes, i have a strict curfew', 'yes but it\'s flexible depending on the situation', 'kind of, i just need to let them know', 'no curfew, i\'m free'] as $opt): ?>
+                    <label class="radio-item">
+                        <input type="radio" name="curfew" value="<?= htmlspecialchars($opt) ?>"
+                            <?= ($row['curfew'] ?? '') === $opt ? 'checked' : '' ?>> <?= htmlspecialchars($opt) ?>
+                    </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>How are your parents about going out?</label>
+                <div class="radio-group">
+                    <?php foreach (['very strict — they need to know everything', 'strict but okay if i tell them in advance', 'chill, just need to update them', 'they don\'t really mind', 'i\'m independent, not an issue', 'won\'t be allowed, they\'re very strict'] as $opt): ?>
+                    <label class="radio-item">
+                        <input type="radio" name="parents" value="<?= htmlspecialchars($opt) ?>"
+                            <?= ($row['parents'] ?? '') === $opt ? 'checked' : '' ?>> <?= htmlspecialchars($opt) ?>
+                    </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>How far from home are you okay going?</label>
+                <div class="radio-group">
+                    <?php foreach (['close by only, around our area', 'nearby cities are fine', 'doesn\'t matter, i\'m down wherever', 'depends on the day and situation'] as $opt): ?>
+                    <label class="radio-item">
+                        <input type="radio" name="distance" value="<?= htmlspecialchars($opt) ?>"
+                            <?= ($row['distance'] ?? '') === $opt ? 'checked' : '' ?>> <?= htmlspecialchars($opt) ?>
+                    </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="edit-form-actions">
+                <button type="submit" class="edit-save-btn">save changes</button>
+                <button type="button" class="edit-cancel-btn" onclick="toggleEdit('logistics')">cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ══════════════════════════════════
+         SECTION 6 — Place in mind
+    ══════════════════════════════════ -->
+    <div class="vr-section">
+        <div class="vr-section-header">
+            <span class="vr-section-label">📍 is there somewhere you want to go?</span>
+            <button class="vr-edit-btn" onclick="toggleEdit('place')">✏️ edit</button>
+        </div>
+
+        <div class="vr-rows" id="view-place">
+            <div class="vr-row">
+                <span class="vr-question">Is there somewhere you want to go?</span>
+                <span class="vr-answer <?= !empty($row['place_in_mind']) ? '' : 'empty' ?>">
+                    <?= !empty($row['place_in_mind']) ? htmlspecialchars($row['place_in_mind']) : '—' ?>
+                </span>
+            </div>
+            <?php if (!empty($row['place_name'])): ?>
+            <div class="vr-row">
+                <span class="vr-question">What place?</span>
+                <span class="vr-answer"><?= htmlspecialchars($row['place_name']) ?></span>
+            </div>
+            <?php endif; ?>
+            <?php if (!empty($row['place_timing'])): ?>
+            <div class="vr-row">
+                <span class="vr-question">When do you want to go?</span>
+                <span class="vr-answer"><?= htmlspecialchars($row['place_timing']) ?></span>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <form class="edit-form hidden" id="form-place" method="POST">
+            <input type="hidden" name="edit_section" value="place">
+
+            <div class="form-group">
+                <label>Do you have a place in mind?</label>
+                <div class="radio-group">
+                    <?php foreach (['yes', 'no', 'maybe'] as $opt): ?>
+                    <label class="radio-item">
+                        <input type="radio" name="place_in_mind" value="<?= htmlspecialchars($opt) ?>"
+                            <?= ($row['place_in_mind'] ?? '') === $opt ? 'checked' : '' ?>> <?= htmlspecialchars($opt) ?>
+                    </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>What place?</label>
+                <input type="text" name="place_name"
+                    value="<?= htmlspecialchars($row['place_name'] ?? '') ?>"
+                    placeholder="where do you want to go?">
+            </div>
+
+            <div class="form-group">
+                <label>When do you want to go?</label>
+                <input type="text" name="place_timing"
+                    value="<?= htmlspecialchars($row['place_timing'] ?? '') ?>"
+                    placeholder="e.g., afternoon, weekend, flexible...">
+            </div>
+
+            <div class="edit-form-actions">
+                <button type="submit" class="edit-save-btn">save changes</button>
+                <button type="button" class="edit-cancel-btn" onclick="toggleEdit('place')">cancel</button>
+            </div>
+        </form>
+    </div>
     <div class="vr-actions">
         <a href="result.php" class="btn btn-yes">← back to results</a>
         <?php if ($compatScore === null): ?>

@@ -13,8 +13,14 @@ $r = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$r) die("Not found.");
 
-// Fetch messages
-$msgStmt = $pdo->prepare("SELECT message_text, instagram_handle, sent_at FROM messages WHERE response_id = ? ORDER BY sent_at ASC");
+// Get response number (rank) for all responses
+$rankStmt = $pdo->prepare("SELECT COALESCE((SELECT COUNT(*) FROM responses WHERE id < ?), 0) + 1 as response_number");
+$rankStmt->execute([$id]);
+$rankData = $rankStmt->fetch(PDO::FETCH_ASSOC);
+$responseNumber = $rankData['response_number'] ?? 1;
+
+// Fetch messages (exclude "not sure" marker)
+$msgStmt = $pdo->prepare("SELECT message_text, instagram_handle, sent_at FROM messages WHERE response_id = ? AND message_text != '__not_sure_marker__' ORDER BY sent_at ASC");
 $msgStmt->execute([$id]);
 $messages = $msgStmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -88,19 +94,19 @@ $sections = [
         'crowd'            => 'Crowd',
         'convo_style'      => 'Convo style',
         'walking'          => 'Walking',
-        'awkwardness'      => 'Awkwardness',
+        'awkwardness'      => 'Yapper or listener?',
     ],
     'before we plan' => [
-        'curfew'   => 'Curfew',
-        'parents'  => 'Parents\'s rules',
-        'distance' => 'Distance willing to travel',
+        'curfew'   => 'Do you have a curfew?',
+        'parents'  => 'How are your parents about going out?',
+        'distance' => 'How far from home are you okay going?',
     ],
     'vibes & extras' => [
-        'vibes'        => 'Vibes',
-        'custom_vibe'  => 'Their idea',
-        'place_in_mind' => 'Place in mind?',
-        'place_name'   => 'Place name',
-        'place_timing' => 'When to go?',
+        'vibes'        => 'What activities sound good?',
+        'custom_vibe'  => 'Something else you had in mind?',
+        'place_in_mind' => 'Is there somewhere you want to go?',
+        'place_name'   => 'What place?',
+        'place_timing' => 'When do you want to go?',
     ],
     'results' => [
         'compatibility_score' => 'Compatibility',
@@ -112,7 +118,7 @@ $sections = [
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>response #<?= $id ?></title>
+    <title><?= htmlspecialchars($r['name']) ?></title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin.css">
@@ -318,7 +324,7 @@ $sections = [
 
         <div class="view-header">
             <div class="view-name"><?= htmlspecialchars($r['name']) ?></div>
-            <div class="view-id">#<?= $id ?></div>
+            <div class="view-id">#<?= $responseNumber ?></div>
         </div>
         <div class="view-submitted">submitted <?= htmlspecialchars($r['submitted_at']) ?></div>
 
@@ -334,16 +340,30 @@ $sections = [
                 
                 $raw     = $r[$key] ?? '';
                 $isEmpty = ($raw === '' || $raw === null);
-                $val     = $isEmpty ? '—' : htmlspecialchars($raw);
-                if ($key === 'compatibility_score' && !$isEmpty) $val = $raw . '%';
-
+                
+                // Check if this field has multiple comma-separated values (from checkboxes)
+                $items = array_filter(array_map('trim', explode(', ', $raw)));
+                $isMultiple = !$isEmpty && count($items) > 1;
+                
                 $extraClass = '';
                 if ($key === 'compatibility_score') $extraClass = 'score-field';
                 if ($key === 'scheduled_date' && !$isEmpty) $extraClass = 'date-field';
             ?>
             <div class="field <?= $extraClass ?>">
                 <strong><?= $label ?></strong>
-                <span class="<?= $isEmpty ? 'empty' : '' ?>"><?= $val ?></span>
+                <?php if ($isEmpty): ?>
+                    <span class="empty">—</span>
+                <?php elseif ($isMultiple): ?>
+                    <div class="field-tags">
+                        <?php foreach ($items as $item): ?>
+                        <span class="field-tag"><?= htmlspecialchars($item) ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                <?php elseif ($key === 'compatibility_score'): ?>
+                    <span><?= htmlspecialchars($raw) . '%' ?></span>
+                <?php else: ?>
+                    <span><?= htmlspecialchars($raw) ?></span>
+                <?php endif; ?>
             </div>
             <?php endforeach; ?>
             <?php if ($sectionName === 'results' && $compatDetails): ?>

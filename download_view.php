@@ -411,7 +411,7 @@ if (!empty($_GET['download'])) {
             <div class="row"><span class="row-label">Crowd</span><span class="row-val"><?= v($row['crowd']) ?></span></div>
             <div class="row"><span class="row-label">Walking</span><span class="row-val"><?= v($row['walking']) ?></span></div>
             <div class="row"><span class="row-label">Convo style</span><span class="row-val"><?= v($row['convo_style']) ?></span></div>
-            <div class="row"><span class="row-label">Awkwardness</span><span class="row-val"><?= v($row['awkwardness']) ?></span></div>
+            <div class="row"><span class="row-label">Yapper or listener?</span><span class="row-val"><?= v($row['awkwardness']) ?></span></div>
         </div>
 
         <!-- Before we plan -->
