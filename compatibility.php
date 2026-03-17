@@ -143,7 +143,7 @@ require 'includes/compatibility_questions.php';
                 </div>
             <?php endif; ?>
 
-            <span class="field-error hidden">please answer this one 🥺</span>
+            <span class="field-error hidden">please answer this one </span>
         </div>
         <?php endforeach; ?>
 
