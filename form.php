@@ -498,9 +498,9 @@
                 <div class="form-group" id="group-city">
                     <label>wya <span class="required-star">*</span></label>
                     <input type="text" name="city" id="field-city"
-                        placeholder="city or general area">
+                        placeholder="where should i pick u up">
                     <p style="font-size:0.75rem; color:var(--muted); margin-top:0.4rem; line-height:1.5;">
-                        just so i know the general area — no need to give your exact address
+                        just so i know.. no need to give your exact address
                     </p>
                     <span class="field-error hidden">city or area lang</span>
                 </div>
@@ -568,7 +568,7 @@
                 <div class="form-group" id="group-flower">
                     <label>are you the type who likes receiving flowers? <span class="required-star">*</span></label>
                     <p style="font-size:0.78rem; color:var(--muted); margin-bottom:0.6rem;">
-                        some people love it, some find it awkward to carry around — no right answer
+                        some people love it, some find it awkward to carry around or not their thing at all, so i wanna know where you stand on this
                     </p>
 
                     <div class="radio-group">
@@ -580,7 +580,7 @@
                         <label class="radio-item">
                             <input type="radio" name="flower_comfort" value="yes_sweet"
                                 onchange="handleFlowerComfort('yes_sweet')">
-                            that's really sweet, i'd appreciate it
+                            that would be sweet, i'd appreciate it
                         </label>
                         <label class="radio-item">
                             <input type="radio" name="flower_comfort" value="yes_shy"
@@ -603,9 +603,9 @@
                     // shared flower list used across all panels
                     $flowers = [
                         'Rose', 'Sunflower', 'Tulip', 'Lily',
-                        'Carnation', 'Bird of paradise', 'Orchid',
-                        'Daisy', 'Gumamela', 'Sampaguita',
-                        'Chrysanthemum', 'Stargazer lily',
+                        'Carnation', 'Orchid',
+                        'Daisy',
+                         
                     ];
                     ?>
 
@@ -632,7 +632,7 @@
                             </label>
                         </div>
                         <input type="text" id="flower-custom-input" class="custom-field-input"
-                            placeholder="what flower?">
+                            placeholder="what flower po?">
                     </div>
 
                     <!-- yes_sweet — lowkey shy but appreciates it, keep it chill -->
@@ -690,7 +690,7 @@
                     <!-- yes_not_so_fond — not really into it but okay with it -->
                     <div class="flower-followup" id="flower-yes-not-so-fond">
                         <div class="flower-response-note">
-                            fair enough, i'll keep it simple. just pick whichever you'd least mind getting.
+                            okay po please pick whichever you'd least mind getting
                         </div>
                         <p style="font-size:0.78rem; color:var(--muted); margin-bottom:0.6rem;">pick as many as you like</p>
                         <div class="checkbox-group">
@@ -716,8 +716,7 @@
                     <!-- no -->
                     <div class="flower-followup" id="flower-no">
                         <div class="flower-response-note">
-                            okay noted, rare breed. we skip the flowers then, no worries.
-                        </div>
+                            okay noted, rare breed. we skip the flowers then, no worries                        </div>
                         <input type="hidden" name="flower[]" value="none">
                     </div>
 
@@ -736,10 +735,10 @@
                     <div class="radio-group">
                         <?php
                         $temps = [
-                            'i get cold easily, i need a jacket everywhere',
+                            'i get cold easily',
                             "i'm usually fine with most places",
-                            'i actually like cold places, the colder the better',
-                            'i get hot easily, aircon is non-negotiable',
+                            'i actually like cold places',
+                            'i get hot easily',
                             "honestly doesn't matter to me",
                         ];
                         foreach ($temps as $t):
@@ -801,13 +800,12 @@
                     <div class="radio-group">
                         <?php
                         $deals = [
-                            'bad music taste, that one matters',
-                            'pineapple on pizza, hard no',
-                            'slow walkers, i will lose my mind',
+                            'bad music taste',
+                            'pineapple on pizza',
+                            'slow walkers',
                             "people who don't read the room",
                             'being on the phone the whole time',
-                            'not being upfront about things',
-                            'no sense of humor whatsoever',
+                            'no sense of humor',
                             "none honestly, i'm pretty chill",
                         ];
                         foreach ($deals as $d):

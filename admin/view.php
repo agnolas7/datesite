@@ -14,7 +14,7 @@ $r = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$r) die("Not found.");
 
 // Fetch messages
-$msgStmt = $pdo->prepare("SELECT message_text, sent_at FROM messages WHERE response_id = ? ORDER BY sent_at ASC");
+$msgStmt = $pdo->prepare("SELECT message_text, instagram_handle, sent_at FROM messages WHERE response_id = ? ORDER BY sent_at ASC");
 $msgStmt->execute([$id]);
 $messages = $msgStmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -223,6 +223,20 @@ $sections = [
             margin-bottom: 0.3rem;
             font-size: 0.85rem;
         }
+        .rank-list > div.rank-match {
+            background: rgba(76, 175, 80, 0.15);
+            padding: 0.3rem 0.4rem;
+            border-radius: 4px;
+            color: #4caf50;
+            font-weight: 500;
+        }
+        .rank-list > div.rank-shared {
+            background: rgba(255, 193, 7, 0.15);
+            padding: 0.3rem 0.4rem;
+            border-radius: 4px;
+            color: #ffc107;
+            font-weight: 500;
+        }
         .match-comparison {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -285,6 +299,13 @@ $sections = [
             color: var(--muted);
             margin-top: 0.4rem;
         }
+        .message-instagram {
+            font-size: 0.8rem;
+            color: var(--pink);
+            margin-top: 0.4rem;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body class="admin-view">
@@ -306,6 +327,11 @@ $sections = [
             <div class="view-section-label"><?= $sectionName ?></div>
 
             <?php foreach ($fields as $key => $label):
+                // Skip maybe_reason if they already have a scheduled date
+                if ($key === 'maybe_reason' && !empty($r['scheduled_date'])) {
+                    continue;
+                }
+                
                 $raw     = $r[$key] ?? '';
                 $isEmpty = ($raw === '' || $raw === null);
                 $val     = $isEmpty ? '—' : htmlspecialchars($raw);
@@ -335,6 +361,9 @@ $sections = [
             <?php foreach ($messages as $msg): ?>
             <div class="message-item">
                 <?= htmlspecialchars($msg['message_text']) ?>
+                <?php if (!empty($msg['instagram_handle'])): ?>
+                <div class="message-instagram">📱 <?= htmlspecialchars($msg['instagram_handle']) ?></div>
+                <?php endif; ?>
                 <div class="message-time"><?= $msg['sent_at'] ?></div>
             </div>
             <?php endforeach; ?>
@@ -368,60 +397,93 @@ $sections = [
             }
 
             container.innerHTML = matchingData.map(item => {
-                const badgeClass = item.isMatch ? 'match-badge' : 'diff-badge';
-                const badgeText = item.isMatch ? '✓ match' : '✕ different';
-                
-                // Handle ranking display - prepare HTML but mark it for later innerHTML assignment
-                let respContent = escapeHtml(item.responder);
-                let ownerContent = escapeHtml(item.owner);
                 let isRank = item.type === 'rank';
                 
-                if (isRank) {
-                    const formatRank = (str) => {
-                        return str.split(', ').map((val, i) => `<div>#${i+1}: ${escapeHtml(val)}</div>`).join('');
-                    };
-                    respContent = formatRank(item.responder);
-                    ownerContent = formatRank(item.owner);
+                // Determine badge for non-rank items only
+                let badgeClass = '';
+                let badgeText = '';
+                if (!isRank) {
+                    badgeClass = item.isMatch ? 'match-badge' : 'diff-badge';
+                    badgeText = item.isMatch ? '✓ match' : '✕ different';
                 }
                 
+                // For rankings, find matching positions AND shared items at different positions
+                let respMatchPositions = [];
+                let ownerMatchPositions = [];
+                let respSharedDiffPos = [];
+                let ownerSharedDiffPos = [];
+                if (isRank) {
+                    const respRanks = item.responder.split(', ');
+                    const ownerRanks = item.owner.split(', ');
+                    
+                    // Find exact position matches
+                    respRanks.forEach((val, i) => {
+                        if (val.trim() === ownerRanks[i]?.trim()) {
+                            respMatchPositions.push(i);
+                            ownerMatchPositions.push(i);
+                        }
+                    });
+                    
+                    // Find shared items at different positions
+                    respRanks.forEach((val, i) => {
+                        if (!respMatchPositions.includes(i)) {
+                            const ownerIndex = ownerRanks.findIndex(v => v.trim() === val.trim());
+                            if (ownerIndex !== -1) {
+                                respSharedDiffPos.push(i);
+                            }
+                        }
+                    });
+                    ownerRanks.forEach((val, i) => {
+                        if (!ownerMatchPositions.includes(i)) {
+                            const respIndex = respRanks.findIndex(v => v.trim() === val.trim());
+                            if (respIndex !== -1) {
+                                ownerSharedDiffPos.push(i);
+                            }
+                        }
+                    });
+                }
+                
+                // Handle ranking display with highlighting
+                const formatRank = (str, matchPositions, sharedDiffPos) => {
+                    return str.split(', ').map((val, i) => {
+                        const isMatchPos = matchPositions && matchPositions.includes(i);
+                        const isSharedDiff = sharedDiffPos && sharedDiffPos.includes(i);
+                        let className = '';
+                        if (isMatchPos) className = 'rank-match';
+                        else if (isSharedDiff) className = 'rank-shared';
+                        return `<div class="${className}">#${i+1}: ${escapeHtml(val)}</div>`;
+                    }).join('');
+                };
+                
+                let respContent = escapeHtml(item.responder);
+                let ownerContent = escapeHtml(item.owner);
+                
+                if (isRank) {
+                    respContent = formatRank(item.responder, respMatchPositions, respSharedDiffPos);
+                    ownerContent = formatRank(item.owner, ownerMatchPositions, ownerSharedDiffPos);
+                }
+                
+                const badgeHtml = badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : '';
+                
                 return `
-                    <div class="match-item ${item.isMatch ? 'is-match' : 'is-diff'}">
+                    <div class="match-item ${item.isMatch && !isRank ? 'is-match' : !isRank ? 'is-diff' : ''}">
                         <div class="match-item-header">
                             <div class="match-item-label">${escapeHtml(item.label)}</div>
-                            <span class="${badgeClass}">${badgeText}</span>
+                            ${badgeHtml}
                         </div>
                         <div class="match-comparison">
                             <div class="match-side">
                                 <div class="match-side-label">👤 Responder</div>
-                                <div class="match-side-value ${isRank ? 'rank-list' : ''}" ${isRank ? 'data-rank-content="true"' : ''}>${isRank ? '' : respContent}</div>
+                                <div class="match-side-value ${isRank ? 'rank-list' : ''}">${isRank ? respContent : respContent}</div>
                             </div>
                             <div class="match-side">
                                 <div class="match-side-label">📋 You</div>
-                                <div class="match-side-value ${isRank ? 'rank-list' : ''}" ${isRank ? 'data-rank-content="true"' : ''}>${isRank ? '' : ownerContent}</div>
+                                <div class="match-side-value ${isRank ? 'rank-list' : ''}">${isRank ? ownerContent : ownerContent}</div>
                             </div>
                         </div>
                     </div>
                 `;
             }).join('');
-            
-            // Store rank content and populate after DOM ready
-            const rankPairs = matchingData.filter(item => item.type === 'rank').map((item, idx) => ({
-                idx,
-                resp: item.responder.split(', ').map((val, i) => `<div>#${i+1}: ${escapeHtml(val)}</div>`).join(''),
-                owner: item.owner.split(', ').map((val, i) => `<div>#${i+1}: ${escapeHtml(val)}</div>`).join('')
-            }));
-            
-            // Fill in rank content
-            let rankIdx = 0;
-            document.querySelectorAll('[data-rank-content="true"]').forEach((el, globalIdx) => {
-                const pair = rankPairs[rankIdx];
-                if (globalIdx % 2 === 0) {
-                    el.innerHTML = pair.resp;
-                } else {
-                    el.innerHTML = pair.owner;
-                    rankIdx++;
-                }
-            });
             
             modal.classList.add('open');
         }

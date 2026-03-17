@@ -11,6 +11,21 @@ $stmt = $pdo->query("SELECT id, name, age, city, compatibility_score, scheduled_
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $ownerCount = $pdo->query("SELECT COUNT(*) FROM site_owners")->fetchColumn();
+$responseCount = count($rows);
+$scheduledCount = $pdo->query("SELECT COUNT(*) FROM responses WHERE scheduled_date IS NOT NULL")->fetchColumn();
+$feedbackCount = $pdo->query("SELECT COUNT(*) FROM feedback")->fetchColumn();
+
+// Recent accounts
+$recentAccounts = $pdo->query("SELECT username, created_at FROM site_owners ORDER BY created_at DESC LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
+
+// Recent responses by date
+$recentResponses = $pdo->query("
+    SELECT DATE(submitted_at) as date, COUNT(*) as count
+    FROM responses
+    GROUP BY DATE(submitted_at)
+    ORDER BY date DESC
+    LIMIT 7
+")->fetchAll(PDO::FETCH_ASSOC);
 
 // Fetch all maybe reasons
 $maybeStmt = $pdo->query("
@@ -38,106 +53,190 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="admin-dashboard">
 
     <a href="logout.php" class="logout">logout</a>
-    <h1>responses dashboard 📋</h1>
+    <a href="change_password.php" style="position:absolute; top:2rem; right:6rem; color:var(--muted); text-decoration:none; font-size:0.8rem; padding:0.4rem 0.8rem; border:1px solid rgba(244,167,185,0.2); border-radius:6px; transition:all 0.2s ease;" onmouseover="this.style.borderColor='var(--pink)'; this.style.color='var(--pink)';" onmouseout="this.style.borderColor='rgba(244,167,185,0.2)'; this.style.color='var(--muted)';">🔑 change password</a>
+    <h1 id="mainTitle">create account 🔐</h1>
 
-    <!-- Quick links -->
-    <div class="admin-quick-links">
-        <a href="compatibility_answers.php" class="quick-link">
-            ✦ my compatibility answers
-        </a>
-        <a href="view_feedback.php" class="quick-link">
-            🐛 view feedback & bugs
-        </a>
-        <a href="create_owner.php" class="quick-link quick-link-highlight">
-            + create buyer account
-            <span class="owner-count"><?= $ownerCount ?> account<?= $ownerCount != 1 ? 's' : '' ?></span>
+    <!-- Create account section - enlarged -->
+    <div style="margin:2.5rem 0;">
+        <a href="create_owner.php" style="
+            display:block;
+            background:linear-gradient(135deg, rgba(244,167,185,0.15), rgba(244,167,185,0.05));
+            border:1px solid rgba(244,167,185,0.3);
+            border-radius:16px;
+            padding:3rem 2rem;
+            text-align:center;
+            text-decoration:none;
+            transition:all 0.3s ease;
+            cursor:pointer;
+        "
+        onmouseover="this.style.borderColor='var(--pink)'; this.style.background='linear-gradient(135deg, rgba(244,167,185,0.25), rgba(244,167,185,0.1))';"
+        onmouseout="this.style.borderColor='rgba(244,167,185,0.3)'; this.style.background='linear-gradient(135deg, rgba(244,167,185,0.15), rgba(244,167,185,0.05))'">
+            <div style="font-size:2rem; color:var(--pink); margin-bottom:0.5rem; font-weight:500;">+</div>
+            <div style="font-size:1.3rem; color:var(--text); margin-bottom:0.3rem; font-family:'Playfair Display',serif;">create account</div>
+            <span style="color:var(--muted); font-size:0.9rem;"><?= $ownerCount ?> account<?= $ownerCount != 1 ? 's' : '' ?> created</span>
         </a>
     </div>
 
-    <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1.2rem;">
-        <?= count($rows) ?> response<?= count($rows) != 1 ? 's' : '' ?> total
-    </p>
+    <!-- Feedback card -->
+    <div style="margin:2.5rem 0;">
+        <a href="view_feedback.php" style="
+            display:block;
+            background:linear-gradient(135deg, rgba(200,150,150,0.15), rgba(200,150,150,0.05));
+            border:1px solid rgba(200,150,150,0.3);
+            border-radius:16px;
+            padding:2rem;
+            text-align:center;
+            text-decoration:none;
+            transition:all 0.3s ease;
+            cursor:pointer;
+        "
+        onmouseover="this.style.borderColor='#c89696'; this.style.background='linear-gradient(135deg, rgba(200,150,150,0.25), rgba(200,150,150,0.1))';"
+        onmouseout="this.style.borderColor='rgba(200,150,150,0.3)'; this.style.background='linear-gradient(135deg, rgba(200,150,150,0.15), rgba(200,150,150,0.05))'">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🐛</div>
+            <div style="font-size:1.2rem; color:var(--text); margin-bottom:0.5rem;"><?= $feedbackCount ?> feedback received</div>
+            <div style="color:var(--muted); font-size:0.85rem;">click to view all feedback & bug reports</div>
+        </a>
+    </div>
 
-    <!-- ── Responses table ── -->
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>City</th>
-                <th>Owner</th>
-                <th>Compatibility</th>
-                <th>Scheduled Date</th>
-                <th>Submitted</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($rows as $r): ?>
-            <tr onclick="window.location='view.php?id=<?= $r['id'] ?>'">
-                <td><?= $r['id'] ?></td>
-                <td><?= htmlspecialchars($r['name']) ?></td>
-                <td><?= $r['age'] ?></td>
-                <td><?= htmlspecialchars($r['city']) ?></td>
-                <td style="color:var(--pink); font-size:0.82rem;">
-                    <?= htmlspecialchars($r['owner_username'] ?? '—') ?>
-                </td>
-                <td><?= $r['compatibility_score'] ? $r['compatibility_score'] . '%' : '—' ?></td>
-                <td><?= $r['scheduled_date'] ?: '—' ?></td>
-                <td><?= $r['submitted_at'] ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <!-- Toggle button -->
+    <div style="text-align:center; margin:2rem 0;">
+        <button onclick="toggleResponsesView()" style="
+            background:transparent; 
+            border:1px solid rgba(244,167,185,0.3); 
+            color:var(--muted); 
+            border-radius:50px; 
+            padding:0.5rem 1.2rem; 
+            font-size:0.8rem; 
+            cursor:pointer; 
+            transition:all 0.2s ease;
+            font-family:'DM Sans',sans-serif;"
+            onmouseover="this.style.borderColor='var(--pink)'; this.style.color='var(--pink)';"
+            onmouseout="this.style.borderColor='rgba(244,167,185,0.3)'; this.style.color='var(--muted)';">
+            Noriel Salonga
+        </button>
+       
+    </div>
 
-    <!-- ── Maybe reasons ── -->
-    <?php if (!empty($maybeRows)): ?>
-    <div style="margin-top:3rem;">
-        <h2 style="font-family:'Playfair Display',serif; font-size:1.1rem;
-                   margin-bottom:0.4rem; color:var(--text);">
-            why she said maybe 🤔
-        </h2>
-        <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1.2rem;">
-            <?= count($maybeRows) ?> reason<?= count($maybeRows) !== 1 ? 's' : '' ?> recorded across all accounts
+    <!-- Hidden responses section -->
+    <div id="responsesSection" style="display:none;">
+        <a href="compatibility_answers.php" class="quick-link" style="display:inline-block; margin-bottom:1rem;">
+            ✦ my compatibility answers
+        </a>
+        <a href="view_feedback.php" class="quick-link" style="display:inline-block; margin-bottom:1rem;">
+            🐛 view feedback & bugs
+        </a>
+
+        <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1.2rem;">
+            <?= count($rows) ?> response<?= count($rows) != 1 ? 's' : '' ?> total
         </p>
+
+        <!-- ── Responses table ── -->
         <table>
             <thead>
                 <tr>
-                    <th>Reason</th>
-                    <th>Owner</th>
+                    <th>#</th>
                     <th>Name</th>
-                    <th>When</th>
+                    <th>Age</th>
+                    <th>City</th>
+                    <th>Owner</th>
+                    <th>Compatibility</th>
+                    <th>Scheduled Date</th>
+                    <th>Submitted</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($maybeRows as $mr): ?>
-                <tr>
-                    <td><?= htmlspecialchars($mr['reason']) ?></td>
+                <?php foreach ($rows as $r): ?>
+                <tr onclick="window.location='view.php?id=<?= $r['id'] ?>'">
+                    <td><?= $r['id'] ?></td>
+                    <td><?= htmlspecialchars($r['name']) ?></td>
+                    <td><?= $r['age'] ?></td>
+                    <td><?= htmlspecialchars($r['city']) ?></td>
                     <td style="color:var(--pink); font-size:0.82rem;">
-                        <?= htmlspecialchars($mr['owner_username'] ?? '—') ?>
+                        <?= htmlspecialchars($r['owner_username'] ?? '—') ?>
                     </td>
-                    <td>
-                        <?php if ($mr['name']): ?>
-                            <?= htmlspecialchars($mr['name']) ?>
-                        <?php else: ?>
-                            <span style="color:var(--muted); font-style:italic; font-size:0.82rem;">
-                                never filled form
-                            </span>
-                        <?php endif; ?>
-                    </td>
-                    <td style="font-size:0.8rem; color:var(--muted);"><?= $mr['submitted_at'] ?></td>
+                    <td><?= $r['compatibility_score'] ? $r['compatibility_score'] . '%' : '—' ?></td>
+                    <td><?= $r['scheduled_date'] ?: '—' ?></td>
+                    <td><?= $r['submitted_at'] ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+
+        <!-- ── Maybe reasons ── -->
+        <?php if (!empty($maybeRows)): ?>
+        <div style="margin-top:3rem;">
+            <h2 style="font-family:'Playfair Display',serif; font-size:1.1rem;
+                       margin-bottom:0.4rem; color:var(--text);">
+                why she said maybe 🤔
+            </h2>
+            <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1.2rem;">
+                <?= count($maybeRows) ?> reason<?= count($maybeRows) !== 1 ? 's' : '' ?> recorded across all accounts
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reason</th>
+                        <th>Owner</th>
+                        <th>Name</th>
+                        <th>When</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($maybeRows as $mr): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($mr['reason']) ?></td>
+                        <td style="color:var(--pink); font-size:0.82rem;">
+                            <?= htmlspecialchars($mr['owner_username'] ?? '—') ?>
+                        </td>
+                        <td>
+                            <?php if ($mr['name']): ?>
+                                <?= htmlspecialchars($mr['name']) ?>
+                            <?php else: ?>
+                                <span style="color:var(--muted); font-style:italic; font-size:0.82rem;">
+                                    never filled form
+                                </span>
+                            <?php endif; ?>
+                        </td>
+                        <td style="font-size:0.8rem; color:var(--muted);"><?= $mr['submitted_at'] ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endif; ?>
     </div>
-    <?php endif; ?>
 
     <script>
         (function() {
             const t = localStorage.getItem('adminTheme') || 'dark';
             document.documentElement.setAttribute('data-theme', t);
         })();
+
+        // Hidden keyboard shortcut to toggle responses (Ctrl+Shift+R)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+                const section = document.getElementById('responsesSection');
+                const title = document.getElementById('mainTitle');
+                const isHidden = section.style.display === 'none';
+                section.style.display = isHidden ? 'block' : 'none';
+                title.textContent = isHidden ? 'responses dashboard 📋' : 'create account 🔐';
+            }
+        });
+
+        function toggleResponsesView() {
+            const section = document.getElementById('responsesSection');
+            const title = document.getElementById('mainTitle');
+            const isHidden = section.style.display === 'none';
+            section.style.display = isHidden ? 'block' : 'none';
+            title.textContent = isHidden ? 'responses dashboard 📋' : 'create account 🔐';
+            
+            // Scroll to the section if showing
+            if (isHidden) {
+                setTimeout(() => {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
     </script>
 </body>
 </html>

@@ -26,11 +26,11 @@ $savedExpectations = [
     "i'll make sure you get home safe. always.",
 ];
 $savedSkills = [
-    '✦ active listener', '✦ gift maker (not just buyer)',
-    '✦ remembers what you said', 'drives', 'pays for food',
-    '✦ actually funny', 'good playlist curator', '✦ will not ghost',
-    'opens doors', '✦ no weird expectations',
-    'night drive certified 🚗', '✦ makes the effort',
+    'active listener', 'gift maker (not just buyer)',
+    'remembers what you said', 'drives', 'pays for food',
+    'actually funny', 'good playlist curator', 'will not ghost',
+    'opens doors', 'no weird expectations',
+    'night drive certified 🚗', 'makes the effort',
 ];
 
 // ── Load from database ──
@@ -263,10 +263,10 @@ if ($ownerUsername) {
 
     <!-- Step 1: WHYYY -->
     <div class="center-card" id="step-whyyy">
-        <h1 class="big-emotion">WHYYY 😭</h1>
+        <h1 class="big-emotion">WHY DI SURE</h1>
         <p><?= htmlspecialchars($whyyyText) ?></p>
         <button class="btn btn-primary" onclick="showProfile()" style="margin-top:1.5rem;">
-            check this out first 👀
+            check this out first 
         </button>
     </div>
 
@@ -365,7 +365,7 @@ if ($ownerUsername) {
                 <div class="resume-section-title">skills & competencies</div>
                 <div class="resume-skills">
                     <?php foreach ($savedSkills as $skill): ?>
-                    <span class="resume-skill-tag <?= str_starts_with(trim($skill), '✦') ? 'highlighted' : '' ?>">
+                    <span class="resume-skill-tag">
                         <?= htmlspecialchars($skill) ?>
                     </span>
                     <?php endforeach; ?>
@@ -386,42 +386,42 @@ if ($ownerUsername) {
         </div>
 
         <div class="button-group" style="margin-top:1.5rem;">
-            <a href="form.php" class="btn btn-yes">okay fine, i'm in 😄</a>
+            <a href="form.php" class="btn btn-yes">okay fine, i'm in </a>
             <button class="btn btn-maybe" onclick="showCountdown1()">still not sure</button>
         </div>
     </div>
 
     <!-- Step 3: First countdown — 10 seconds -->
     <div class="center-card hidden" id="step-countdown1">
-        <h2>okay. just think about it. 🤔</h2>
-        <p class="subtitle">no pressure — just actually consider it for a sec</p>
+        <h2> think about it pleaseeeeeeeeee</h2>
+        <p class="subtitle">just actually consider it, im giving you 10 seconds</p>
         <div class="countdown-circle" id="countdownDisplay1">10</div>
         <p id="countdownMsg1" class="small-note">it's just one date...</p>
     </div>
 
     <!-- Step 4: After first countdown -->
     <div class="center-card hidden" id="step-whatAboutNow">
-        <h2>what about now? 🥺</h2>
-        <p class="subtitle">like genuinely though</p>
+        <h2>what about now? </h2>
+        <p class="subtitle">hehehehe</p>
         <div class="button-group">
-            <a href="form.php" class="btn btn-yes">okay 😊</a>
+            <a href="form.php" class="btn btn-yes">sige na nga</a>
             <button class="btn btn-maybe" onclick="showCountdown2()">still no</button>
         </div>
     </div>
 
     <!-- Step 5: Second countdown — 5 seconds -->
     <div class="center-card hidden" id="step-countdown2">
-        <h2>think again. 🤨</h2>
-        <p class="subtitle">last few seconds i swear</p>
+        <h2>think again</h2>
+        <p class="subtitle">HAHAHAH last na i swear</p>
         <div class="countdown-circle" id="countdownDisplay2">5</div>
         <p id="countdownMsg2" class="small-note">...</p>
     </div>
 
     <!-- Step 6: Why not? -->
     <div class="center-card hidden" id="step-whynot">
-        <h2>okay, fair enough 🙌</h2>
+        <h2>okay pooo, had to shoot my shot </h2>
         <p style="margin-bottom:1.2rem; font-size:0.9rem;">
-            can i ask why though? totally no hard feelings, genuinely just curious 😄
+            can i ask why though? totally no hard feelings, genuinely just curious..
         </p>
 
         <div style="display:flex; flex-direction:column; gap:0.5rem; text-align:left; margin-bottom:0.5rem;">
@@ -443,7 +443,7 @@ if ($ownerUsername) {
             </label>
             <label class="why-label" onclick="selectWhyNot(this)">
                 <input type="radio" name="whynot" value="i just don't like you like that">
-                i just don't like you like that 😅
+                i just don't like you like that 
             </label>
             <label class="why-label" onclick="selectWhyNot(this)">
                 <input type="radio" name="whynot" value="something else">
@@ -463,7 +463,7 @@ if ($ownerUsername) {
 
         <button class="btn btn-yes" style="width:100%; color:#fff; margin-top:1.2rem;"
                 onclick="submitWhyNot()">
-            send 🌸
+            send 
         </button>
     </div>
 
@@ -473,8 +473,8 @@ if ($ownerUsername) {
         <h2 id="finalTitle">noted!</h2>
         <p id="finalMsg" class="subtitle" style="margin-top:0.5rem;"></p>
         <p class="small-note" style="margin-top:1rem; line-height:1.8;">
-            thanks for being honest. that actually means a lot. 🌸<br>
-            hope you have a genuinely good day.
+            thanks for being honest. that actually means a lot<br>
+            hope you have a genuinely good dayyy
         </p>
     </div>
 
@@ -487,7 +487,7 @@ if ($ownerUsername) {
         showStep('step-countdown1');
         startCountdownTimer('countdownDisplay1', 'countdownMsg1', 10, [
             { at: 7, msg: "it's just one date..." },
-            { at: 4, msg: "i'm actually fun i promise 😄" },
+            { at: 4, msg: "i'm actually fun i promise " },
             { at: 1, msg: "almost done thinking?" },
         ], () => showStep('step-whatAboutNow'));
     }
@@ -496,7 +496,7 @@ if ($ownerUsername) {
         showStep('step-countdown2');
         startCountdownTimer('countdownDisplay2', 'countdownMsg2', 5, [
             { at: 3, msg: "really though?" },
-            { at: 1, msg: "last chance 👀" },
+            { at: 1, msg: "last chance " },
         ], () => showStep('step-whynot'));
     }
 
@@ -518,38 +518,38 @@ if ($ownerUsername) {
     }
 
     const previewMessages = {
-        "i don't know you well enough yet":       "that's completely fair. hopefully this helped a little at least 😊",
-        "the timing isn't right for me":          "timing is real — i get that. no rush on anything 🕐",
-        "i'm not looking for anything right now": "that's a valid place to be. take your time 🫂",
-        "i'm already talking to someone":         "oh okay! hope that's going well for you 😊",
-        "i just don't like you like that":        "respect for being honest about it. that actually takes guts 😄",
+        "i don't know you well enough yet":       "that's completely fair. hopefully this helped a little at least",
+        "the timing isn't right for me":          "i respect it, no rush pressure at all. maybe some other time",
+        "i'm not looking for anything right now": "fair enough. focusing on yourself is always valid. take care of yourself :)",
+        "i'm already talking to someone":         "aray kooo! hahahhjk hope that's going well for you ",
+        "i just don't like you like that":        "ARAYYYY",
         "something else":                         "tell me below — no pressure to explain but i appreciate it 🌸",
     };
 
     const sendMessages = {
         "i don't know you well enough yet": {
-            emoji: '😊', title: 'totally fair!',
+            emoji: '', title: 'totally fair!',
             msg: 'makes complete sense. no pressure at all.'
         },
         "the timing isn't right for me": {
             emoji: '🕐', title: 'timing is everything.',
-            msg: 'understood. maybe some other time 🌸'
+            msg: 'understood. maybe some other time'
         },
         "i'm not looking for anything right now": {
             emoji: '🫂', title: 'all good!',
-            msg: "that's a completely valid place to be. take care of yourself 🌸"
+            msg: "take care of yourself :)"
         },
         "i'm already talking to someone": {
-            emoji: '😅', title: 'oh okay okay.',
-            msg: 'got it! hope it goes well for you 🌸'
+            emoji: '', title: 'sino hahah jk',
+            msg: 'got it! hope it goes well for you'
         },
         "i just don't like you like that": {
-            emoji: '😭', title: 'okay ouch —',
-            msg: 'but honestly? respect for being straight up. appreciated 😂'
+            emoji: '', title: 'di naman makasakit, parang kagat lang ng dinosaur',
+            msg: 'respect for being straight up though, no hard feelings at all :) '
         },
         "something else": {
             emoji: '🙌', title: 'got it!',
-            msg: 'thanks for sharing. no hard feelings at all 🌸'
+            msg: 'thanks for sharing :) hope you have a good day!'
         },
     };
 
@@ -568,7 +568,7 @@ if ($ownerUsername) {
 
     function submitWhyNot() {
         const selected = document.querySelector('input[name="whynot"]:checked');
-        if (!selected) { alert('pick an option 🥺'); return; }
+        if (!selected) { alert('pick an option'); return; }
 
         let reason = selected.value;
         if (reason === 'something else') {
@@ -585,7 +585,7 @@ if ($ownerUsername) {
         const key      = selected.value;
         const response = sendMessages[key] || {
             emoji: '🙌', title: 'got it!',
-            msg: 'thanks for being real. no hard feelings at all 🌸'
+            msg: 'thanks for being real. no hard feelings at all'
         };
 
         document.getElementById('finalEmoji').textContent = response.emoji;
@@ -606,21 +606,5 @@ if ($ownerUsername) {
     }
     </script>
 
-    <footer style="margin-top:4rem; padding:2rem 1rem; text-align:center;">
-        <a href="feedback.php" style="
-            display: inline-block;
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 0.8rem;
-            padding: 0.8rem 1.2rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            transition: all 0.2s ease;
-        " 
-        onmouseover="this.style.backgroundColor='rgba(244,167,185,0.08)'; this.style.borderColor='rgba(244,167,185,0.3)'; this.style.color='var(--pink)'"
-        onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='var(--muted)'">
-            🐛 found a bug or have feedback?
-        </a>
-    </footer>
 </body>
 </html>

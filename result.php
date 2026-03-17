@@ -789,7 +789,15 @@ if ($ownerUsername) {
                 </a>
 
                 <div class="message-section" id="messageSection">
-                    <label class="message-label">💌 leave a message</label>
+                    <label class="message-label">� your instagram (optional)</label>
+                    <input type="text" id="instagramHandle"
+                        placeholder="@yourhandle"
+                        style="width:100%; background:var(--input-bg); border:1px solid var(--border);
+                               border-radius:10px; padding:0.8rem; color:var(--text);
+                               font-family:'DM Sans',sans-serif; font-size:0.9rem; outline:none;
+                               margin-bottom:1rem;"/>
+                    
+                    <label class="message-label">�💌 leave a message</label>
                     <textarea class="message-textarea" id="messageText"
                         placeholder="hey! anything you want to tell me before we meet?"></textarea>
                     <button class="message-button" id="messageSendBtn" onclick="sendMessage()">
@@ -1074,6 +1082,7 @@ if ($ownerUsername) {
     // ── Send message ──
     function sendMessage() {
         const message = document.getElementById('messageText').value.trim();
+        const instagram = document.getElementById('instagramHandle').value.trim();
         const btn     = document.getElementById('messageSendBtn');
         const confirm = document.getElementById('messageSentConfirm');
 
@@ -1085,11 +1094,12 @@ if ($ownerUsername) {
         fetch('save_message.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'id=<?= $id ?>&message=' + encodeURIComponent(message)
+            body: 'id=<?= $id ?>&message=' + encodeURIComponent(message) + '&instagram=' + encodeURIComponent(instagram)
         }).then(res => res.json())
         .then(data => {
             if (data.success) {
                 document.getElementById('messageText').value = '';
+                document.getElementById('instagramHandle').value = '';
                 confirm.classList.remove('hidden');
                 btn.textContent = 'message sent! 💌';
                 setTimeout(() => {

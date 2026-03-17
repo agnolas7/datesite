@@ -149,11 +149,10 @@ $maybeRows = $maybeStmt->fetchAll(PDO::FETCH_ASSOC);
     <div style="margin-top:3rem;">
         <h2 style="font-family:'Playfair Display',serif; font-size:1.1rem;
                    margin-bottom:0.4rem; color:var(--text);">
-            the plot twist moments 📺
+            on the fence 
         </h2>
         <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1.2rem;">
-            people said maybe, and here's why they weren't 100% sold (yet?) —
-            could be opportunity, could be just not vibe. <?= count($maybeRows) ?> confession<?= count($maybeRows) !== 1 ? 's' : '' ?> 👀
+            people said maybe, and here's why. <?= count($maybeRows) ?> reason<?= count($maybeRows) !== 1 ? 's' : '' ?> below:
         </p>
         <table>
             <thead>

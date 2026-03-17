@@ -57,6 +57,10 @@ foreach ($compatibility_questions as $name => $q) {
         // possible = top3 slots worth of points
         $result['possible'] = $rank_top1_points + $rank_top2_points + $rank_top3_points;
 
+        // Track shared items at same vs different positions
+        $result['shared_same_pos'] = [];
+        $result['shared_diff_pos'] = [];
+
         // Exact position matches + shared bonus
         foreach ($respArr as $pos => $val) {
             if (!$val) continue;
@@ -65,10 +69,10 @@ foreach ($compatibility_questions as $name => $q) {
                 elseif ($pos === 1)  $result['points'] += $rank_top2_points;
                 elseif ($pos === 2)  $result['points'] += $rank_top3_points;
                 else                 $result['points'] += $rank_shared_points;
-                $result['shared'][] = $val;
+                $result['shared_same_pos'][] = $val;
             } elseif (in_array($val, $adminArr)) {
                 $result['points'] += $rank_shared_points;
-                $result['shared'][] = $val;
+                $result['shared_diff_pos'][] = $val;
             }
         }
 
@@ -76,24 +80,26 @@ foreach ($compatibility_questions as $name => $q) {
         $result['percent'] = $result['possible'] > 0
             ? round(($result['points'] / $result['possible']) * 100)
             : 0;
-        $result['is_match'] = count($result['shared']) > 0;
+        $result['is_match'] = count($result['shared_same_pos']) > 0 || count($result['shared_diff_pos']) > 0;
 
         // Format with rank numbers + highlight shared
-        $formatRanked = function($arr, $shared) {
+        $formatRanked = function($arr, $samePosShared, $diffPosShared) {
             $out = [];
             foreach (array_values($arr) as $i => $val) {
                 $num  = $i + 1;
                 $pill = "<span class='rank-num'>#{$num}</span> " . htmlspecialchars($val);
-                if (in_array($val, $shared)) {
+                if (in_array($val, $samePosShared)) {
                     $pill = "<span class='match-highlight'>{$pill}</span>";
+                } elseif (in_array($val, $diffPosShared)) {
+                    $pill = "<span class='shared-highlight'>{$pill}</span>";
                 }
                 $out[] = $pill;
             }
             return implode('<br>', $out);
         };
 
-        $result['resp_formatted']  = $formatRanked(array_values($respArr),  $result['shared']);
-        $result['admin_formatted'] = $formatRanked(array_values($adminArr), $result['shared']);
+        $result['resp_formatted']  = $formatRanked(array_values($respArr),  $result['shared_same_pos'], $result['shared_diff_pos']);
+        $result['admin_formatted'] = $formatRanked(array_values($adminArr), $result['shared_same_pos'], $result['shared_diff_pos']);
 
     } elseif ($q['type'] === 'radio') {
         $result['possible']  = $radio_points;
@@ -316,6 +322,54 @@ $categories = [
 
         .compat-summary-line:last-child { border-bottom: none; }
 
+        /* ── Ranking legend ── */
+        .compat-legend {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .compat-legend-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .compat-legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .compat-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+
+        .compat-legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .compat-legend-green {
+            background: rgba(76, 175, 80, 0.15);
+            border: 1.5px solid #4caf50;
+        }
+
+        .compat-legend-yellow {
+            background: rgba(255, 193, 7, 0.15);
+            border: 1.5px solid #ffc107;
+        }
+
         /* ── Category section ── */
         .compat-category {
             margin-bottom: 2rem;
@@ -445,6 +499,22 @@ $categories = [
             margin-right: 2px;
         }
 
+        .match-highlight {
+            background: rgba(76, 175, 80, 0.15);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: #4caf50;
+            font-weight: 500;
+        }
+
+        .shared-highlight {
+            background: rgba(255, 193, 7, 0.15);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: #ffc107;
+            font-weight: 500;
+        }
+
         /* ── Back button ── */
         .compat-back {
             text-align: center;
@@ -455,6 +525,7 @@ $categories = [
             .compat-card-body { grid-template-columns: 1fr; }
             .compat-answer-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
             .compat-mini-bar { width: 50px; }
+            .compat-legend-items { flex-direction: column; }
         }
     </style>
 </head>
@@ -494,6 +565,21 @@ $categories = [
         <?php foreach ($summaryLines as $line): ?>
         <div class="compat-summary-line"><?= htmlspecialchars($line) ?></div>
         <?php endforeach; ?>
+    </div>
+
+    <!-- Ranking legend -->
+    <div class="compat-legend">
+        <div class="compat-legend-label">what the colors mean (for rankings)</div>
+        <div class="compat-legend-items">
+            <div class="compat-legend-item">
+                <div class="compat-legend-color compat-legend-green"></div>
+                <span>ranked the same thing in the same position</span>
+            </div>
+            <div class="compat-legend-item">
+                <div class="compat-legend-color compat-legend-yellow"></div>
+                <span>both ranked it, but in different positions</span>
+            </div>
+        </div>
     </div>
 
     <!-- Per-category breakdown -->

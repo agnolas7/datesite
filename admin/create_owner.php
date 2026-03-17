@@ -29,21 +29,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($action === 'reset') {
-        $reset_id = intval($_POST['owner_id']);
-        $new_pass = trim($_POST['new_password'] ?? '');
-        if ($new_pass) {
-            $hash = password_hash($new_pass, PASSWORD_DEFAULT);
-            $pdo->prepare("UPDATE site_owners SET password = ? WHERE id = ?")
-                ->execute([$hash, $reset_id]);
-            $success = "✔ password reset. new password: <strong>$new_pass</strong>";
-        }
-    }
-
     if ($action === 'delete') {
         $del_id = intval($_POST['owner_id']);
         $pdo->prepare("DELETE FROM site_owners WHERE id = ?")->execute([$del_id]);
         $success = '✔ account deleted.';
+    }
+
+    if ($action === 'edit') {
+        $edit_id = intval($_POST['owner_id']);
+        $new_username = trim($_POST['new_username'] ?? '');
+        if (!$new_username) {
+            $error = 'username cannot be empty.';
+        } else {
+            try {
+                $pdo->prepare("UPDATE site_owners SET username = ? WHERE id = ?")
+                    ->execute([$new_username, $edit_id]);
+                $success = "✔ username updated to <strong>$new_username</strong>";
+            } catch (PDOException $e) {
+                $error = 'that username is already taken.';
+            }
+        }
     }
 }
 
@@ -60,7 +65,7 @@ $owners = $pdo->query("SELECT * FROM site_owners ORDER BY created_at DESC")->fet
 </head>
 <body class="admin-dashboard">
     <a href="dashboard.php" style="color:var(--muted); text-decoration:none; font-size:0.85rem; display:inline-block; margin-bottom:1.5rem;">← back to dashboard</a>
-    <h1>manage buyer accounts 🔑</h1>
+    <h1>manage accounts 🔑</h1>
     <p style="color:var(--muted); font-size:0.85rem; margin-bottom:2rem;">
         ⚠️ keep this page private. only you should access this.
     </p>
@@ -80,7 +85,7 @@ $owners = $pdo->query("SELECT * FROM site_owners ORDER BY created_at DESC")->fet
 
     <!-- Create form -->
     <div style="background:#111; border:1px solid #222; border-radius:16px; padding:1.5rem; max-width:460px; margin-bottom:2.5rem;">
-        <h2 style="font-size:1rem; color:var(--pink); margin-bottom:1rem;">create new buyer account</h2>
+        <h2 style="font-size:1rem; color:var(--pink); margin-bottom:1rem;">create new account</h2>
         <form method="POST" style="display:flex; flex-direction:column; gap:0.8rem;">
             <input type="hidden" name="action" value="create">
             <input type="text" name="username" placeholder="username  (e.g. juan123)"
@@ -109,7 +114,7 @@ $owners = $pdo->query("SELECT * FROM site_owners ORDER BY created_at DESC")->fet
             <tr>
                 <th>username</th>
                 <th>created</th>
-                <th>reset password</th>
+                <th>edit</th>
                 <th>delete</th>
             </tr>
         </thead>
@@ -119,17 +124,20 @@ $owners = $pdo->query("SELECT * FROM site_owners ORDER BY created_at DESC")->fet
             <td><?= htmlspecialchars($o['username']) ?></td>
             <td style="font-size:0.82rem; color:var(--muted);"><?= $o['created_at'] ?></td>
             <td>
-                <form method="POST" style="display:flex; gap:0.5rem; align-items:center;">
-                    <input type="hidden" name="action" value="reset">
+                <form method="POST" onsubmit="return confirm('change username to ' + (this.querySelector('input[name=\&quot;new_username\&quot;]').value || 'that username') + '?');" style="display:flex; gap:0.5rem; align-items:center;">
+                    <input type="hidden" name="action" value="edit">
                     <input type="hidden" name="owner_id" value="<?= $o['id'] ?>">
-                    <input type="text" name="new_password" placeholder="new password"
+                    <input type="text" name="new_username" placeholder="new username"
                         style="background:#1a1a1a; border:1px solid #333; border-radius:6px;
                                padding:0.4rem 0.7rem; color:#eee; font-size:0.8rem;
                                font-family:'DM Sans',sans-serif; outline:none; width:130px;">
                     <button type="submit"
                         style="background:#222; border:1px solid #333; border-radius:6px;
-                               padding:0.4rem 0.8rem; color:#aaa; cursor:pointer; font-size:0.8rem;">
-                        reset
+                               padding:0.4rem 0.8rem; color:#aaa; cursor:pointer; font-size:0.8rem;
+                               transition:all 0.2s ease;"
+                        onmouseover="this.style.background='#2a6b6b'; this.style.borderColor='#3a8b8b'; this.style.color='#6dc88a';"
+                        onmouseout="this.style.background='#222'; this.style.borderColor='#333'; this.style.color='#aaa';">
+                        edit
                     </button>
                 </form>
             </td>

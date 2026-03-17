@@ -606,12 +606,13 @@ if (empty($_SESSION['response_id'])) {
                     <label class="pref-q-label">what kind of date actually sounds good to you?</label>
                     <div class="radio-group">
                         <?php foreach ([
-                            'something lowkey, stay-in type',
-                            'food trip, just drive and eat',
+                            'something lowkey',
+                            'food trip, drive and eat',
                             'go somewhere with a nice view',
                             'do something, not just sit around',
                             'totally spontaneous, figure it out as we go',
                             'surprise me, i trust you',
+                            'crush kita, you plan everything and i just show up',
                         ] as $opt): ?>
                         <label class="radio-item">
                             <input type="radio" name="date_type" value="<?= htmlspecialchars($opt) ?>"
@@ -628,7 +629,7 @@ if (empty($_SESSION['response_id'])) {
                     <div class="radio-group">
                         <?php foreach ([
                             'i like knowing what we\'re doing beforehand',
-                            'loose plan is fine, just a general idea',
+                            'as long as we have a direction',
                             'figure it out as we go honestly',
                             'the more chaotic the better',
                         ] as $opt): ?>
@@ -671,7 +672,7 @@ if (empty($_SESSION['response_id'])) {
                         <?php foreach ([
                             'chill and no pressure',
                             'fun and a little chaotic',
-                            'we\'re both gonna be awkward and that\'s okay',
+                            'we\'re both gonna be kinda awkward and that\'s okay',
                             'whatever happens, happens',
                         ] as $opt): ?>
                         <label class="radio-item">
@@ -737,7 +738,7 @@ if (empty($_SESSION['response_id'])) {
                             'get to know each other properly',
                             'keep it light and funny, nothing heavy',
                             'random topics, wherever it goes',
-                            'i\'ll talk when i feel like it, no pressure',
+                            'i\'ll talk when i feel like it',
                         ] as $opt): ?>
                         <label class="radio-item">
                             <input type="radio" name="convo_style" value="<?= htmlspecialchars($opt) ?>"
@@ -775,7 +776,7 @@ if (empty($_SESSION['response_id'])) {
                     <div class="comfort-check-list">
                         <?php foreach ([
                             'don\'t put me on the spot too much at the start',
-                            'let me warm up before going into deep topics',
+                            'let me warm up first',
                             'keep the mood light, especially at first',
                             'don\'t make it feel like an interview',
                             'let silences just exist, don\'t fill them awkwardly',
@@ -879,9 +880,9 @@ if (empty($_SESSION['response_id'])) {
                             'parking lot hangout', 'drinks and chill', 'picnic',
                             'bookstore or thrift', 'museum date', 'night market/park',
                             'convenience store run at midnight', 'beach or nature',
-                            'dinner somewhere nice', 'lunch somewhere cheap and good',
-                            'music or a gig', 'just drive, no destination',
-                            'creative stuff — art, crafts, that kind of thing',
+                            'dinner somewhere nice',
+                            'music or a gig', 'drive',
+                            'creative stuff — art, crafts, that kind of thing','illegal activity',
                         ] as $v): ?>
                         <label class="check-item">
                             <input type="checkbox" name="vibes[]" value="<?= htmlspecialchars($v) ?>">
@@ -970,16 +971,17 @@ function toggleTheme() {
 // ── Preview messages ──
 const previews = {
     date_type: {
-        'something lowkey, stay-in type':               'nice, comfortable energy. i can work with that',
-        'food trip, just drive and eat':                "aight that's genuinely a nice kind of date",
+        'something lowkey':               'nice, comfortable energy. i can work with that',
+        'food trip, drive and eat':                "aight that's genuinely a nice kind of date",
         'go somewhere with a nice view':                "noted. i know a good spot" ,
         'do something, not just sit around':            'i like that, we\'ll keep it interesting',
         'totally spontaneous, figure it out as we go':  "okay we're winging it then. i'm in",
         'surprise me, i trust you':                     "aight bet i got u",
+        'crush kita, you plan everything and i just show up': "ay hehe sure why not 😍 but u still have to answer some questions to make sure i plan something you'll like",
     },
     spontaneity: {
         'i like knowing what we\'re doing beforehand':  "got it, i'll send you a heads up",
-        'As long as we have a direction.':              "perfect, i like it that way too",
+        'as long as we have a direction':              "perfect, i like it that way too",
         'figure it out as we go honestly':              'sponty it is',
         'the more chaotic the better':                  "how about we commit a crime together",
     },
@@ -992,8 +994,8 @@ const previews = {
     },
     mood: {
         'chill and no pressure':                            "that's the goal every time honestly",
-        'fun and a little chaotic':                         "perfect, i was hoping you'd say that.",
-        'we\'re both gonna be awkward and that\'s okay':    "we'll survive.",
+        'fun and a little chaotic':                         "perfect",
+        'we\'re both gonna be kinda awkward and that\'s okay':    "we'll survive",
         'whatever happens, happens':                        "type shiii",
     },
     crowd: {
@@ -1007,14 +1009,14 @@ const previews = {
         'minimal, i\'m not here to exercise':           "we'll find somewhere to sit. noted",
         'a little is fine':                             "a short walk here and there, okay okay",
         'walk me around':                               "takbo ka na lang sa isip ko",
-        'depends on the place and how i feel that day': "fair, i'll check in with you",
+        'depends on the place and how i feel that day': "okay, i'll check in with you",
         'no walking pls':                               "how about running",
     },
     convo_style: {
         'get to know each other properly'   : "okay po let's actually talk",
         'keep it light and funny, nothing heavy':       "alright we'll keep it easy and chill",
         'random topics, wherever it goes':              'always been like this with me',
-        'i\'ll talk when i feel like it, no pressure':  "yes maam",
+        'i\'ll talk when i feel like it':  "yes maam",
     },
     awkwardness: {
         'yapper — i will carry the conversation, don\'t worry':  "wow perfect",
@@ -1041,8 +1043,8 @@ const previews = {
     distance: {
         'close by only, around our area':               "okay i'll keep it local. there's plenty to do nearby",
         'nearby cities are fine':                       "nice, that opens up a lot more options",
-        'doesn\'t matter, i\'m down wherever':          "okay anywhere is on the table then.",
-        'depends on the day and situation':             "fair, i'll just check with you when we're planning.",
+        'doesn\'t matter, i\'m down wherever':          "okay anywhere is on the table then",
+        'depends on the day and situation':             "okay, i'll check in with you",
     },
     place_in_mind: {
         'yes':  "i'll take you there, just say the word",
