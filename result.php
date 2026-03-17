@@ -250,6 +250,40 @@ if ($ownerUsername) {
 
         .result-theme-btn:hover { color: var(--pink); border-color: var(--pink); }
 
+        /* ── Primary buttons (schedule/not sure) — outline style ── */
+        .btn-primary-outline {
+            background: transparent;
+            border: 2px solid var(--text);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-outline:hover {
+            background: var(--pink);
+            border-color: var(--pink);
+            color: #fff;
+        }
+
+        /* ── Secondary buttons (view details, message) — compact style ── */
+        .btn-secondary {
+            display: inline-block;
+            width: auto;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.85rem;
+            background: transparent;
+            border: 1.5px solid var(--pink);
+            color: var(--pink);
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--pink);
+            color: #fff;
+        }
+
         /* ── Right ── */
         .result-right {
             background: var(--bg);
@@ -474,22 +508,7 @@ if ($ownerUsername) {
 
         .compat-optional-btn:hover { color: var(--pink); }
 
-        .download-btn {
-            display: block;
-            text-align: center;
-            font-size: 0.82rem;
-            text-decoration: none;
-            padding: 0.5rem;
-            border-radius: 8px;
-            color: var(--pink);
-            border: 1px solid rgba(244, 167, 185, 0.3);
-            transition: background 0.2s, border-color 0.2s;
-        }
 
-        .download-btn:hover {
-            background: rgba(244, 167, 185, 0.08);
-            border-color: var(--pink);
-        }
 
         /* ── Message section ── */
         .message-section {
@@ -637,20 +656,20 @@ if ($ownerUsername) {
                         </div>
                     </div>
                 <?php else: ?>
-                    <button class="btn btn-yes btn-sched" id="schedBtn" onclick="openScheduler()">
+                    <button class="btn btn-primary-outline" id="schedBtn" onclick="openScheduler()">
                         tell me a day you're available
                     </button>
-                    <button class="btn btn-maybe" id="notSureBtn" onclick="openNotSureFromLeft()">
+                    <button class="btn btn-primary-outline" id="notSureBtn" onclick="openNotSureFromLeft()">
                         not sure about the date yet
                     </button>
                 <?php endif; ?>
                 
-                <a href="view_response.php" class="btn btn-yes btn-sched active"
-                   style="text-align:center; display:block; color:#fff; text-decoration:none;">
+                <a href="view_response.php" class="btn-secondary"
+                   style="text-decoration:none;">
                     view details & edit
                 </a>
                 
-                <button class="btn btn-maybe" id="messageToggleBtn" onclick="toggleMessageForm()">
+                <button class="btn-secondary" id="messageToggleBtn" onclick="toggleMessageForm()">
                     leave me a message or ur ig 
                 </button>
                 
@@ -674,7 +693,7 @@ if ($ownerUsername) {
                     </div>
                 </div>
                 
-                <a href="download_view.php" target="_blank" class="download-btn">
+                <a href="download_view.php" target="_blank" class="btn-secondary" style="text-decoration:none;">
                     📥 save a copy of your answers
                 </a>
             </div>
@@ -740,7 +759,7 @@ if ($ownerUsername) {
 
                 <div class="result-compat-section">
                     <p class="result-divider-label">also —</p>
-                    <a href="download_view.php" target="_blank" class="download-btn">
+                    <a href="download_view.php" target="_blank" class="btn btn-yes" style="text-align:center; display:block; color:#fff; text-decoration:none;">
                         📥 save a copy of your answers
                     </a>
                     <a href="compatibility.php" class="compat-optional-btn">
@@ -766,7 +785,7 @@ if ($ownerUsername) {
                 </button>
                 <div class="result-compat-section">
                     <p class="result-divider-label">also —</p>
-                    <a href="download_view.php" target="_blank" class="download-btn">
+                    <a href="download_view.php" target="_blank" class="btn btn-yes" style="text-align:center; display:block; color:#fff; text-decoration:none;">
                         📥 save a copy of your answers
                     </a>
                     <a href="compatibility.php" class="compat-optional-btn">
@@ -792,7 +811,7 @@ if ($ownerUsername) {
                 </button>
                 <div class="result-compat-section">
                     <p class="result-divider-label">also —</p>
-                    <a href="download_view.php" target="_blank" class="download-btn">
+                    <a href="download_view.php" target="_blank" class="btn btn-yes" style="text-align:center; display:block; color:#fff; text-decoration:none;">
                         📥 save a copy of your answers
                     </a>
                     <a href="compatibility.php" class="compat-optional-btn">
@@ -841,7 +860,7 @@ if ($ownerUsername) {
 
                 <div class="result-compat-section">
                     <p class="result-divider-label">also —</p>
-                    <a href="download_view.php" target="_blank" class="download-btn">
+                    <a href="download_view.php" target="_blank" class="btn btn-yes" style="text-align:center; display:block; color:#fff; text-decoration:none;">
                         📥 save a copy of your answers
                     </a>
                     <a href="compatibility.php" class="compat-optional-btn">
@@ -924,7 +943,7 @@ if ($ownerUsername) {
     function openScheduler() {
         openRightPanel();
         const btn = document.getElementById('schedBtn');
-        if (btn) { btn.classList.add('active'); btn.textContent = 'see you soon 🌸'; }
+        if (btn) { btn.classList.add('active'); btn.textContent = 'see you soon!'; }
         hideAllRightPanels();
         document.getElementById('schedulerBox').style.display = 'flex';
         document.getElementById('schedulerBox').style.flexDirection = 'column';
@@ -964,13 +983,13 @@ if ($ownerUsername) {
         }
         hideAllRightPanels();
         document.getElementById('notSureBox').classList.add('show');
-        document.getElementById('rightLabel').textContent = 'no pressure 🥹';
+        document.getElementById('rightLabel').textContent = 'no pressure';
     }
 
     function showNotSure() {
         hideAllRightPanels();
         document.getElementById('notSureBox').classList.add('show');
-        document.getElementById('rightLabel').textContent = 'no pressure 🥹';
+        document.getElementById('rightLabel').textContent = 'no pressure';
     }
 
     function showSchedulerAgain() {
@@ -1038,15 +1057,13 @@ if ($ownerUsername) {
                     <strong>date already set 🌸</strong>
                     ${displayDate} · ${displayTime}
                 </div>
-                <a href="view_response.php" class="btn btn-yes btn-sched active"
-                   style="text-align:center; display:block; color:#fff; text-decoration:none;">
+                <a href="view_response.php" class="btn-secondary" style="text-decoration:none;">
                     view details
                 </a>
-                <a href="<?= $instagramLink ?>" target="_blank" class="btn btn-maybe"
-                   style="text-align:center; display:block;">
+                <a href="<?= $instagramLink ?>" target="_blank" class="btn-secondary" style="text-decoration:none;">
                     send me a message instead 💌
                 </a>
-                <a href="download_view.php" target="_blank" class="download-btn">
+                <a href="download_view.php" target="_blank" class="btn-secondary" style="text-decoration:none;">
                     📥 save a copy of your answers
                 </a>
             `;

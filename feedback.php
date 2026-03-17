@@ -1,8 +1,24 @@
 <?php
+session_start();
 require 'includes/db.php';
 
 $success = false;
 $error = '';
+
+// Determine if user is owner or responder from query parameter, then session
+$from = $_GET['from'] ?? null;
+$isOwner = $from === 'owner' || !empty($_SESSION['owner']);
+$isResponder = $from === 'responder' || !empty($_SESSION['response_id']);
+$backLink = 'index.php'; // default fallback
+$backText = '← back';
+
+if ($isOwner) {
+    $backLink = 'owner/dashboard.php';
+    $backText = '← back to dashboard';
+} elseif ($isResponder) {
+    $backLink = 'result.php';
+    $backText = '← back to result';
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $message = trim($_POST['message'] ?? '');
@@ -203,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 appreciate you! 💕
             </p>
             <div style="display: flex; gap: 0.8rem; flex-direction: column;">
-                <a href="result.php" class="btn-back" style="width: 100%; text-decoration: none; text-align: center;">← back to result</a>
+                <a href="<?= htmlspecialchars($backLink) ?>" class="btn-back" style="width: 100%; text-decoration: none; text-align: center;"><?= htmlspecialchars($backText) ?></a>
                 <a href="https://instagram.com/sa.loooong.a" target="_blank" class="btn-send" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 100%; margin: 0;">
                     💬 message me on instagram
                 </a>
